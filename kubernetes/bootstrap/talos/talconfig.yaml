@@ -40,10 +40,10 @@ nodes:
             gateway: "192.168.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20/16"
+          ip: "192.168.0.20"
   - hostname: "k8s-beta"
     ipAddress: "192.168.0.11"
-    installDisk: "/pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/2:0:0:0""
+    installDisk: "/pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/2:0:0:0"
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -59,7 +59,7 @@ nodes:
             gateway: "192.168.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20/16"
+          ip: "192.168.0.20"
   - hostname: "k8s-gamma"
     ipAddress: "192.168.0.12"
     installDisk: "/pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/2:0:0:0"
@@ -78,7 +78,7 @@ nodes:
             gateway: "192.168.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20/16"
+          ip: "192.168.0.20"
 
 # Global patches
 patches:
