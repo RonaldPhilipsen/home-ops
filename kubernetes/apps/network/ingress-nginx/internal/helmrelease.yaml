@@ -26,7 +26,7 @@ spec:
     controller:
       service:
         annotations:
-          lbipam.cilium.io/ips: "10.10.0.2"
+          lbipam.cilium.io/ips: ${NGINX_INTERNAL}
         externalTrafficPolicy: Cluster
       ingressClassResource:
         name: internal
