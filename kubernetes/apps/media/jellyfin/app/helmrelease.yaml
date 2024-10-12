@@ -41,8 +41,6 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups: [160, 140, 241, 0, 10, 121]
-      nodeSelector:
-        kubernetes.io/arch: arm64
       hostNetwork: false
 
     controllers:
