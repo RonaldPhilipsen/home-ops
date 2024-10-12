@@ -6,12 +6,20 @@ metadata:
   namespace: flux-system
 data:
   TIMEZONE: "Europe/Amsterdam"
+  # Dependencies
   NFS_IP: "192.168.0.7"
-  POSTGRES_IP: "192.168.5.10"
+
+  # System
+  K8S_GATEWAY: "10.10.0.1"
+  NGINX_INTERNAL: "10.10.0.2"
+  NGINX_EXTERNAL: "10.10.0.3"
+
+  # Services
+  POSTGRES_IP: "10.10.10.1"
+  MQTT_IP: "10.10.10.2"
 
   # IOT
-  HA_IP: "192.168.8.5"
-  ESPHOME_IP: "192.168.8.10"
-  MQTT_IP: "192.168.8.20"
-  MATTER_IP: "192.168.8.30"
+  HA_IP: "10.10.20.1"
+  ESPHOME_IP: "10.10.20.2"
+  MATTER_IP:  "10.10.20.3"
   MATTER_IPV6: "2a02:a446:fe50:cafe:2::bad:beef:1"
