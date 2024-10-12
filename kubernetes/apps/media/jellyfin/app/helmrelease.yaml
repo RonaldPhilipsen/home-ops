@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyfin
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 3.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+
+  install:
+    remediation:
+      retries: 0
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 0
+
+  uninstall:
+    keepHistory: false
+
+  values:
+
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: false
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [160, 140, 241, 0, 10, 121]
+      nodeSelector:
+        kubernetes.io/arch: arm64
+      hostNetwork: false
+
+    controllers:
+      jellyfin:
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: jellyfin/jellyfin
+              tag: "unstable"
+              pullPolicy: Always
+
+            env:
+              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
+              JELLYFIN_FFmpeg__probesize: 50000000
+              JELLYFIN_FFmpeg__analyzeduration: 50000000
+              JELLYFIN_PublishedServerUrl: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+
+            securityContext:
+              privileged: true
+
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
+
+    service:
+      app:
+        controller: jellyfin
+        ports:
+          http:
+            port: 8096
+
+    ingress:
+      app:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        type: nfs
+        server: ${NFS_IP}
+        path: /config/jellyfin
+        globalMounts:
+          - path: /config
+
+      media:
+        type: nfs
+        server: ${NFS_IP}
+        path: /Media
+        globalMounts:
+          - path: /media/
+
+      tmp:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        globalMounts:
+          - subPath: "tmp"
+            path: "/tmp"
+          - subPath: "transcode"
+            path: "/transcode"
