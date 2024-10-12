@@ -5,4 +5,13 @@ metadata:
   name: cluster-settings
   namespace: flux-system
 data:
-  SETTING_EXAMPLE: Global settings for your cluster go in this file, this file is NOT encrypted
+  TIMEZONE: "Europe/Amsterdam"
+  NFS_IP: "192.168.0.7"
+  POSTGRES_IP: "192.168.5.10"
+
+  # IOT
+  HA_IP: "192.168.8.5"
+  ESPHOME_IP: "192.168.8.10"
+  MQTT_IP: "192.168.8.20"
+  MATTER_IP: "192.168.8.30"
+  MATTER_IPV6: "2a02:a446:fe50::bad:beef"
