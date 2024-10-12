@@ -26,3 +26,4 @@ spec:
   allowFirstLastIPs: "Yes"
   blocks:
     - cidr: "10.10.0.0/16"
+    - cidr: "2a02:a446:fe50:cafe:2::/112"
