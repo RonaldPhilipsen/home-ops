@@ -14,4 +14,4 @@ data:
   ESPHOME_IP: "192.168.8.10"
   MQTT_IP: "192.168.8.20"
   MATTER_IP: "192.168.8.30"
-  MATTER_IPV6: "2a02:a446:fe50::bad:beef"
+  MATTER_IPV6: "2a02:a446:fe50:cafe:2::bad:beef:1"
