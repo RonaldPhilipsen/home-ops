@@ -23,7 +23,7 @@ cniConfig:
 
 nodes:
   - hostname: "k8s-alpha"
-    ipAddress: "192.168.0.10"
+    ipAddress: "172.16.20.2"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -34,7 +34,7 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:fa:c2"
         dhcp: false
         addresses:
-          - "192.168.0.10/16"
+          - "172.16.20.2/16"
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.0.1"
@@ -42,7 +42,7 @@ nodes:
         vip:
           ip: "192.168.0.20"
   - hostname: "k8s-beta"
-    ipAddress: "192.168.0.11"
+    ipAddress: "172.16.20.3"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -53,7 +53,7 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:f8:36"
         dhcp: false
         addresses:
-          - "192.168.0.11/16"
+          - "172.16.20.3/16"
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.0.1"
@@ -61,7 +61,7 @@ nodes:
         vip:
           ip: "192.168.0.20"
   - hostname: "k8s-gamma"
-    ipAddress: "192.168.0.12"
+    ipAddress: "172.16.20.4"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -72,7 +72,7 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:f6:d8"
         dhcp: false
         addresses:
-          - "192.168.0.12/16"
+          - "172.16.20.4/16"
         routes:
           - network: 0.0.0.0/0
             gateway: "192.168.0.1"
