@@ -23,3 +23,6 @@ data:
   ESPHOME_IP: "172.16.20.31"
   MATTER_IP:  "172.16.20.32"
   MATTER_IPV6: "2a02:a446:fe50:cafe:2::bad:beef:1"
+
+  # Media
+  BITTORRENT_IP: "172.16.40.1"
