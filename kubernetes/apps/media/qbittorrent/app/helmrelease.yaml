@@ -86,10 +86,18 @@ spec:
         ports:
           http:
             port: *port
-          bittorrent:
-            enabled: true
+      bittorrent:
+        controller: *app
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: ${BITTORRENT_IP}
+        ports:
+          bittorrent-tcp:
             port: *bittorrentPort
             protocol: TCP
+          bittorrent-udp:
+            port: *bittorrentPort
+            protocol: UDP
     ingress:
       app:
         className: internal
