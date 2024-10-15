@@ -3,4 +3,4 @@ cluster:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
     advertisedSubnets:
-      - 192.168.0.0/16
+      - 172.16.20.0/24
