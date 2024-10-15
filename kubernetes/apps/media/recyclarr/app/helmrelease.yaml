@@ -38,7 +38,7 @@ spec:
               repository: ghcr.io/recyclarr/recyclarr
               tag: 7.2.4@sha256:1bf2436ed4749a4309765dd21643aac858dd436a536e37c25bb463513601e962
             env:
-              TZ: Europe/Amsterdam
+              TZ: ${TIMEZONE}
             envFrom:
               - secretRef:
                   name: recyclarr-secret

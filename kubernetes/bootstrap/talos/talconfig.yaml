@@ -6,13 +6,13 @@ talosVersion: v1.8.1
 kubernetesVersion: v1.31.1
 
 clusterName: "homelab"
-endpoint: https://192.168.0.20:6443
+endpoint: https://172.16.20.2:6443
 clusterPodNets:
   - "10.69.0.0/16"
 clusterSvcNets:
   - "10.96.0.0/16"
 additionalApiServerCertSans: &sans
-  - "192.168.0.20"
+  - "172.16.20.2"
   - 127.0.0.1 # KubePrism
   - "k8s.rphilipsen.nl"
 additionalMachineCertSans: *sans
@@ -23,7 +23,7 @@ cniConfig:
 
 nodes:
   - hostname: "k8s-alpha"
-    ipAddress: "172.16.20.2"
+    ipAddress: "172.16.20.3"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -34,15 +34,15 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:fa:c2"
         dhcp: false
         addresses:
-          - "172.16.20.2/16"
+          - "172.16.20.3/24"
         routes:
           - network: 0.0.0.0/0
-            gateway: "192.168.0.1"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20"
+          ip: "172.16.20.2"
   - hostname: "k8s-beta"
-    ipAddress: "172.16.20.3"
+    ipAddress: "172.16.20.4"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -53,15 +53,15 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:f8:36"
         dhcp: false
         addresses:
-          - "172.16.20.3/16"
+          - "172.16.20.4/24"
         routes:
           - network: 0.0.0.0/0
-            gateway: "192.168.0.1"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20"
+          ip: "172.16.20.2"
   - hostname: "k8s-gamma"
-    ipAddress: "172.16.20.4"
+    ipAddress: "172.16.20.5"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
@@ -72,29 +72,16 @@ nodes:
           hardwareAddr: "e8:ff:1e:d3:f6:d8"
         dhcp: false
         addresses:
-          - "172.16.20.4/16"
+          - "172.16.20.5/24"
         routes:
           - network: 0.0.0.0/0
-            gateway: "192.168.0.1"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
-          ip: "192.168.0.20"
+          ip: "172.16.20.2"
 
 # Global patches
 patches:
-  - # Force nameserver
-    |-
-    machine:
-      network:
-        nameservers:
-          - 192.168.0.1
-  - # Configure NTP
-    |-
-    machine:
-      time:
-        disabled: false
-        servers:
-          - 192.168.0.1
   - # Encrypt system disk with TPM
     |-
     machine:
