@@ -83,23 +83,20 @@ spec:
     service:
       app:
         controller: qbittorrent
-        ports:
-          http:
-            port: *port
-      bittorrent:
-        controller: *app
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: ${BITTORRENT_IP}
         ports:
-          bittorrent-tcp:
+          http:
+            port: *port
+          bittorrent:
             port: *bittorrentPort
             protocol: TCP
-          bittorrent-udp:
-            port: *bittorrentPort
-            protocol: UDP
+
     ingress:
       app:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
         className: internal
         hosts:
           - host: "qb.${SECRET_DOMAIN}"
