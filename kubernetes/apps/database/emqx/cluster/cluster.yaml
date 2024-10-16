@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     spec:
       replicas: 3
-      envFrom: &envFrom
+      envFrom:
         - secretRef:
             name: emqx-secret
       extraVolumeMounts:
@@ -42,9 +42,9 @@ spec:
           subPath: init-user.json
           readOnly: true
       extraVolumes:
-      - name: init-user
-        secret:
-          secretName: emqx-init-user-secret
+        - name: init-user
+          secret:
+            secretName: emqx-init-user-secret
   listenersServiceTemplate:
     metadata:
       annotations:
@@ -53,5 +53,3 @@ spec:
         io.cilium/lb-ipam-ips: ${MQTT_IP}
     spec:
       type: LoadBalancer
-      externalIPs: ["${MQTT_IP}"]
-      externalTrafficPolicy: Cluster
