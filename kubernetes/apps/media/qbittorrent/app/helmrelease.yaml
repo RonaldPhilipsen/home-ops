@@ -40,18 +40,12 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/qbittorrent-beta
-              tag: 5.0.0@sha256:ea73fffed4c37dbfef9a0eacf406bdb3b00c8bd9840cca0e6dd6f80bc9ee6209
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 5.0.0@sha256:1cc1878d06fafe6a1a1294f1547203634e729e3386324b7a63c8fde68554d705
             env:
               TZ: ${TIMEZONE}
-              QBITTORRENT__PORT: &port 80
-              QBITTORRENT__BT_PORT: &bittorrentPort 50413
-              QBT_Application__MemoryWorkingSetLimit: 10000
-              QBT_Preferences__WebUI__AlternativeUIEnabled: false
-              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
-              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                10.42.0.0/16, 192.168.0.0/16
-              QBT_Preferences__WebUI__LocalHostAuth: false
+              QBT_WEBUI_PORT: &port 80
+              QBT_TORRENTING_PORT: &torrentPort 50413
             probes:
               liveness: &probes
                 enabled: true
@@ -73,7 +67,7 @@ spec:
               requests:
                 cpu: 100m
               limits:
-                memory: 2Gi
+                memory: 4Gi
     service:
       app:
         controller: qbittorrent
@@ -84,7 +78,8 @@ spec:
           http:
             port: *port
           bittorrent:
-            port: *bittorrentPort
+            enabled: true
+            port: *torrentPort
             protocol: TCP
 
     ingress:
