@@ -24,7 +24,7 @@ cniConfig:
 nodes:
   - hostname: "k8s-alpha"
     ipAddress: "172.16.20.3"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -43,7 +43,7 @@ nodes:
           ip: "172.16.20.2"
   - hostname: "k8s-beta"
     ipAddress: "172.16.20.4"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -62,7 +62,7 @@ nodes:
           ip: "172.16.20.2"
   - hostname: "k8s-gamma"
     ipAddress: "172.16.20.5"
-    installDisk: "/dev/sdb"
+    installDisk: "/dev/sda"
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -82,6 +82,19 @@ nodes:
 
 # Global patches
 patches:
+  - # Force nameserver
+    |-
+    machine:
+      network:
+        nameservers:
+          - 172.16.20.1
+  - # Configure NTP
+    |-
+    machine:
+      time:
+        disabled: false
+        servers:
+          - 172.16.20.1
   - # Encrypt system disk with TPM
     |-
     machine:
