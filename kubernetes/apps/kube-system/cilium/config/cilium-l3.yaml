@@ -25,5 +25,5 @@ metadata:
 spec:
   allowFirstLastIPs: "Yes"
   blocks:
-    - cidr: "172.16.20.0/16"
+    - cidr: "172.16.21.0/16"
     - cidr: "2a02:a446:fe50:cafe:2::/112"
