@@ -84,11 +84,11 @@ spec:
             port: &coiot 5683
           code-server:
             port: 12321
-      lb: 
+      lb:
         controller: home-assistant
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: ${HA_IP}
+          lbipam.cilium.io/ips: ${HA_IP}
         ports:
           coiot-udp:
             port: *coiot
