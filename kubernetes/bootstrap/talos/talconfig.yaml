@@ -32,15 +32,22 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:fa:c2"
-        dhcp: false
-        addresses:
-          - "172.16.20.3/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         mtu: 1500
-        vip:
-          ip: "172.16.20.2"
+        dhcp: false
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - "172.16.10.254/24"
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - "172.16.20.3/24"
+            vip:
+              ip: 172.16.20.2
   - hostname: "k8s-beta"
     ipAddress: "172.16.20.4"
     installDisk: "/dev/sda"
@@ -51,15 +58,22 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:f8:36"
-        dhcp: false
-        addresses:
-          - "172.16.20.4/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         mtu: 1500
-        vip:
-          ip: "172.16.20.2"
+        dhcp: false
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - "172.16.10.253/24"
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - "172.16.20.4/24"
+            vip:
+              ip: 172.16.20.2
   - hostname: "k8s-gamma"
     ipAddress: "172.16.20.5"
     installDisk: "/dev/sda"
@@ -70,16 +84,22 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:f6:d8"
-        dhcp: false
-        addresses:
-          - "172.16.20.5/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         mtu: 1500
-        vip:
-          ip: "172.16.20.2"
-
+        dhcp: false
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - "172.16.10.252/24"
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - "172.16.20.5/24"
+            vip:
+              ip: 172.16.20.2
 # Global patches
 patches:
   - # Force nameserver

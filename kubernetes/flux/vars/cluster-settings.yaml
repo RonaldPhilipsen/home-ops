@@ -7,7 +7,7 @@ metadata:
 data:
   TIMEZONE: "Europe/Amsterdam"
   # Dependencies
-  NFS_IP: "192.168.0.7"
+  NFS_IP: "172.16.20.7"
 
   # System
   K8S_GATEWAY: "172.16.20.10"
