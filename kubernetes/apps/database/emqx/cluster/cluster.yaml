@@ -45,14 +45,11 @@ spec:
         - name: init-user
           secret:
             secretName: emqx-init-user-secret
-        - name: acl-conf
-          configMap:
-            name: emqx-acl-conf
   listenersServiceTemplate:
     metadata:
       annotations:
         external-dns.alpha.kubernetes.io/hostname: mqtt.${SECRET_DOMAIN}
         external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        io.cilium/lb-ipam-ips: ${MQTT_IP}
+        lbipam.cilium.io/ips: ${MQTT_IP}
     spec:
       type: LoadBalancer

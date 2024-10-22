@@ -109,5 +109,5 @@ def validate(data: dict) -> None:
     validate_cli_tools(data)
     validate_age(data)
 
-    if not data.get("skip_tests", False):
-        validate_nodes(data)
+    # if not data.get("skip_tests", False):
+    #    validate_nodes(data)

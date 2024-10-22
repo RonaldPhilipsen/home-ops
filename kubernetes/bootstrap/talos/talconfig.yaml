@@ -32,6 +32,9 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:fa:c2"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         dhcp: false
         addresses:
           - "172.16.20.3/24"
@@ -51,6 +54,9 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:f8:36"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         dhcp: false
         addresses:
           - "172.16.20.4/24"
@@ -70,6 +76,9 @@ nodes:
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:f6:d8"
+          busPath: "0000:01:00.0"
+          pciID: 10EC:8168
+          physical: true
         dhcp: false
         addresses:
           - "172.16.20.5/24"
@@ -82,19 +91,6 @@ nodes:
 
 # Global patches
 patches:
-  - # Force nameserver
-    |-
-    machine:
-      network:
-        nameservers:
-          - 172.16.20.1
-  - # Configure NTP
-    |-
-    machine:
-      time:
-        disabled: false
-        servers:
-          - 172.16.20.1
   - # Encrypt system disk with TPM
     |-
     machine:
