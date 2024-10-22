@@ -45,9 +45,6 @@ spec:
         - name: init-user
           secret:
             secretName: emqx-init-user-secret
-        - name: acl-conf
-          configMap:
-            name: emqx-acl-conf
   listenersServiceTemplate:
     metadata:
       annotations:
