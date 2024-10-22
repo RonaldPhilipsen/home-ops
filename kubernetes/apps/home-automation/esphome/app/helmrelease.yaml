@@ -61,12 +61,12 @@ spec:
         ports:
           http:
             port: &esphome 6052
-      lb: 
+      lb:
         controller: esphome
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetesio/hostname: &host esphome.${SECRET_DOMAIN}
-          io.cilium/lb-ipam-ips: ${ESPHOME_IP}
+          lbipam.cilium.io/ips: ${ESPHOME_IP}
         ports:
           ws:
             protocol: TCP
