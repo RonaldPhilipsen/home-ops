@@ -8,13 +8,14 @@ kubernetesVersion: v1.31.1
 clusterName: "homelab"
 endpoint: https://172.16.20.2:6443
 clusterPodNets:
-  - "10.69.0.0/16"
+  - "172.22.0.0/16"
+  - "${CLUSTER_POD_V6_CIDR}"
 clusterSvcNets:
-  - "10.96.0.0/16"
+  - "172.21.0.0/16"
+  - "${CLUSTER_SVC_V6_CIDR}"
 additionalApiServerCertSans: &sans
   - "172.16.20.2"
-  - 127.0.0.1 # KubePrism
-  - "k8s.rphilipsen.nl"
+  - "127.0.0.1"
 additionalMachineCertSans: *sans
 
 # Disable built-in Flannel to use Cilium
@@ -24,73 +25,83 @@ cniConfig:
 nodes:
   - hostname: "k8s-alpha"
     ipAddress: "172.16.20.3"
-    installDisk: "/dev/sda"
+    installDisk: "/dev/sdb"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+    talosImageURL: factory.talos.dev/installer-secureboot/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "e8:ff:1e:d3:fa:c2"
-          busPath: "0000:01:00.0"
-          pciID: 10EC:8168
-          physical: true
-        dhcp: false
-        addresses:
-          - "172.16.20.3/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+      - interface: enp1s0
+        dhcp: true
         mtu: 1500
         vip:
           ip: "172.16.20.2"
+      - interface: enp2s0
+        dhcp: true
+        mtu: 1500
   - hostname: "k8s-beta"
     ipAddress: "172.16.20.4"
-    installDisk: "/dev/sda"
+    installDisk: "/dev/sdb"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+    talosImageURL: factory.talos.dev/installer-secureboot/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "e8:ff:1e:d3:f8:36"
-          busPath: "0000:01:00.0"
-          pciID: 10EC:8168
-          physical: true
-        dhcp: false
-        addresses:
-          - "172.16.20.4/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+      - interface: enp1s0
+        dhcp: true
         mtu: 1500
         vip:
           ip: "172.16.20.2"
+      - interface: enp2s0
+        dhcp: true
+        mtu: 1500
   - hostname: "k8s-gamma"
     ipAddress: "172.16.20.5"
-    installDisk: "/dev/sda"
+    installDisk: "/dev/sdb"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+    talosImageURL: factory.talos.dev/installer-secureboot/ed036d0640097a4e7af413ee089851a12963cd2e2e1715f8866d551d17c2ec62
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "e8:ff:1e:d3:f6:d8"
-          busPath: "0000:01:00.0"
-          pciID: 10EC:8168
-          physical: true
-        dhcp: false
-        addresses:
-          - "172.16.20.5/24"
-        routes:
-          - network: 0.0.0.0/0
-            gateway: "172.16.20.1"
+      - interface: enp1s0
+        dhcp: true
         mtu: 1500
         vip:
           ip: "172.16.20.2"
+      - interface: enp2s0
+        dhcp: true
+        mtu: 1500
 
 # Global patches
 patches:
+  - # sysctls
+    |-
+    machine:
+      sysctls:
+        net.core.bpf_jit_harden: "1"
+        net.ipv6.conf.all.accept_ra: "2"
+        net.ipv6.conf.all.forwarding: "1"
+        net.ipv6.conf.enp1s0.accept_ra: "2"
+        net.ipv6.conf.enp1s0.forwarding: "1"
+        net.ipv6.conf.enp2s0.accept_ra: "2"
+        net.ipv6.conf.enp2s0.forwarding: "1"
+        vm.nr_hugepages: "1024"
+
+  - # Force nameserver
+    |-
+    machine:
+      network:
+        nameservers:
+          - 172.16.20.1
+          - 2a02:a446:fe50::1
+  - # Configure NTP
+    |-
+    machine:
+      time:
+        disabled: false
+        servers:
+          - 172.16.20.1
+          - 2a02:a446:fe50::1
   - # Encrypt system disk with TPM
     |-
     machine:
