@@ -1,0 +1,10 @@
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: l3-pool
+spec:
+  allowFirstLastIPs: "Yes"
+  blocks:
+    - cidr: "172.21.0.0/16"
+    - cidr: ${CLUSTER_LBA_V6_CIDR}"

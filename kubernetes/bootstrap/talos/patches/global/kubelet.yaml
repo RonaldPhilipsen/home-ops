@@ -5,3 +5,7 @@ machine:
     nodeIP:
       validSubnets:
         - 172.16.20.0/24
+        - ${CLUSTER_NODE_V6_CIDR}
+    clusterDNS:
+      - 172.21.0.10
+      - ${CLUSTER_SVC_V6_PREFIX}::a

@@ -2,8 +2,13 @@
 autoDirectNodeRoutes: true
 bgpControlPlane:
   enabled: true
+bandwidthManager:
+  enabled: true
+  bbr: true
 bpf:
-  masquerade: false # Required for Talos `.machine.features.hostDNS.forwardKubeDNSToHost`
+  datapathMode: veth
+  masquerade: true # See https://github.com/siderolabs/talos/issues/8836 (forwardKubeDNSToHost)
+  tproxy: true
 cgroup:
   automount:
     enabled: false
@@ -13,17 +18,21 @@ cluster:
   name: "homelab"
 cni:
   exclusive: false
-# NOTE: devices might need to be set if you have more than one active NIC on your hosts
-# devices: eno+ eth+
+enableIPv4BIGTCP: true
+enableIPv6BIGTCP: true
+# Pod, service, and load-balancer IPs are allocated from a publicly routable CIDR.
+enableIPv6Masquerade: false
 endpointRoutes:
   enabled: true
-envoy:
-  enabled: false
 hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: "10.69.0.0/16"
+ipv4:
+  enabled: true
+ipv4NativeRoutingCIDR: 172.22.0.0/16
+ipv6:
+  enabled: true
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
@@ -31,8 +40,9 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: false # https://github.com/cilium/cilium/issues/28985
 loadBalancer:
+  acceleration: best-effort
   algorithm: maglev
-  mode: snat
+  mode: dsr
 localRedirectPolicy: true
 operator:
   replicas: 1
@@ -57,3 +67,5 @@ securityContext:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_RESOURCE
+socketLB:
+  enabled: true
