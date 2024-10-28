@@ -8,8 +8,8 @@ service:
   ipFamilyPolicy: PreferDualStack
   clusterIP: "172.21.0.10"
   clusterIPs: # By default Talos sets kubelet clusterDNS to the 10th address of every service CIDR.
-    - 172.21.0.10
-    - ${CLUSTER_SVC_V6_PREFIX}::a
+    - "172.21.0.10"
+    - "${CLUSTER_SVC_V6_PREFIX}::a"
 servers:
   - zones:
       - zone: .
