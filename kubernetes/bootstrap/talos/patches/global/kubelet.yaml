@@ -8,4 +8,4 @@ machine:
         - ${CLUSTER_NODE_V6_CIDR}
     clusterDNS:
       - "172.21.0.10"
-      - "${CLUSTER_SVC_V6_PREFIX}::a"
+      - "2a02:a446:fe50:cafe:1::a"
