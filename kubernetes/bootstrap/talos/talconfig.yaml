@@ -26,7 +26,7 @@ nodes:
   - hostname: "k8s-alpha"
     ipAddress: "172.16.20.3"
     installDiskSelector:
-      wwid: naa.53a5a270870d2072
+      busPath: /pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/*
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -43,7 +43,7 @@ nodes:
   - hostname: "k8s-beta"
     ipAddress: "172.16.20.4"
     installDiskSelector:
-      wwid: naa.53a5a270870d4960
+      busPath: /pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/*
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
@@ -60,7 +60,7 @@ nodes:
   - hostname: "k8s-gamma"
     ipAddress: "172.16.20.5"
     installDiskSelector:
-      wwid: naa.53a5a270870d2c31
+      busPath: /pci0000:00/0000:00:17.0/ata2/host2/target2:0:0/*
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
