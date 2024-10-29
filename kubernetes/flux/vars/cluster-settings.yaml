@@ -23,4 +23,4 @@ data:
   MATTER_IP:  "172.16.21.32"
 
   # Media
-  BITTORRENT_IP: "172.16.21.1"
+  BITTORRENT_IP: "172.16.21.40"
