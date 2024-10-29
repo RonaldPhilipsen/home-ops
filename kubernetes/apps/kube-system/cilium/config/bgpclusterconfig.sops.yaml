@@ -1,0 +1,43 @@
+# https://docs.cilium.io/en/latest/network/bgp-control-plane/
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPClusterConfig
+metadata:
+    name: l3-policy
+spec:
+    nodeSelector:
+        matchLabels:
+            kubernetes.io/os: linux
+    bgpInstances:
+        - name: instance-65001
+          localASN: 65001
+          peers:
+            - name: peer-65000-opnsense-v4
+              peerAddress: ENC[AES256_GCM,data:s0uAkk3jKAhoioY=,iv:x1GPP3t6g+15FfTO6gHXfBLy+LwdKp11cLyKqUtYTPA=,tag:CWjO6wUPfCpjilUeMBfapw==,type:str]
+              peerASN: 65000
+              peerConfigRef:
+                name: cilium-peer-v4
+            - name: peer-65000-opnsense-v6
+              peerAddress: ENC[AES256_GCM,data:aSrsSk35E13y0HG7v6taJMBN5xgO/Ug=,iv:3cGuDxCXBVf5rJPbgd5eUXAmv2TyIIoi6fAYvsIXGRA=,tag:HoabQ0iGJhxyjLizc7Br2g==,type:str]
+              peerASN: 65000
+              peerConfigRef:
+                name: cilium-peer-v6
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1eyeengpqz4yn654cv5gn5xvdhqchxqp7uw6yvx4sql5mv28mvquqrdwmjy
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1KzE1R3FsVFRrUXdUek4r
+            UVJoQ0lvS21wV3VxRVpnVE1MMHgwcndzQmxrClZpOUZmWlVtMGhTY05zQTNGYnRx
+            c1F6TVpZNEg1aExmcGhFL0xJTHA2OTQKLS0tIEtqcWt6aHNEVTFUZTAzZGdTTHRC
+            aXBUUE1mNG1oWDZYTnpjbER4ZkdPcTgKRD3YQK0iECzYiUlPmkjWRZfoeeVcywcq
+            m0rAG0+2pFb/PSo3mLUSp+fJnWgBtCgxu/Hf4zb4HE9LsbDyNlR1TQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-10-29T16:46:29Z"
+    mac: ENC[AES256_GCM,data:wG1uew5JxLY5sNbqtvGhUR3/ZOw+2PgjImRe1GDJ9qDDgXBwARdcmWv2dWl6JU7k6wLIgfHseJpPGXMWnEx270Fa6xPtkIgngdW17d/jGfMMUC28GwYx56qD3TaHXFq7afkHQJzvAgok2GJweph9QXGTVf/E7cGp3omDytUirj8=,iv:1p79hViVsESlIrY6MWZ58b1AkU35Z5G47A5fNQOvqdA=,tag:jDgv2Jmwi4ijdTlnhne5tw==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData|peerAddress)$
+    version: 3.9.1
