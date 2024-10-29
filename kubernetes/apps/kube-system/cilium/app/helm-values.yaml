@@ -7,7 +7,6 @@ bandwidthManager:
   bbr: true
 bpf:
   hostLegacyRouting: true # https://github.com/siderolabs/talos/issues/8836
-  datapathMode: veth
   masquerade: true # See https://github.com/siderolabs/talos/issues/8836 (forwardKubeDNSToHost)
   tproxy: true
 cgroup:
