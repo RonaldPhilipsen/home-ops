@@ -18,8 +18,8 @@ cluster:
   name: "homelab"
 cni:
   exclusive: false
-enableIPv4BIGTCP: true
-enableIPv6BIGTCP: true
+enableIPv4BIGTCP: false # BIG TCP is not supported with legacy host routing" 
+enableIPv6BIGTCP: false # BIG TCP is not supported with legacy host routing" 
 # Pod, service, and load-balancer IPs are allocated from a publicly routable CIDR.
 enableIPv6Masquerade: false
 endpointRoutes:
