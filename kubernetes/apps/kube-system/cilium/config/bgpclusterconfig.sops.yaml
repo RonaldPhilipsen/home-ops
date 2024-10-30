@@ -17,7 +17,7 @@ spec:
               peerConfigRef:
                 name: cilium-peer-v4
             - name: peer-65000-opnsense-v6
-              peerAddress: ENC[AES256_GCM,data:E1vJadtHddaF8n2KIye6m3RtkViyK8EW,iv:YqW+Nhjx32EmvHWjHDynugT7sLudMusj3S0hbK0YH/M=,tag:XkFg8iNGe5SMPRKnLIUWbQ==,type:str]
+              peerAddress: ENC[AES256_GCM,data:vlO4WvlkZXw1SyFfQgRPUIs=,iv:JdKBUS12wanSoJE/Tc0hIoXHkTxQ9Xbo1j9/5rpoBZs=,tag:vljVQ8IqyTB3jl4FlB3yVQ==,type:str]
               peerASN: 65000
               peerConfigRef:
                 name: cilium-peer-v6
@@ -36,8 +36,8 @@ sops:
             aXBUUE1mNG1oWDZYTnpjbER4ZkdPcTgKRD3YQK0iECzYiUlPmkjWRZfoeeVcywcq
             m0rAG0+2pFb/PSo3mLUSp+fJnWgBtCgxu/Hf4zb4HE9LsbDyNlR1TQ==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2024-10-29T19:34:57Z"
-    mac: ENC[AES256_GCM,data:YJYB9U6/vn7/8LntOEY1qQRH/4GNR+UcaSmKWQdK0f9vHcgMFfJyX5kv3axUo8+8TpVNl83u58JOa6+cu/BvWj7dw20VzPLSrVblH6m5SU1iPgy6fom74c31S3ML3drUBCfDkZ8Augffi5/C9+cFbLdSX9lrN1X14TcYFYMQOTo=,iv:IxUuMHVH01pUFMXGIZNkxk93SPcmeZmrRJu+RCfgxio=,tag:Nd7QVr2UAG6GEuRncYsPpA==,type:str]
+    lastmodified: "2024-10-30T18:23:55Z"
+    mac: ENC[AES256_GCM,data:1r5sw6fN97hiPstj3yzf7663Z/u5KkHa3BFuGOBsVHvWYFGuDG9h6eeMXgcYknoc/y2Wmx28RE9qmqCb+jDl4jGf4Cli9deX6AgNMTjr7Tnf8W8PF4OEXG/KAA5hsAsFO/GOVTPq2CFTokYmbnW1DRuyXX37XLTxY/PgLTLb/UI=,iv:g7dxBRowszWgXgio5O8375TgKWcyK2d0hci9k+FU+Iw=,tag:saCV0y4RA+wJ/dilkRiZIQ==,type:str]
     pgp: []
     encrypted_regex: ^(data|stringData|peerAddress)$
     version: 3.9.1
