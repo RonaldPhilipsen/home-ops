@@ -117,4 +117,4 @@ spec:
           - path: /media/
 
     PodAnnotations:
-        secret.reloader.stakater.com/reload: radarr-secret
+      secret.reloader.stakater.com/reload: radarr-secret

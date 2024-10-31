@@ -6,11 +6,12 @@ metadata:
   annotations:
     future-me-why: "allow ingress from cluster for all endpoints, which also puts them in deny-by-default mode for ingress"
 spec:
-  endpointSelector: {}
+  endpointSelector:
   ingress:
-  - fromEntities: {}
+    - fromEntities:
+        - world
   egress:
-  - toServices:
-    - k8s-gateway:
-        serviceName: k8s-gateway
-        namespace: network
+    - toServices:
+        k8s-gateway:
+          serviceName: k8s-gateway
+          namespace: network
