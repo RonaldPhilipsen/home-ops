@@ -5,5 +5,4 @@ resources:
   - ./bgpadvertisement.yaml
   - ./bgpclusterconfig.sops.yaml
   - ./bgppeerconfig.yaml
-  - ./clusterwidenetworkpolicy.yaml
   - ./loadbalancerippool.yaml
