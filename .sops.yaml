@@ -10,6 +10,10 @@ creation_rules:
     key_groups:
       - age:
           - "age1eyeengpqz4yn654cv5gn5xvdhqchxqp7uw6yvx4sql5mv28mvquqrdwmjy"
+  - path_regex: kubernetes/.*/networkpolicy\.sops\.ya?ml
+    encrypted_regex: "^(egress|ingress)$"
+    key_groups:
+      - "age1eyeengpqz4yn654cv5gn5xvdhqchxqp7uw6yvx4sql5mv28mvquqrdwmjy"
   - path_regex: kubernetes/.*\.sops\.ya?ml
     encrypted_regex: "^(data|stringData)$"
     key_groups:
