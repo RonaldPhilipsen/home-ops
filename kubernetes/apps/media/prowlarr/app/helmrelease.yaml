@@ -16,7 +16,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  
+
   maxHistory: 3
 
   install:
@@ -127,3 +127,6 @@ spec:
         path: /config/prowlarr
         globalMounts:
           - path: /config
+
+    PodAnnotations:
+      secret.reloader.stakater.com/reload: prowlarr-secret

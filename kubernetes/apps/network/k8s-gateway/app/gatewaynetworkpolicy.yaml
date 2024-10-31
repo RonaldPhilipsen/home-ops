@@ -1,0 +1,16 @@
+---
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  name: k8s-gateway-allow
+  annotations:
+    future-me-why: "allow ingress from cluster for all endpoints, which also puts them in deny-by-default mode for ingress"
+spec:
+  endpointSelector: {}
+  ingress:
+  - fromEntities: {}
+  egress:
+  - toServices:
+    - k8s-gateway:
+        serviceName: k8s-gateway
+        namespace: network

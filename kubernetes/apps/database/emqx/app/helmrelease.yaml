@@ -27,6 +27,8 @@ spec:
       namespace: cert-manager
   values:
     fullnameOverride: emqx-operator
-#    image:
-#      repository: ghcr.io/emqx/emqx-operator
+    # image:
+    #   repository: ghcr.io/emqx/emqx-operator
     development: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: "emqx-secret,emqx-init-user-secret"
