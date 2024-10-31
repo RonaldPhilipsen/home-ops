@@ -32,3 +32,5 @@ spec:
       podMonitorEnabled: false
       grafanaDashboard:
         create: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: cloudnative-pg-secret

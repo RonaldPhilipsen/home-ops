@@ -28,7 +28,7 @@ spec:
         pod:
           hostNetwork: true
         annotations:
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: home-assistant-secret
         containers:
           home-assistant:
             image:
@@ -54,13 +54,18 @@ spec:
             image:
               repository: ghcr.io/coder/code-server
               tag: 4.93.1@sha256:c69e398d1b64589b3b77a7becfd03f4ec524982def20e6bffbb51b1b839e72ba
-            args: [
-              "--auth", "none",
-              "--user-data-dir", "/config/.vscode",
-              "--extensions-dir", "/config/.vscode",
-              "--port", "12321",
-              "/config"
-            ]
+            args:
+              [
+                "--auth",
+                "none",
+                "--user-data-dir",
+                "/config/.vscode",
+                "--extensions-dir",
+                "/config/.vscode",
+                "--port",
+                "12321",
+                "/config",
+              ]
             resources:
               requests:
                 cpu: 10m
