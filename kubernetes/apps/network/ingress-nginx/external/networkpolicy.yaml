@@ -3,11 +3,11 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumNetworkPolicy
 metadata:
-  name: "nginx-internal-allow-ingress"
+  name: "nginx-external-allow-ingress"
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/instance: ingress-nginx-internal
+      app.kubernetes.io/instance: ingress-nginx-external
   ingress:
   - fromEntities:
     - "world"
