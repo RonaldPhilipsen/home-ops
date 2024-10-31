@@ -7,7 +7,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/instance: ingress-nginx-internal
+      app.kubernetes.io/instance: k8s-gateway
   ingress:
   - fromEntities:
     - "world"
