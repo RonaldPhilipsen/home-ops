@@ -16,7 +16,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  
+
   maxHistory: 3
 
   install:
@@ -111,3 +111,6 @@ spec:
 
       media:
         existingClaim: media-nfs
+
+    PodAnnotations:
+      secret.reloader.stakater.com/reload: sonarr-secret

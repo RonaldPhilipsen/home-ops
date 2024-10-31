@@ -17,7 +17,7 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  
+
   maxHistory: 3
 
   install:
@@ -115,3 +115,6 @@ spec:
         path: /Media
         globalMounts:
           - path: /media/
+
+    PodAnnotations:
+      secret.reloader.stakater.com/reload: radarr-secret

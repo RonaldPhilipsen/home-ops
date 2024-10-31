@@ -78,3 +78,5 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /config/logs
+    PodAnnotations:
+      secret.reloader.stakater.com/reload: recyclarr-secret
