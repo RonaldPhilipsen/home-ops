@@ -5,6 +5,8 @@ kind: HelmRelease
 metadata:
   name: &app nginx-static
   namespace: default
+  annotations:
+    configmap.reloader.stakater.com/reload: "nginx-configmap"
 spec:
   interval: 15m
   chart:
@@ -29,7 +31,7 @@ spec:
 
   uninstall:
     keepHistory: false
-  
+
   values:
     defaultPodOptions:
       enableServiceLinks: false
@@ -40,7 +42,7 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups: [160, 140, 241, 0, 10, 121]
-    
+
     controllers:
       nginx-static:
         strategy: Recreate
@@ -82,27 +84,12 @@ spec:
     persistence:
       config:
         type: configMap
-        name: nginx-configmap # overriden by kustomizeconfig
+        name: nginx-configmap # referenced ConfigMap name
         globalMounts:
-          - path: /config/nginx/nginx.conf
-            subPath: config.yml
+          - path: /etc/nginx/nginx.conf
+            subPath: nginx.conf  # Ensure this matches the key name in the ConfigMap
             readOnly: true
 
-      config-map:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/nginx/conf.d
-        globalMounts:
-          - path: /etc/nginx/conf.d
-            readOnly: true
-
-      public-files:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/nginx/www
-        globalMounts:
-          - path: /var/www/
-            readOnly: true
       logs:
         enabled: true
         type: emptyDir
@@ -110,7 +97,7 @@ spec:
         globalMounts:
           - subPath: "tmp"
             path: "/var/log/nginx/"
-      
+
       cache:
         enabled: true
         type: emptyDir
@@ -118,3 +105,11 @@ spec:
         globalMounts:
           - subPath: "tmp"
             path: "/var/cache/nginx"
+
+      run:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        globalMounts:
+          - subPath: "tmp"
+            path: "/var/run/"
