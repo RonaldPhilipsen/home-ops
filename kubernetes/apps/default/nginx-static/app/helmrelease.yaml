@@ -82,7 +82,7 @@ spec:
     persistence:
       config:
         type: configMap
-        name: nginx-configmap # overriden by kustomizeconfig
+        name: nginx-configmap # overridden by kustomizeconfig
         globalMounts:
           - path: /config/nginx/nginx.conf
             subPath: config.yml
