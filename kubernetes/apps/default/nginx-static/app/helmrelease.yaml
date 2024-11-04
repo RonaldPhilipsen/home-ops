@@ -84,7 +84,7 @@ spec:
         type: configMap
         name: nginx-configmap # overridden by kustomizeconfig
         globalMounts:
-          - path: /config/nginx/nginx.conf
+          - path: /etc/nginx/nginx.conf
             subPath: config.yml
             readOnly: true
 
