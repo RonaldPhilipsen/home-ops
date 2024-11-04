@@ -29,6 +29,15 @@ data:
         access_log             off;
         error_log              /dev/null;
 
-        # Load configs
-        include                /etc/nginx/conf.d/*.conf;
+        server {
+            listen	8080;
+            listen	[::]:8080;
+            server_name www.${SECRET_DOMAIN} ${SECRET_DOMAIN};
+
+            location / {
+            rewrite ^/$ /static/${SECRET_DOMAIN}/index.html break;
+            proxy_set_header Host $http_host;
+            proxy_pass https://s3.${SECRET_DOMAIN}/static/${SECRET_DOMAIN}/;
+          }
+        }
     }
