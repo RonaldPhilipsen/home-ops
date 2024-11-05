@@ -90,26 +90,10 @@ spec:
             subPath: nginx.conf  # Ensure this matches the key name in the ConfigMap
             readOnly: true
 
-      logs:
-        enabled: true
+      var/log/nginx:
         type: emptyDir
-        medium: Memory
-        globalMounts:
-          - subPath: "tmp"
-            path: "/var/log/nginx/"
+      var/cache/nginx:
+        type: emptyDir
+      var/run:
+        type: emptyDir
 
-      cache:
-        enabled: true
-        type: emptyDir
-        medium: Memory
-        globalMounts:
-          - subPath: "tmp"
-            path: "/var/cache/nginx"
-
-      run:
-        enabled: true
-        type: emptyDir
-        medium: Memory
-        globalMounts:
-          - subPath: "tmp"
-            path: "/var/run/"
