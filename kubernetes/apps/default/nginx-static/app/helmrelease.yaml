@@ -89,11 +89,12 @@ spec:
           - path: /etc/nginx/nginx.conf
             subPath: nginx.conf  # Ensure this matches the key name in the ConfigMap
             readOnly: true
-
-      var/log/nginx:
+      var:
         type: emptyDir
-      var/cache/nginx:
-        type: emptyDir
-      var/run:
-        type: emptyDir
-
+        globalMounts:
+          - path: /var/log/nginx
+            subPath: nginx
+          - path: /var/cache/nginx
+            subPath: nginx
+          - path: /var/run
+            subPath: run
