@@ -123,12 +123,6 @@ spec:
             port: 27217
             protocol: TCP
             targetPort: 27217
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
 
     ingress:
       main:
