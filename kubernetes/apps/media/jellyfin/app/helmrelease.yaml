@@ -31,16 +31,17 @@ spec:
     keepHistory: false
 
   values:
-
     defaultPodOptions:
       enableServiceLinks: false
+      nodeSelector:
+        intel.feature.node.kubernetes.io/gpu: "true"
       securityContext:
         runAsUser: 568
         runAsGroup: 568
         runAsNonRoot: false
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
-        supplementalGroups: [160, 140, 241, 0, 10, 121]
+        supplementalGroups: [160, 140, 241, 0, 10, 121, 44, 65537]
       hostNetwork: false
 
     controllers:
