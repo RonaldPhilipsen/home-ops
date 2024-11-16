@@ -55,6 +55,7 @@ spec:
             port: 8043
             targetPort: 8043
       controller:
+        controller: main
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: ${OMADA_IP}
