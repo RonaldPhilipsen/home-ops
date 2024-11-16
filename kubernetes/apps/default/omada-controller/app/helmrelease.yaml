@@ -35,7 +35,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: mbentley/omada-controller
               tag: 5.13@sha256:0bb146f19da2424547439286413765cd74e2dac78a9c44dc2d50a32a248223ba
@@ -59,20 +59,13 @@ spec:
               limits:
                 memory: 2000Mi
     service:
-      main:
-        ports:
-          http:
-            port:  *https
-
+      app:
         controller: &controller omada-controller
-
-      controller:
-        controller: *controller
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: ${OMADA_IP}
         ports:
-        # # Docs: https://www.tp-link.com/us/support/faq/3281/
+          # Docs: https://www.tp-link.com/us/support/faq/3281/
           # Management Ports
           mgmt-8088-tcp:
             port: 8088
@@ -133,7 +126,7 @@ spec:
             targetPort: 27217
 
     ingress:
-      main:
+      app:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
         className: "internal"
