@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./nginx-static/ks.yaml
+  - ./omada-controller/ks.yaml
