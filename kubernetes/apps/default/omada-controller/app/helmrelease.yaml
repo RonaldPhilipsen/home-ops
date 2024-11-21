@@ -146,20 +146,14 @@ spec:
         memory: 2000Mi
 
       config:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/omada/data
+        existingClaim: omada-data
         globalMounts:
           - path: /opt/tplink/EAPController/data
       work:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/omada/work
+        existingClaim: omada-work
         globalMounts:
           - path: /opt/tplink/EAPController/work
       logs:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/omada/logs
+        existingClaim: omada-logs
         globalMounts:
           - path: /opt/tplink/EAPController/logs
