@@ -137,11 +137,7 @@ spec:
                   port: code-server
     persistence:
       config:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/home-assistant
-        globalMounts:
-          - path: /config
+        existingClaim: hass
 
       logs:
         type: emptyDir

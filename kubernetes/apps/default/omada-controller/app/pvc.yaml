@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: omada-data
+  namespace: default
+spec:
+  storageClassName: nfs-provision-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: omada-work
+  namespace: default
+spec:
+  storageClassName: nfs-provision-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: omada-logs
+  namespace: default
+spec:
+  storageClassName: nfs-provision-csi
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 15Gi

@@ -103,11 +103,7 @@ spec:
 
     persistence:
       config:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/sonarr
-        globalMounts:
-          - path: /config
+        existingClaim: sonarr
 
       media:
         existingClaim: media-nfs
