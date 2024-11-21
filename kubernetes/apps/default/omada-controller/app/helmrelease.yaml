@@ -31,7 +31,7 @@ spec:
     cleanupOnFail: true
   values:
     controllers:
-      omada-controller:
+      app:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -60,7 +60,7 @@ spec:
                 memory: 2000Mi
     service:
       app:
-        controller: &controller omada-controller
+        controller: app
         type: LoadBalancer
         annotations:
           io.cilium/lb-ipam-ips: ${OMADA_IP}
