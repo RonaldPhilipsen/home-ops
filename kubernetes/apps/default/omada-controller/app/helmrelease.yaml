@@ -139,11 +139,11 @@ spec:
                   port: 8043
 
     resources:
-      requests:
-        memory: 1200Mi
-        cpu: 1200m
-      limits:
-        memory: 2000Mi
+      # requests:
+      #   memory: 1200Mi
+      #   cpu: 1200m
+      # limits:
+      #   memory: 2000Mi
 
       config:
         type: nfs
