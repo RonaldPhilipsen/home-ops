@@ -16,7 +16,6 @@ data:
   # Services
   POSTGRES_IP: "172.21.1.21"
   MQTT_IP: "172.21.1.22"
-  OMADA_IP: "172.21.1.23"
 
   # IOT
   HA_IP: "172.21.2.30"
