@@ -92,7 +92,9 @@ spec:
 
     persistence:
       config:
-        existingClaim: esphome
+        type: nfs
+        server: ${NFS_IP}
+        path: /config/esphome
         globalMounts:
           - path: /config
       esphome-cache:
