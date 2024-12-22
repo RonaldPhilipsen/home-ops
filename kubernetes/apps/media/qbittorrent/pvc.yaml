@@ -5,7 +5,7 @@ metadata:
   name: qbittorrent
   namespace: media
 spec:
-  storageClassName: nfs-provision-csi
+  storageClassName: nfs-provision
   accessModes:
     - ReadWriteMany
   resources:

@@ -33,7 +33,7 @@ spec:
           home-assistant:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2024.11.2@sha256:bc1bae360366c10e16f486eaf945da0381b18598070495343c4f64217a617e29
+              tag: 2024.12.5@sha256:638e519c874a06389ce6f03e435dd80a6697e8692eac88b459775839410f3439
             env:
               TZ: America/New_York
               HASS_HTTP_TRUSTED_PROXY_1: 192.168.0.8/24
@@ -53,7 +53,7 @@ spec:
           code-server:
             image:
               repository: ghcr.io/coder/code-server
-              tag: 4.95.2@sha256:51b9ff106f67bfe56aa88c7e63e7413276d0b509fb85290c3d361a38e97bfa8c
+              tag: 4.96.2@sha256:6b8c0e944caec80057e71d2c2f352cee38fe00ae4b7515fc4458eb300844f699
             args:
               [
                 "--auth",

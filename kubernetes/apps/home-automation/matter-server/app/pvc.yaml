@@ -5,7 +5,7 @@ metadata:
   name: matter-server
   namespace: home-automation
 spec:
-  storageClassName: nfs-provision-csi
+  storageClassName: nfs-provision
   accessModes:
     - ReadWriteMany
   resources:
