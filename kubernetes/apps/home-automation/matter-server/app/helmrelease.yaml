@@ -99,4 +99,6 @@ spec:
 
     persistence:
       data:
-        existingClaim: matter-server
+        type: nfs
+        server: ${NFS_IP}
+        path: /config/matter-server
