@@ -117,18 +117,10 @@ spec:
 
     persistence:
       config:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/jellyfin
-        globalMounts:
-          - path: /config
+        existingClaim: jellyfin
 
       media:
-        type: nfs
-        server: ${NFS_IP}
-        path: /Media
-        globalMounts:
-          - path: /media/
+        existingClaim: media-nfs
 
       tmp:
         enabled: true
