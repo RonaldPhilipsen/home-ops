@@ -93,14 +93,6 @@ spec:
                   port: http
     persistence:
       config:
-        type: nfs
-        server: ${NFS_IP}
-        path: /config/qbittorrent
-        globalMounts:
-          - path: /config
+        existingClaim: qbittorrent
       media:
-        type: nfs
-        server: ${NFS_IP}
-        path: /Media
-        globalMounts:
-          - path: /media/
+        existingClaim: media-nfs
