@@ -5,6 +5,7 @@ metadata:
   name: jellyseeer
   namespace: flux-system
 spec:
+  targetNamespace: media
   path: ./kubernetes/apps/media/jellyseerr/app
   prune: true
   sourceRef:
