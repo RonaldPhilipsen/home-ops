@@ -7,3 +7,4 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./pvc.yaml
+  - ../../media-nfs.yaml

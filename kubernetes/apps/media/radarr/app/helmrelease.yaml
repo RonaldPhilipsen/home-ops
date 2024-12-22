@@ -106,11 +106,7 @@ spec:
         existingClaim: radarr
 
       media:
-        type: nfs
-        server: ${NFS_IP}
-        path: /Media
-        globalMounts:
-          - path: /media/
+        existingClaim: media-nfs
 
     PodAnnotations:
       secret.reloader.stakater.com/reload: radarr-secret

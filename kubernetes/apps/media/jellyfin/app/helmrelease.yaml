@@ -120,11 +120,7 @@ spec:
         existingClaim: jellyfin
 
       media:
-        type: nfs
-        server: ${NFS_IP}
-        path: /Media
-        globalMounts:
-          - path: /media/
+        existingClaim: media-nfs
 
       tmp:
         enabled: true
