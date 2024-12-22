@@ -27,11 +27,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync
   values:
     defaultPodOptions:
       securityContext:
@@ -108,9 +103,9 @@ spec:
     persistence:
       config:
         existingClaim: sabnzbd
-      downloads:
+      media:
         type: nfs
-        server: 192.168.9.10
-        path: /var/mnt/vol1/downloads
+        server: ${NFS_IP}
+        path: /Media
         globalMounts:
-          - path: /mnt/storage/downloads
+          - path: /media/
