@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyseeer
+  name: jellyseerr
   namespace: media
 spec:
   storageClassName: nfs-provision
