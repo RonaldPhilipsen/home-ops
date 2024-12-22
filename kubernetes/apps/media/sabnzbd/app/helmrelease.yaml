@@ -52,7 +52,7 @@ spec:
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.${SECRET_EXTERNAL_DOMAIN}
+                sabnzbd.${SECRET_DOMAIN}
             envFrom:
               - secretRef:
                   name: sabnzbd-secret
