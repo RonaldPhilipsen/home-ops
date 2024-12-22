@@ -94,5 +94,5 @@ spec:
     persistence:
       config:
         existingClaim: qbittorrent
-      media:
+      data:
         existingClaim: media-nfs

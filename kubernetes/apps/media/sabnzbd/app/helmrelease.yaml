@@ -103,5 +103,5 @@ spec:
     persistence:
       config:
         existingClaim: sabnzbd
-      media:
+      data:
         existingClaim: media-nfs
