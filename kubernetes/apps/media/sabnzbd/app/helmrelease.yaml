@@ -104,8 +104,4 @@ spec:
       config:
         existingClaim: sabnzbd
       media:
-        type: nfs
-        server: ${NFS_IP}
-        path: /Media
-        globalMounts:
-          - path: /media/
+        existingClaim: media-nfs
