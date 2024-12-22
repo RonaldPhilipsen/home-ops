@@ -51,7 +51,7 @@ spec:
           main:
             image:
               repository: jellyfin/jellyfin
-              tag: "unstable"
+              tag: 10.10.3
               pullPolicy: Always
 
             env:
