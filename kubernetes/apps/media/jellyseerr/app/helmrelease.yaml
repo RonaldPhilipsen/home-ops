@@ -90,9 +90,6 @@ spec:
                 service:
                   identifier: app
                   port: http
-    # NOTE: postgres option available soon?
-    # https://github.com/Fallenbagel/jellyseerr/discussions/651
-    # https://github.com/Fallenbagel/jellyseerr/pull/628
     persistence:
       config:
         existingClaim: jellyseerr
