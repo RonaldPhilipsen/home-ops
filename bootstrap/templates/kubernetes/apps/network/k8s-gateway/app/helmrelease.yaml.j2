@@ -29,5 +29,9 @@ spec:
       port: 53
       annotations:
         lbipam.cilium.io/ips: "#{ bootstrap_cloudflare.gateway_vip }#"
+      #% if bgp.enabled %#
+      externalTrafficPolicy: Local
+      #% else %#
       externalTrafficPolicy: Cluster
+      #% endif %#
     watchedResources: ["Ingress", "Service"]
