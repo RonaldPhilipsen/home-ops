@@ -93,21 +93,6 @@ patches:
         net.ipv6.conf.enp2s0.forwarding: "1"
         vm.nr_hugepages: "1024"
 
-  - # Force nameserver
-    |-
-    machine:
-      network:
-        nameservers:
-          - 172.16.20.1
-          - 2a02:a446:fe50::1
-  - # Configure NTP
-    |-
-    machine:
-      time:
-        disabled: false
-        servers:
-          - 172.16.20.1
-          - 2a02:a446:fe50::1
   - # Encrypt system disk with TPM
     |-
     machine:
