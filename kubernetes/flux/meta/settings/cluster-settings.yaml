@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.18.1-standalone-strict/configmap-v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings
+  namespace: flux-system
+data:
+  TIMEZONE: "Europe/Amsterdam"
+  # Dependencies
+  NFS_IP: "172.16.20.7"
+
+  # Services
+  POSTGRES_IP: "172.21.1.21"
+  MQTT_IP: "172.21.1.22"
+
+  # IOT
+  HA_IP: "172.21.2.30"
+  ESPHOME_IP: "172.21.2.31"
+  MATTER_IP:  "172.21.2.32"
+
+  # Media
+  BITTORRENT_IP: "172.21.3.40"

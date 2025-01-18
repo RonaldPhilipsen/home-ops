@@ -1,52 +1,53 @@
 ---
 autoDirectNodeRoutes: true
-bgpControlPlane:
-  enabled: true
-bandwidthManager:
-  enabled: false # https://github.com/siderolabs/talos/issues/8836
-  bbr: true
 bpf:
-  hostLegacyRouting: true # https://github.com/siderolabs/talos/issues/8836
-  masquerade: true # See https://github.com/siderolabs/talos/issues/8836 (forwardKubeDNSToHost)
-  tproxy: true
+  masquerade: true
+  # Ref: https://github.com/siderolabs/talos/issues/10002
+  hostLegacyRouting: true
+cni:
+  # Required for pairing with Multus CNI
+  exclusive: false
 cgroup:
   automount:
     enabled: false
   hostRoot: /sys/fs/cgroup
-cluster:
-  id: 1
-  name: "homelab"
-cni:
-  exclusive: false
-enableIPv4BIGTCP: false # BIG TCP is not supported with legacy host routing" 
-enableIPv6BIGTCP: false # BIG TCP is not supported with legacy host routing" 
-# Pod, service, and load-balancer IPs are allocated from a publicly routable CIDR.
-enableIPv6Masquerade: false
+# NOTE: devices might need to be set if you have more than one active NIC on your hosts
+# devices: eno+ eth+
 endpointRoutes:
+  enabled: true
+envoy:
+  enabled: false
+dashboards:
   enabled: true
 hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4:
-  enabled: true
-ipv4NativeRoutingCIDR: 172.22.0.0/16
-ipv6:
-  enabled: true
+ipv4NativeRoutingCIDR: "10.69.0.0/16"
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: false # https://github.com/cilium/cilium/issues/28985
+  enabled: true
 loadBalancer:
-  acceleration: best-effort
   algorithm: maglev
-  mode: dsr
+  mode: "dsr"
 localRedirectPolicy: true
 operator:
   replicas: 1
   rollOutPods: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  dashboards:
+    enabled: true
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
@@ -59,6 +60,8 @@ securityContext:
       - IPC_LOCK
       - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
@@ -68,4 +71,4 @@ securityContext:
       - SYS_ADMIN
       - SYS_RESOURCE
 socketLB:
-  enabled: true
+  hostNamespaceOnly: true

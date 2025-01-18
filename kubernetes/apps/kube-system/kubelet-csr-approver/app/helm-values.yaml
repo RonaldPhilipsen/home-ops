@@ -1,3 +1,0 @@
----
-providerRegex: ^(k8s-alpha|k8s-beta|k8s-gamma)$
-bypassDnsResolution: true
