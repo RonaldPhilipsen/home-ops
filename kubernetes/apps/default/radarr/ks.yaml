@@ -6,7 +6,7 @@ metadata:
   name: radarr
   namespace: flux-system
 spec:
-  path: ./kubernetes/apps/media/radarr/app
+  path: ./kubernetes/apps/default/radarr/app
   prune: true
   sourceRef:
     kind: GitRepository

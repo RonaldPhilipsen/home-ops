@@ -7,7 +7,7 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: default
-  path: ./kubernetes/apps/media/jellyseerr/app
+  path: ./kubernetes/apps/default/jellyseerr/app
   prune: true
   sourceRef:
     kind: GitRepository
