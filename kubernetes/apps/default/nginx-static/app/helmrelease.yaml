@@ -1,0 +1,100 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app nginx-static
+  namespace: default
+  annotations:
+    configmap.reloader.stakater.com/reload: "nginx-configmap"
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+
+  install:
+    remediation:
+      retries: 0
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 0
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 568
+        runAsGroup: 568
+        runAsNonRoot: false
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups: [160, 140, 241, 0, 10, 121]
+
+    controllers:
+      nginx-static:
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: ghcr.io/nginxinc/nginx-unprivileged
+              tag: "1.27.3"
+              pullPolicy: Always
+            ports:
+              - containerPort: 8080
+
+    service:
+      app:
+        controller: nginx-static
+        ports:
+          http:
+            port: 8080
+
+    ingress:
+      app:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - host: "www.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+          - host: "${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        type: configMap
+        name: nginx-configmap # referenced ConfigMap name
+        globalMounts:
+          - path: /etc/nginx/nginx.conf
+            subPath: nginx.conf  # Ensure this matches the key name in the ConfigMap
+            readOnly: true
+      var:
+        type: emptyDir
+        globalMounts:
+          - path: /var/log/nginx
+            subPath: nginx
+          - path: /var/cache/nginx
+            subPath: nginx
+          - path: /var/run
+            subPath: run
