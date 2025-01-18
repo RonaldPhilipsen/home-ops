@@ -6,5 +6,5 @@ resources:
   - ./namespace.yaml
   - ./esphome/ks.yaml
   - ./home-assistant/ks.yaml
-  - ./matter-server/ks.yaml
+  # - ./matter-server/ks.yaml
 
