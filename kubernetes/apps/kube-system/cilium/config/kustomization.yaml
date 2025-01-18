@@ -1,8 +1,11 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./bgpadvertisement.yaml
-  - ./bgpclusterconfig.sops.yaml
-  - ./bgppeerconfig.yaml
-  - ./loadbalancerippool.yaml
+  - ./l2.yaml
+  # - ./bgpadvertisement.yaml
+  # - ./bgpclusterconfig.sops.yaml
+  # - ./bgppeerconfig.yaml
+  # - ./loadbalancerippool.yaml
+  - ./pool.yaml

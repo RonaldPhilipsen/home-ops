@@ -4,3 +4,11 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./nginx-static/ks.yaml
+  - ./jellyfin/ks.yaml
+  - ./sabnzbd/ks.yaml
+  - ./jellyseerr/ks.yaml
+  - ./sonarr/ks.yaml
+  - ./radarr/ks.yaml
+  - ./recyclarr/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./qbittorrent/ks.yaml

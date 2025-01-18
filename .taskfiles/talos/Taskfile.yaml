@@ -25,31 +25,29 @@ tasks:
   apply-node:
     desc: Apply Talos config to a node [HOSTNAME=required]
     cmds:
-      - talosctl --nodes {{.HOSTNAME}} apply-config --mode={{.MODE}} --file {{.TALHELPER_CLUSTER_DIR}}/{{.CLUSTER_NAME}}-{{.HOSTNAME}}.yaml
+      - talosctl --nodes {{.HOSTNAME}} apply-config --mode={{.MODE}} --file {{.TALHELPER_CLUSTER_DIR}}/kubernetes-{{.HOSTNAME}}.yaml
       - talosctl --nodes {{.HOSTNAME}} health --wait-timeout=10m --server=false
     vars:
-      CLUSTER_NAME:
-        sh: yq '.clusterName' {{.TALHELPER_CONFIG_FILE}}
       MODE: '{{.MODE | default "auto"}}'
     requires:
       vars: [HOSTNAME]
     preconditions:
       - talosctl --nodes {{.HOSTNAME}} get machineconfig
       - talosctl config info
-      - test -f {{.TALHELPER_CLUSTER_DIR}}/{{.CLUSTER_NAME}}-{{.HOSTNAME}}.yaml
+      - test -f {{.TALHELPER_CLUSTER_DIR}}/kubernetes-{{.HOSTNAME}}.yaml
       - test -f {{.TALOSCONFIG}}
       - which talosctl yq
 
   upgrade-node:
     desc: Upgrade Talos on a single node [HOSTNAME=required]
     cmds:
-      - talosctl --nodes {{.HOSTNAME}} upgrade --image="factory.talos.dev/installer{{if eq .TALOS_SECUREBOOT "true"}}-secureboot{{end}}/{{.TALOS_SCHEMATIC_ID}}:{{.TALOS_VERSION}}" --timeout=10m
+      - talosctl --nodes {{.HOSTNAME}} upgrade --image="factory.talos.dev/installer{{if eq .TALOS_SECUREBOOT "false"}}-secureboot{{end}}/{{.TALOS_SCHEMATIC_ID}}:{{.TALOS_VERSION}}" --timeout=10m
       - talosctl --nodes {{.HOSTNAME}} health --wait-timeout=10m --server=false
     vars:
       TALOS_SCHEMATIC_ID:
-        sh: kubectl get node {{.HOSTNAME}} --output=jsonpath='{.metadata.annotations.extensions\.talos\.dev/schematic}'
+        sh: yq '.nodes[] | select(.hostname == "{{.HOSTNAME}}") | .talosImageURL' {{.TALHELPER_CONFIG_FILE}} | awk -F/ '{print $NF}'
       TALOS_SECUREBOOT:
-        sh: talosctl --nodes {{.HOSTNAME}} get securitystate --output=jsonpath='{.spec.secureBoot}'
+        sh: yq '.nodes[] | select(.hostname == "{{.HOSTNAME}}") | .machineSpec.secureboot' {{.TALHELPER_CONFIG_FILE}}
       TALOS_VERSION:
         sh: yq '.talosVersion' {{.TALHELPER_CONFIG_FILE}}
     requires:

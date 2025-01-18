@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -30,7 +31,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
           lbipam.cilium.io/ips: "#{ cloudflare.tunnel.ingress_vip }#"
-        externalTrafficPolicy: "#{ 'Local' if bgp.enabled else 'Cluster' }#"
+        externalTrafficPolicy: Cluster
       ingressClassResource:
         name: external
         default: false
@@ -75,7 +76,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: "${SECRET_DOMAIN/./-}-#{ 'production' if cloudflare.acme.production else 'staging' }#-tls"
+        default-ssl-certificate: "network/${SECRET_DOMAIN/./-}-#{ 'production' if cloudflare.acme.production else 'staging' }#-tls"
       resources:
         requests:
           cpu: 100m

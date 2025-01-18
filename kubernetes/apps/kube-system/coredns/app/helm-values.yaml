@@ -5,11 +5,11 @@ serviceAccount:
   create: true
 service:
   name: kube-dns
-  ipFamilyPolicy: PreferDualStack
   clusterIP: "172.21.0.10"
-  clusterIPs: # By default Talos sets kubelet clusterDNS to the 10th address of every service CIDR.
-    - "172.21.0.10"
-    - "2a02:a446:fe50:cafe:1::a"
+  # clusterIPs: # By default Talos sets kubelet clusterDNS to the 10th address of every service CIDR.
+  #   - "172.21.0.10"
+  #   - "2a02:a446:fe50:cafe:1::a"
+replicaCount: 2
 servers:
   - zones:
       - zone: .

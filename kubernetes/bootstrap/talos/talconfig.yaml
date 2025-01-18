@@ -5,16 +5,17 @@ talosVersion: v1.9.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.32.0
 
-clusterName: "homelab"
+clusterName: kubernetes
 endpoint: https://172.16.20.2:6443
+
 clusterPodNets:
   - "172.22.0.0/16"
-  - "${CLUSTER_POD_V6_CIDR}"
 clusterSvcNets:
   - "172.21.0.0/16"
-  - "${CLUSTER_SVC_V6_CIDR}"
+
 additionalApiServerCertSans: &sans
   - "172.16.20.2"
+  - "k8s.rphilipsen.nl"
   - "127.0.0.1"
 additionalMachineCertSans: *sans
 
@@ -25,101 +26,73 @@ cniConfig:
 nodes:
   - hostname: "k8s-alpha"
     ipAddress: "172.16.20.3"
-    installDiskSelector:
-      size: ">= 400GB"
-      model: "512GB SSD"
+    installDisk: "/dev/sda"
     machineSpec:
-      secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
     controlPlane: true
     networkInterfaces:
-      - interface: enp1s0
-        dhcp: true
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d3:fa:c2"
+        dhcp: false
+        addresses:
+          - "172.16.20.3/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
           ip: "172.16.20.2"
-      - interface: enp2s0
-        dhcp: true
-        mtu: 1500
   - hostname: "k8s-beta"
     ipAddress: "172.16.20.4"
-    installDiskSelector:
-      size: ">= 400GB"
-      model: "512GB SSD"
+    installDisk: "/dev/sda"
     machineSpec:
-      secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
     controlPlane: true
     networkInterfaces:
-      - interface: enp1s0
-        dhcp: true
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d3:f8:36"
+        dhcp: false
+        addresses:
+          - "172.16.20.4/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
           ip: "172.16.20.2"
-      - interface: enp2s0
-        dhcp: true
-        mtu: 1500
   - hostname: "k8s-gamma"
     ipAddress: "172.16.20.5"
-    installDiskSelector:
-      size: ">= 400GB"
-      model: "512GB SSD"
+    installDisk: "/dev/sda"
     machineSpec:
-      secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/97bf8e92fc6bba0f03928b859c08295d7615737b29db06a97be51dc63004e403
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
     controlPlane: true
     networkInterfaces:
-      - interface: enp1s0
-        dhcp: true
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d3:f6:d8"
+        dhcp: false
+        addresses:
+          - "172.16.20.5/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "172.16.20.1"
         mtu: 1500
         vip:
           ip: "172.16.20.2"
-      - interface: enp2s0
-        dhcp: true
-        mtu: 1500
 
 # Global patches
 patches:
-  - # sysctls
-    |-
-    machine:
-      sysctls:
-        net.core.bpf_jit_harden: "1"
-        net.ipv6.conf.all.accept_ra: "2"
-        net.ipv6.conf.all.forwarding: "1"
-        net.ipv6.conf.enp1s0.accept_ra: "2"
-        net.ipv6.conf.enp1s0.forwarding: "1"
-        net.ipv6.conf.enp2s0.accept_ra: "2"
-        net.ipv6.conf.enp2s0.forwarding: "1"
-        vm.nr_hugepages: "1024"
-
-  - # Encrypt system disk with TPM
-    |-
-    machine:
-      systemDiskEncryption:
-        ephemeral:
-          provider: luks2
-          keys:
-            - slot: 0
-              tpm: {}
-        state:
-          provider: luks2
-          keys:
-            - slot: 0
-              tpm: {}
-  - "@./patches/global/cluster-discovery.yaml"
-  - "@./patches/global/containerd.yaml"
-  - "@./patches/global/disable-search-domain.yaml"
-  - "@./patches/global/hostdns.yaml"
-  - "@./patches/global/kubelet.yaml"
-  - "@./patches/global/openebs-local.yaml"
-  - "@./patches/global/sysctl.yaml"
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-time.yaml"
 
 # Controller patches
 controlPlane:
   patches:
-    - "@./patches/controller/api-access.yaml"
+    - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
-    - "@./patches/controller/disable-admission-controller.yaml"
-    - "@./patches/controller/etcd.yaml"
 
