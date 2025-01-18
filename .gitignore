@@ -24,5 +24,4 @@ Brewfile.lock.json
 wiki
 # Bootstrap
 /config.yaml
-#secrets
 1password-credentials.json

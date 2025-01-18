@@ -22,7 +22,8 @@ tasks:
     cmds:
       - task: render-configs
       - task: encrypt-secrets
-      - task: kubeconform
+      - task: validate-kubernetes-config
+      - task: validate-talos-config
     preconditions:
       - msg: |
           An existing Age key interferes with age key in this repository.
@@ -64,29 +65,40 @@ tasks:
       - test -f {{.SOPS_CONFIG_FILE}}
       - which sops
 
-  kubeconform:
+  validate-kubernetes-config:
     desc: Validate Kubernetes manifests with kubeconform
     cmd: bash {{.TEMPLATE_RESOURCES_DIR}}/kubeconform.sh {{.KUBERNETES_DIR}}
     preconditions:
       - test -f {{.TEMPLATE_RESOURCES_DIR}}/kubeconform.sh
       - which kubeconform
 
-  cleanup:
-    desc: Remove or archive template files and directories no longer needed after cluster bootstrap
-    prompt: All files and directories related to the templating process will be removed... continue?
+  validate-talos-config:
+    desc: Validate the Talhelper config
+    cmd: talhelper validate talconfig {{.TALHELPER_CONFIG_FILE}}
+    preconditions:
+      - test -f {{.TALHELPER_CONFIG_FILE}}
+      - which talhelper
+
+  tidy:
+    desc: Archive template related files and directories
+    prompt: All files and directories related to the templating process will be archived... continue?
     cmds:
-      - mkdir -p {{.ROOT_DIR}}/.private/{{.TS}}/{.taskfiles}
+      - mkdir -p {{.TIDY_FOLDER}}
       - rm -rf {{.ROOT_DIR}}/.github/tests
       - rm -rf {{.ROOT_DIR}}/.github/workflows/e2e.yaml
-      - sed -i {{if eq OS "darwin"}}''{{end}} 's/(..\.j2)\?//g' {{.ROOT_DIR}}/.github/renovate.json5
-      - mv {{.TEMPLATE_DIR}} {{.ROOT_DIR}}/.private/{{.TS}}/templates
-      - mv {{.MAKEJINJA_CONFIG_FILE}} {{.ROOT_DIR}}/.private/{{.TS}}/makejinja.toml
-      - mv {{.ROOT_DIR}}/requirements.txt {{.ROOT_DIR}}/.private/{{.TS}}/requirements.txt
-      - mv {{.TEMPLATE_CONFIG_FILE}} {{.ROOT_DIR}}/.private/{{.TS}}/config.yaml
-      - sed -i {{if eq OS "darwin"}}''{{end}} '/template:/d' {{.ROOT_DIR}}/Taskfile.yaml
-      - mv {{.ROOT_DIR}}/.taskfiles/template {{.ROOT_DIR}}/.private/{{.TS}}/.taskfiles/
+      - |
+        {{.SED}} 's/(..\.j2)\?//g' {{.ROOT_DIR}}/.github/renovate.json5
+      - mv {{.TEMPLATE_DIR}} {{.TIDY_FOLDER}}/templates
+      - mv {{.MAKEJINJA_CONFIG_FILE}} {{.TIDY_FOLDER}}/makejinja.toml
+      - mv {{.ROOT_DIR}}/requirements.txt {{.TIDY_FOLDER}}/requirements.txt
+      - mv {{.TEMPLATE_CONFIG_FILE}} {{.TIDY_FOLDER}}/config.yaml
+      - |
+        {{.SED}} '/template:/d' {{.ROOT_DIR}}/Taskfile.yaml
+      - mv {{.ROOT_DIR}}/.taskfiles/template {{.TIDY_FOLDER}}/.taskfiles/
     vars:
-      TS: '{{now | unixEpoch}}'
+      TIDY_FOLDER: '{{.PRIVATE_DIR}}/{{now | unixEpoch}}'
+      SED:
+        sh: which gsed || which sed
     preconditions:
       - test -d {{.ROOT_DIR}}/.github/tests
       - test -d {{.ROOT_DIR}}/.taskfiles/template
