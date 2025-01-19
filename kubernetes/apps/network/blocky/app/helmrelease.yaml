@@ -9,11 +9,12 @@ spec:
   interval: 5m
   chart:
     spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts
       chart: app-template
-      version: 3.6.1
+      version: 3.6.0
       sourceRef:
         kind: HelmRepository
-        name: bjw-charts
+        name: bjw-s
         namespace: flux-system
       interval: 10m
   install:
