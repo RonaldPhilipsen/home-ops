@@ -11,11 +11,11 @@ customDNS:
   customTTL: 1h
   filterUnmappedTypes: true
   mapping:
-    omada.${SECRET_DOMAIN}: 192.168.0.2
+    omada.rphilipsen.nl: 192.168.0.2
 
 conditional:
   mapping:
-    ${SECRET_DOMAIN}: 172.16.20.11
+    rphilipsen.nl: 172.16.20.11
     .: 172.16.20.1
 
 blocking:
