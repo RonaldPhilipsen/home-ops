@@ -8,9 +8,16 @@ metadata:
 data:
   TIMEZONE: "Europe/Amsterdam"
   # Dependencies
+  GATEWAY_IP: "172.16.20.1"
   NFS_IP: "172.16.20.7"
 
+  # ingress:
+  CLUSTER_GATEWAY: 172.16.20.11
+  CLUSTER_INGRESS_LAN: 172.16.20.12
+  CLUSTER_INGRESS_WAN: 172.16.20.13
+
   # Services
+  BLOCKY_IP: "172.21.1.20"
   POSTGRES_IP: "172.21.1.21"
   MQTT_IP: "172.21.1.22"
 

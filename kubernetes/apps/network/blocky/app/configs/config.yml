@@ -13,11 +13,10 @@ bootstrapDns: tcp+udp:1.1.1.1
 #   mapping:
 #     ${CLUSTER_DOMAIN}: ${CLUSTER_LB_COREDNS}
 
-# conditional:
-#   mapping:
-#     cluster.local: 10.96.0.10
-#     ${CLUSTER_DOMAIN}: ${CLUSTER_LB_COREDNS}
-#     .: ${GATEWAY_IP}
+conditional:
+  mapping:
+    ${SECRET_DOMAIN}: ${CLUSTER_GATEWAY}
+    .: ${GATEWAY_IP}
 
 blocking:
   blackLists:
