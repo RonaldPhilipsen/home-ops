@@ -7,17 +7,16 @@ upstream:
 
 bootstrapDns: tcp+udp:1.1.1.1
 
-# customDNS:
-#   customTTL: 1h
-#   filterUnmappedTypes: true
-#   mapping:
-#     ${CLUSTER_DOMAIN}: ${CLUSTER_LB_COREDNS}
+customDNS:
+  customTTL: 1h
+  filterUnmappedTypes: true
+  mapping:
+    omada.${SECRET_DOMAIN}: ${OMADA_CONTROLLER_IP}
 
-# conditional:
-#   mapping:
-#     cluster.local: 10.96.0.10
-#     ${CLUSTER_DOMAIN}: ${CLUSTER_LB_COREDNS}
-#     .: ${GATEWAY_IP}
+conditional:
+  mapping:
+    ${SECRET_DOMAIN}: ${CLUSTER_GATEWAY}
+    .: ${GATEWAY_IP}
 
 blocking:
   blackLists:
@@ -69,8 +68,8 @@ blocking:
       - trackers
       - misc
 
-# clientLookup:
-#   upstream: ${GATEWAY_IP}
+clientLookup:
+  upstream: ${GATEWAY_IP}
 
 caching:
   minTime: 5m
