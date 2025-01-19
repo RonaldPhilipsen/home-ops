@@ -8,6 +8,7 @@ metadata:
   labels:
     substitution.flux/enabled: true
 spec:
+  targetNamespace: network
   interval: 30m
   retryInterval: 1m
   timeout: 3m
