@@ -5,8 +5,10 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: blocky
+  - name: blocky-configmap
     files:
-      - ./resources/config.yml
+      - config.yml=./resources/config.yml
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
