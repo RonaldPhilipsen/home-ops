@@ -69,7 +69,7 @@ blocking:
       - misc
 
 clientLookup:
-  upstream: ${GATEWAY_IP}
+  upstream: 172.16.20.1
 
 caching:
   minTime: 5m
