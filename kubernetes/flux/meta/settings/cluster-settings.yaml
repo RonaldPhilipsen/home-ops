@@ -28,3 +28,6 @@ data:
 
   # Media
   BITTORRENT_IP: "172.21.3.40"
+
+  # external
+  OMADA_CONTROLLER_IP: "192.168.0.2"
