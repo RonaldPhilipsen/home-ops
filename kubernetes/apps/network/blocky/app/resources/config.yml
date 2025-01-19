@@ -11,12 +11,12 @@ customDNS:
   customTTL: 1h
   filterUnmappedTypes: true
   mapping:
-    omada.${SECRET_DOMAIN}: ${OMADA_CONTROLLER_IP}
+    omada.${SECRET_DOMAIN}: 192.168.0.2
 
 conditional:
   mapping:
-    ${SECRET_DOMAIN}: ${CLUSTER_GATEWAY}
-    .: ${GATEWAY_IP}
+    ${SECRET_DOMAIN}: 172.16.20.11
+    .: 172.16.20.1
 
 blocking:
   blackLists:
