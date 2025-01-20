@@ -5,6 +5,8 @@ kind: HelmRelease
 metadata:
   name: nfs-subdir-external-provisioner
   namespace: kube-system
+  labels:
+    kustomize.toolkit.fluxcd.io/substitute: "disabled"
 spec:
   interval: 5m
   chart:
@@ -26,7 +28,7 @@ spec:
     remediation:
       retries: 3
   values:
-    replicaCount: 3
+    replicaCount: 2
     nfs:
       server: ${NFS_IP}
       path: "/config/pvc"
