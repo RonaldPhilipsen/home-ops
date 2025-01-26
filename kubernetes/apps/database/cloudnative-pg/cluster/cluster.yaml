@@ -6,7 +6,8 @@ metadata:
   name: postgres16
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.3-7
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2
   primaryUpdateStrategy: unsupervised
   storage:
     size: 20Gi
@@ -16,7 +17,7 @@ spec:
   enableSuperuserAccess: true
   postgresql:
     parameters:
-      max_connections: "400"
+      max_connections: "200"
       shared_buffers: 256MB
   nodeMaintenanceWindow:
     inProgress: false
@@ -40,7 +41,7 @@ spec:
       endpointURL: https://s3.rphilipsen.nl
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres16-v2
+      serverName: &currentCluster postgres-v1
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -49,3 +50,22 @@ spec:
           name: cloudnative-pg-secret
           key: AWS_SECRET_ACCESS_KEY
 
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: postgres.${SECRET_DOMAIN}
+    lbipam.cilium.io/ips: ${POSTGRES_IP}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: postgres16
+    role: primary
