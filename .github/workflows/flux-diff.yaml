@@ -3,6 +3,7 @@
 name: "Flux Diff"
 
 on:
+  push: 
   pull_request:
     branches: ["main"]
     paths: ["kubernetes/**"]
