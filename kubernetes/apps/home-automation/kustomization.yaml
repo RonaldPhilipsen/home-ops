@@ -3,8 +3,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./namespace.yaml
   - ./esphome/ks.yaml
   - ./home-assistant/ks.yaml
   # - ./matter-server/ks.yaml
-
+components:
+  - ../../components/namespace
+patches:
+  - patch: |
+      - op: add
+        path: /metadata/name
+        value: home-automation
+    target:
+      kind: Namespace
