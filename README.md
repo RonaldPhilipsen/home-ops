@@ -22,7 +22,9 @@ I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools
 The purpose here is to learn Kubernetes, while practicing GitOps. I have two longer-term goals:
 
 1. migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment
-2.
+2. Learn more about managing K8s clusters in prod
+3. Get some decent NVME SSD's to use as boot drives
+4. Set up ceph instead of using NFS for PVCs
 
 ---
 
@@ -59,8 +61,8 @@ This Git repository contains the following directories under [Kubernetes](./kube
 📁 kubernetes
 ├── 📁 apps           # applications
 ├── 📁 bootstrap      # bootstrap procedures
+└── 📁 components     # re-useable components
 ├── 📁 flux           # core flux configuration
-└── 📁 templates      # re-useable components
 ```
 
 ---
@@ -107,8 +109,6 @@ The `external-dns` instance mentioned above another instance is deployed in my c
 | Node                | CPU               |  RAM | Storage    | Function             | OS         |
 |---------------------|-------------------|------|------------|----------------------|------------|
 | CM3588 | Quad-core ARM Cortex-A76 and quad-core Cortex-A55 CPU    | 16GB | 4* 4 Tib SSD  | Bulk storage        | Debian |
-
-I fully intend to replace the raspberry pis with something with a little more oompfh at some point in the future, perhaps more cm3588's, perhaps something else.
 
 Big shout out to original [flux-cluster-template](https://github.com/onedr0p/flux-cluster-template), and the [Home Operations](https://discord.gg/home-operations) Discord community.
 
