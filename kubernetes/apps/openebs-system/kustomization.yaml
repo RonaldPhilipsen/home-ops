@@ -5,3 +5,12 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./openebs/ks.yaml
+components:
+  - ../../components/namespace
+patches:
+  - patch: |
+      - op: add
+        path: /metadata/name
+        value: openebs-system
+    target:
+      kind: Namespace
