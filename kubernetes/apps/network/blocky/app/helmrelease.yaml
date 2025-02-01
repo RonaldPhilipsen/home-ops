@@ -84,7 +84,7 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
-          io.cilium/lb-ipam-ips: ${BLOCKY_IP}
+          io.cilium/lb-ipam-ips: ${LB_BLOCKY}
         ports:
           dns-tcp:
             port: *port
