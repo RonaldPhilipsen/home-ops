@@ -19,21 +19,26 @@ spec:
         namespace: flux-system
 
   maxHistory: 3
-
   install:
     createNamespace: true
     remediation:
       retries: 3
-
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-
   uninstall:
     keepHistory: false
-
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [1000]
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       radarr:
         strategy: Recreate
@@ -69,15 +74,6 @@ spec:
                 add:
                   - NET_ADMIN
                   - NET_RAW
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [1000]
-        seccompProfile: { type: RuntimeDefault }
     service:
       app:
         controller: radarr
