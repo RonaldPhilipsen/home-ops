@@ -50,6 +50,6 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/hostname: mqtt.${SECRET_DOMAIN}
         external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        lbipam.cilium.io/ips: ${MQTT_IP}
+        lbipam.cilium.io/ips: ${LB_MQTT}
     spec:
       type: LoadBalancer
