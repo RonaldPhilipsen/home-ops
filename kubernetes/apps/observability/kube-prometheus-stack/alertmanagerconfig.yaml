@@ -49,8 +49,17 @@ spec:
             key: ALERTMANAGER_HEARTBEAT_URL
     - name: email
       emailConfigs:
-        - from: 'alertmanager@${SECRET_DOMAIN}'
+        # Whether to notify about resolved alerts.
+        - sendResolved: true
           to: 'alerts@${SECRET_DOMAIN}'
+          from: 'alertmanager@${SECRET_DOMAIN}'
+          hello: k8s@${SECRET_DOMAIN}
+          # The smarthost and SMTP sender used for mail notifications.
+          smarthost: ${ALERTMANAGER_SMTP_HOST}
+          authUsername: ${ALERTMANAGER_SMTP_USERNAME}
+          authPassword:
+            key:  *secret
+            name: ALERTMANAGER_SMTP_PASSWORD
           text: >-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
             {{ .CommonLabels.alertname }}
@@ -74,11 +83,3 @@ spec:
               {{- end }}
             {{- end }}
 
-          sendResolved: true
-          # The smarthost and SMTP sender used for mail notifications.
-          hello: k8s@${SECRET_DOMAIN}
-          smarthost: ${ALERTMANAGER_SMTP_HOST}
-          authUsername: ${ALERTMANAGER_SMTP_USERNAME}
-          authPassword:
-            key:  *secret
-            name: ALERTMANAGER_SMTP_PASSWORD
