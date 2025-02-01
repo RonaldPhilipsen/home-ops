@@ -34,7 +34,7 @@ There is a template over at [onedr0p/flux-cluster-template](https://github.com/o
 
 ### Installation
 
-My cluster is built using [k3s](https://k3s.io/), provisioned on bare-metal debian Linux using the [Ansible](https://www.ansible.com/) galaxy role [ansible-role-k3s](https://github.com/PyratLabs/ansible-role-k3s). This is a hyper-converged cluster, workloads and block storage are sharing the same available resources on my nodes. I also have a separate NAS server with ZFS for NFS shares, bulk file storage and backups.
+My cluster is built using [talos](https://talos.dev/), provisioned on bare-metal using netboot. This is a hyper-converged cluster, workloads and block storage are sharing the same available resources on my nodes. I also have a separate NAS server for NFS shares, bulk file storage and backups.
 
 ## Core Components
 
