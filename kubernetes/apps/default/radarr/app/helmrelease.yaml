@@ -87,7 +87,6 @@ spec:
         ports:
           http:
             port: *port
-
     ingress:
       app:
         className: internal
@@ -103,13 +102,10 @@ spec:
         tls:
           - hosts:
               - *host
-
     persistence:
       config:
         existingClaim: radarr
-
       data:
         existingClaim: media-nfs
-
     PodAnnotations:
       secret.reloader.stakater.com/reload: radarr-secret
