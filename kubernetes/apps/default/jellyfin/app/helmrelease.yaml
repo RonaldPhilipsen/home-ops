@@ -17,19 +17,18 @@ spec:
         name: bjw-s
         namespace: flux-system
   maxHistory: 2
-
   install:
     remediation:
       retries: 0
-
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 0
-
   uninstall:
     keepHistory: false
-
+  dependsOn:
+      - name: intel-device-plugin-gpu
+        namespace: kube-system
   values:
     defaultPodOptions:
       enableServiceLinks: false
@@ -46,6 +45,8 @@ spec:
 
     controllers:
       jellyfin:
+        annotations:
+          reloader.stakater.com/auto: "true"
         strategy: Recreate
         containers:
           main:
@@ -55,10 +56,11 @@ spec:
               pullPolicy: Always
 
             env:
+              TZ: ${TIMEZONE}
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+              JELLYFIN_PublishedServerUrl: &url "{{ .Release.Name }}.${SECRET_DOMAIN}"
 
             securityContext:
               privileged: true
@@ -108,7 +110,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
-          - host: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: *url
             paths:
               - path: /
                 service:
@@ -122,12 +124,12 @@ spec:
       data:
         existingClaim: media-nfs
 
-      tmp:
-        enabled: true
+      transcode:
         type: emptyDir
-        medium: Memory
         globalMounts:
-          - subPath: "tmp"
-            path: "/tmp"
-          - subPath: "transcode"
-            path: "/transcode"
+          - path: /transcode
+
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
