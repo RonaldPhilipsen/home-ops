@@ -30,7 +30,7 @@ spec:
   values:
     replicaCount: 2
     nfs:
-      server: ${NFS_IP}
+      server: 172.16.20.7
       path: "/config/pvc"
     storageClass:
       defaultClass: false
