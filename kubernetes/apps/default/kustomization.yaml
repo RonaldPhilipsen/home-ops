@@ -2,7 +2,12 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: default
+components:
+  - ../../components/common
+  - ../../components/repos/app-template
 resources:
+  - ./echo/ks.yaml
   - ./nginx-static/ks.yaml
   - ./jellyfin/ks.yaml
   - ./sabnzbd/ks.yaml
@@ -13,12 +18,7 @@ resources:
   - ./recyclarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
-components:
-  - ../../components/namespace
-patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: default
-    target:
-      kind: Namespace
+# Home Automation
+  - ./esphome/ks.yaml
+  - ./home-assistant/ks.yaml
+  # - ./matter-server/ks.yaml

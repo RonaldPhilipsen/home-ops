@@ -19,7 +19,7 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: ${NFS_IP}
+    server: 172.16.20.7
     path: /Media
   mountOptions:
     - nfsvers=4.2

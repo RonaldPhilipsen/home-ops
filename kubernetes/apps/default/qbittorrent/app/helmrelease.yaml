@@ -6,14 +6,9 @@ metadata:
   name: qbittorrent
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
       retries: 3
@@ -71,7 +66,7 @@ spec:
         controller: qbittorrent
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: ${BITTORRENT_IP}
+          lbipam.cilium.io/ips: 172.16.20.140
         ports:
           http:
             port: *port

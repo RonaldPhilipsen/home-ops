@@ -2,15 +2,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: observability
+components:
+  - ../../components/common
+  - ../../components/repos/app-template
 resources:
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-components:
-  - ../../components/namespace
-patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: observability
-    target:
-      kind: Namespace
