@@ -6,6 +6,9 @@ metadata:
   name: jellyseerr
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cloudnative-pg-cluster
+      namespace: database
   targetNamespace: default
   path: ./kubernetes/apps/default/jellyseerr/app
   prune: true
