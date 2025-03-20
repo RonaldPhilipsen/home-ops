@@ -47,7 +47,7 @@ data:
 
                 # Proxy all requests to S3
                 proxy_set_header Host $http_host;
-                proxy_pass http://minio.database.svc.cluster.local:9000/static/${SECRET_DOMAIN}$uri;
+                proxy_pass http://172.16.20.7:9000/static/${SECRET_DOMAIN}$uri;
             }
       } # end server
     } # end http
