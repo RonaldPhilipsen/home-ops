@@ -6,6 +6,9 @@ metadata:
   name: radarr
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
   path: ./kubernetes/apps/default/radarr/app
   prune: true
   sourceRef:

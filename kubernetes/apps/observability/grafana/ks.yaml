@@ -6,6 +6,9 @@ metadata:
   name: &app grafana
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
