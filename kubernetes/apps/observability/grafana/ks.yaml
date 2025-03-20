@@ -9,8 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: onepassword-connect
   interval: 30m
   path: ./kubernetes/apps/observability/grafana/app
   postBuild:
