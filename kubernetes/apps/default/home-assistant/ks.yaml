@@ -14,8 +14,9 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
   wait: false
   interval: 30m
-  targetNamespace: *namespace
   retryInterval: 1m
   timeout: 5m
