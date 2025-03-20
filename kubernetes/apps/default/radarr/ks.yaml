@@ -9,6 +9,8 @@ spec:
   dependsOn:
     - name: onepassword
       namespace: external-secrets
+    - name: cloudnative-pg-cluster
+      namespace: database
   path: ./kubernetes/apps/default/radarr/app
   prune: true
   sourceRef:

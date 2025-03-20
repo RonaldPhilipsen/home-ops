@@ -10,6 +10,8 @@ spec:
   dependsOn:
   - name: onepassword
     namespace: external-secrets
+  - name: cloudnative-pg-cluster
+    namespace: database
   prune: true
   sourceRef:
     kind: GitRepository
