@@ -9,8 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  dependsOn:
-    - name: onepassword-connect
   interval: 30m
   timeout: 5m
   path: "./kubernetes/apps/observability/kube-prometheus-stack/app"
