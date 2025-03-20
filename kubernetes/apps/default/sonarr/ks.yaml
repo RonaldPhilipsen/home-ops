@@ -7,6 +7,9 @@ metadata:
   namespace: flux-system
 spec:
   path: ./kubernetes/apps/default/sonarr/app
+  dependsOn:
+  - name: onepassword
+    namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository

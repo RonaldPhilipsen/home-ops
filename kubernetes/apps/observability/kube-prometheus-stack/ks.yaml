@@ -6,6 +6,9 @@ metadata:
   name: &appname kube-prometheus-stack
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
@@ -27,6 +30,9 @@ metadata:
   name: &app kube-prometheus-stack-crds
   namespace: &namespace observability
 spec:
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

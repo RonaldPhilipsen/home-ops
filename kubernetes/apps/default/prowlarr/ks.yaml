@@ -6,6 +6,9 @@ metadata:
   name: apps-prowlarr
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
   path: ./kubernetes/apps/default/prowlarr/app
   prune: true
   sourceRef:
