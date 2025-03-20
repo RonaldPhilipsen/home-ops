@@ -25,11 +25,6 @@ spec:
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
-  valuesFrom:
-    - kind: ConfigMap
-      name: external-secrets-helm-values
-      valuesKey: values.yaml
-      targetPath: extraObjects[0]
   values:
     installCRDs: true
     serviceMonitor:
@@ -43,4 +38,3 @@ spec:
       serviceMonitor:
         enabled: true
         interval: 1m
-    extraObjects: []
