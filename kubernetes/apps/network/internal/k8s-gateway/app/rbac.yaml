@@ -22,6 +22,7 @@ rules:
       - services
       - namespaces
     verbs:
+      - get
       - list
       - watch
   - apiGroups:
