@@ -40,6 +40,6 @@ spec:
     policy: sync
     sources: ["ingress", "service"]
     triggerLoopOnEvent: true
-    domainFilters: ["${ SECRET_DOMAIN }"]
+    domainFilters: ["${SECRET_DOMAIN}"]
     serviceMonitor:
       enabled: true
