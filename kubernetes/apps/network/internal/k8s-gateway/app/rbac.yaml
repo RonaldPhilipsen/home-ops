@@ -30,13 +30,7 @@ rules:
       - networking.k8s.io
     resources:
       - ingresses
-    verbs:
-      - list
-      - watch
-  - apiGroups:
-      - networking.k8s.io
-    resources:
-      - "services"
+      - services
     verbs:
       - list
       - watch
