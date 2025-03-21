@@ -32,6 +32,7 @@ rules:
       - ingresses
       - services
     verbs:
+      - get
       - list
       - watch
   - apiGroups:
