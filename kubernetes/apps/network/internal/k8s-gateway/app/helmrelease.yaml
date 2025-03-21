@@ -73,9 +73,8 @@ spec:
         controller: *app
         type: LoadBalancer
         externalTrafficPolicy: Cluster
-        clusterIP: "10.43.195.229"
         annotations:
-          lbipam.cilium.io/ips: 192.168.40.10
+          lbipam.cilium.io/ips: 172.16.20.11
         ports:
           dns-tcp:
             enabled: true
@@ -101,6 +100,14 @@ spec:
       create: true
       name: *app
     persistence:
+      config:
+        enabled: true
+        type: configMap
+        name: *app
+        globalMounts:
+          - path: /etc/coredns/Corefile
+            subPath: Corefile
+            readOnly: true
       hosts:
         enabled: true
         type: hostPath
