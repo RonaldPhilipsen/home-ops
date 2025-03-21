@@ -7,4 +7,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
-  url: https://ori-edge.github.io/k8s_gateway
+  url:  https://raw.githubusercontent.com/larivierec/k8s_gateway/master/charts/
