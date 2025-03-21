@@ -101,14 +101,6 @@ spec:
       create: true
       name: *app
     persistence:
-      config:
-        enabled: true
-        type: configMap
-        name: *app
-        globalMounts:
-          - path: /etc/coredns/Corefile
-            subPath: Corefile
-            readOnly: true
       hosts:
         enabled: true
         type: hostPath
