@@ -76,16 +76,20 @@ spec:
             protocol: TCP
     ingress:
       app:
+        className: internal
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
-        className: internal
         hosts:
-          - host: "qb.${SECRET_DOMAIN}"
+          - host: &host "qb.${SECRET_DOMAIN}"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
+        tls:
+          - hosts:
+              - *host
+
     persistence:
       config:
         existingClaim: qbittorrent
