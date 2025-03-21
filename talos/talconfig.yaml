@@ -86,6 +86,7 @@ patches:
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-openebs.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
 
