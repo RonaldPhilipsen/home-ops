@@ -25,9 +25,7 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           pihole: &container
-            image:
-              repository: tjouve/external-dns
-              tag: 3caa451
+            image: docker.io/tjouve/external-dns@sha256:sha256:fb3d1c299b79024bdbec8c3648785160e42b8ca5c586520ccdd3ff26771f57b8
             env:
               - name: EXTERNAL_DNS_PIHOLE_SERVER
                 value: http://172.16.20.7
