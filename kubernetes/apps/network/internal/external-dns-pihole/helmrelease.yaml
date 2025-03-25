@@ -39,10 +39,13 @@ spec:
               - --source=service
               - --registry=noop
               - --ignore-ingress-tls-spec
+              - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+              - --crd-source-kind=DNSEndpoint
 #              - --ingress-class=internal
+              - --events
               - --provider=pihole
               - --pihole-api-version=6
-              - --interval=1m
+              - --interval=5m
               - --log-format=text
               - --log-level=debug
               - --metrics-address=:7979
