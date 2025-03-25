@@ -25,3 +25,6 @@ spec:
       APP: *app
       APP_UID: "0"
       APP_GID: "0"
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
