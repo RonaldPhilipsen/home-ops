@@ -41,6 +41,7 @@ spec:
               - --ignore-ingress-tls-spec
               - --ingress-class=internal
               - --provider=pihole
+              - --pihole-api-version=6
               - --interval=1m
               - --log-format=text
               - --log-level=debug
