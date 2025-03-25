@@ -39,7 +39,7 @@ spec:
               - --source=service
               - --registry=noop
               - --ignore-ingress-tls-spec
-              - --ingress-class=internal
+#              - --ingress-class=internal
               - --provider=pihole
               - --pihole-api-version=6
               - --interval=1m
