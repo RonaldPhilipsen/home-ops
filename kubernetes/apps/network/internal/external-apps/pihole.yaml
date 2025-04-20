@@ -16,7 +16,7 @@ spec:
 apiVersion: discovery.k8s.io/v1
 kind: EndpointSlice
 metadata:
-  name: *app
+  name: &app pihole
   labels:
     kubernetes.io/service-name: *app
 addressType: IPv4
@@ -34,7 +34,7 @@ endpoints:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: *app
+  name: &app pihole
 spec:
   ingressClassName: internal
   rules:
