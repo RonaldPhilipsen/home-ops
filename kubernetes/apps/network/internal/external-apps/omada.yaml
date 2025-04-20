@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: &app omada
+spec:
+  ports:
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 443
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/refs/heads/master/v1.15.3/endpointsubset.json
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: &app omada
+  labels:
+    kubernetes.io/service-name: *app
+addressType: IPv4
+ports:
+  - name: https
+    appProtocol: http
+    protocol: TCP
+    port: 443
+endpoints:
+  - addresses:
+      - 192.168.0.2
+
+---
+# yaml-language-server: $schema=https://gitlab.wikimedia.org/repos/sre/kubernetes-json-schema/-/raw/f4bd7843fe564a64af66eb463ee698a8fced7066/v1.31.2/ingress.json
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: &app omada
+spec:
+  ingressClassName: internal
+  rules:
+    - host: &host omada.${SECRET_DOMAIN}
+      http:
+        paths:
+          - backend:
+              service:
+                name: *app
+                port:
+                  name: https
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - *host
