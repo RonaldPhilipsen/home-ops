@@ -79,30 +79,3 @@ spec:
   targetNamespace: *namespace
   timeout: 5m
   wait: true
-
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app external-apps
-  namespace: &namespace network
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  interval: 1h
-  path: ./kubernetes/apps/network/internal/external-apps
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
-  retryInterval: 2m
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *namespace
-  timeout: 5m
-  wait: true
