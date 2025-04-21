@@ -13,7 +13,7 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: MutatingAdmissionPolicy
 metadata:
   name: volsync-mover-jitter
-  namespace: storage
+  namespace: volsync-system
 spec:
   matchConstraints:
     resourceRules:
@@ -55,7 +55,6 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: MutatingAdmissionPolicyBinding
 metadata:
   name: volsync-mover-nfs
-  namespace: storage
 spec:
   policyName: volsync-mover-nfs
 ---
@@ -64,7 +63,6 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: MutatingAdmissionPolicy
 metadata:
   name: volsync-mover-nfs
-  namespace: storage
 spec:
   matchConstraints:
     resourceRules:
