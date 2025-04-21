@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: minecraft-server
+  name: minecraft-server
+spec:
+  ports:
+    - name: minecraft
+      port: 25565
+      targetPort: 25565
+  type: NodePort
+  selector:
+    server: minecraft-server
