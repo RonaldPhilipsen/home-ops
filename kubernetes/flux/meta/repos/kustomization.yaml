@@ -25,3 +25,4 @@ resources:
   - ./piraeus.yaml
   - ./prometheus-community.yaml
   - ./stakater.yaml
+  - ./longhorn.yaml
