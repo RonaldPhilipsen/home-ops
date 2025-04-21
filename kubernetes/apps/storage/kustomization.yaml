@@ -5,5 +5,7 @@ kind: Kustomization
 namespace: volsync-system
 components:
   - ../../components/common
+  - ../../components/repos/app-template
 resources:
+  - ./openebs/ks.yaml
   - ./volsync/ks.yaml
