@@ -1,7 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: minecraft-server
-resources:
-- minecraft/statefulset.yml
-- minecraft/service.yml
-- minecraft/config.yml
