@@ -26,7 +26,7 @@ nodes:
       serial: "S36ENX0J920477"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
+    talosImageURL: factory.talos.dev/installer-secureboot/2005f912771a3957ed00c361ae9f7945a952f18fcb812c8ea3f7c8ec58f1aed8
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -46,7 +46,7 @@ nodes:
       serial: "S36ENX0J914002"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
+    talosImageURL: factory.talos.dev/installer-secureboot/2005f912771a3957ed00c361ae9f7945a952f18fcb812c8ea3f7c8ec58f1aed8
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -66,7 +66,7 @@ nodes:
       serial: "S36ENX0J909876"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/dc8730aa8cc7bfa5ef7e2b3284248f2631135b2faf4ae11aa997a0c1987b0eee
+    talosImageURL: factory.talos.dev/installer-secureboot/2005f912771a3957ed00c361ae9f7945a952f18fcb812c8ea3f7c8ec58f1aed8
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
