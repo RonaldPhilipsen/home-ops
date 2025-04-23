@@ -44,6 +44,8 @@ spec:
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       taintToleration: CriticalAddonsOnly:Exists; node-role.kubernetes.io/control-plane:NoSchedule
     ingress:
+      annotations:
+        external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
       enabled: true
       ingressClassName: internal
       host: longhorn.${SECRET_DOMAIN}
