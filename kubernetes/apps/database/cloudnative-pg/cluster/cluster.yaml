@@ -10,7 +10,7 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 25Gi
+    size: 20Gi
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
