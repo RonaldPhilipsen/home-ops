@@ -1,0 +1,12 @@
+apiVersion: longhorn.io/v1beta2
+kind: Setting
+metadata:
+  annotations:
+    longhorn.io/configmap-resource-version: "122768460"
+  creationTimestamp: "2023-11-29T19:26:21Z"
+  generation: 1
+  name: deleting-confirmation-flag
+  namespace: storage
+  resourceVersion: "122769040"
+  uid: 1e36b9ce-92fb-4f69-a83d-55af918078bf
+value: "true"
