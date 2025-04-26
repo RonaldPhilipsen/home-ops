@@ -41,3 +41,17 @@ Below is a general guide on trying to debug an issue with an resource or applica
     ```sh
     kubectl -n <namespace> get events --sort-by='.metadata.creationTimestamp'
     ```
+
+## Nuking longhorn
+
+say you messed up installing longhorn for some reason and you want to remove its CRDs:
+
+```sh
+for crd in $(kubectl get crd -o jsonpath={.items[*].metadata.name} | tr ' ' '\n' | grep longhorn.io); do   kubectl -n ${NAMESPACE} get $crd -o yaml | sed "s/\- longhorn.io//g" | kubectl apply -f -;   kubectl -n ${NAMESPACE} delete $crd --all;   kubectl delete crd/$crd; done
+```
+
+you should also remove the webhooks to leave your cluster in a usable state:
+```sh
+kubectl delete mutatingwebhookconfigurations longhorn-webhook-mutator
+kubectl delete validatingwebhookconfigurations longhorn-webhook-validator
+```
