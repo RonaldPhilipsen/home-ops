@@ -5,9 +5,9 @@ metadata:
   name: recyclarr
   namespace: default
 spec:
-  storageClassName: nfs-provision
+  storageClassName: longhorn
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: 15Gi
+      storage: 1Gi
