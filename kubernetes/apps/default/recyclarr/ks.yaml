@@ -10,6 +10,8 @@ spec:
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
+  components:
+    - ../../../../components/volsync
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

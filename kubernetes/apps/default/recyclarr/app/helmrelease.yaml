@@ -17,6 +17,11 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  dependsOn:
+  - name: longhorn
+    namespace: storage
+  - name: volsync
+    namespace: volsync-system
   values:
     controllers:
       recyclarr:
