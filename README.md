@@ -21,10 +21,11 @@ I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools
 
 The purpose here is to learn Kubernetes, while practicing GitOps. I have two longer-term goals:
 
-1. migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment
+1. ~~ migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment ~~
 2. Learn more about managing K8s clusters in prod
 3. Get some decent NVME SSD's to use as boot drives
-4. Set up ceph instead of using NFS for PVCs
+4. ~~ Set up ceph instead of using NFS for PVC s~~
+5. Setup longhorn instead of ceph
 
 ---
 
