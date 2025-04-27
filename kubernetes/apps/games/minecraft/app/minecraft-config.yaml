@@ -5,7 +5,7 @@ metadata:
 data:
   EULA: "TRUE"
   # renovate: depName=minecraft datasource=custom.minecraft versioning=semver-coerced
-  VERSION: "1.21.5"
+  VERSION: "1.21.3"
   MC_PORT: "25565"
   MEMORY: "4096M"
   MOTD: "Honk"
