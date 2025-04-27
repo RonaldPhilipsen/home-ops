@@ -23,7 +23,7 @@ spec:
       namespace: actions-runner-system
   values:
     githubConfigUrl: https://github.com/RonaldPhilipsen/home-ops
-    githubConfigSecret: actions-runner-controller-auth-secret
+    githubConfigSecret: home-ops-runner-secret
 
     minRunners: 1
     maxRunners: 3
