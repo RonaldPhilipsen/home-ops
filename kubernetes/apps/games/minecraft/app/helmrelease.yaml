@@ -1,0 +1,163 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app minecraft
+spec:
+  interval: 30m
+  timeout: 10m
+  maxHistory: 3
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.3
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+
+    controllers:
+      minecraft:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          labels:
+            ingress.home.arpa/nginx-external: allow
+            ingress.home.arpa/playit: allow
+            ingress.home.arpa/homepage: allow
+            monitoring.home.arpa/prometheus: allow
+            egress.home.arpa/kubedns: allow
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/itzg/minecraft-server
+              tag: java21@sha256:68e0020d77cca869d66ce82759a92048183304991880d8d05ff4a84be9bdf922
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  periodSeconds: 60
+                  exec: &mc-health { command: ["mc-health"] }
+              readiness: *probes
+              startup:
+                <<: *probes
+                spec:
+                  initialDelaySeconds: 60
+                  periodSeconds: 1
+                  failureThreshold: 300
+                  exec: *mc-health
+            envFrom:
+            - configMapRef:
+                name: minecraft-server-config
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+            resources:
+              requests:
+                cpu: 250m
+                memory: 10Gi
+              limits:
+                memory: 16Gi
+
+    service:
+      minecraft:
+        controller: *app
+        type: LoadBalancer
+        annotations:
+          annotations:
+          external-dns.alpha.kubernetesio/hostname: mc.${SECRET_DOMAIN}
+          lbipam.cilium.io/ips: "172.16.20.150"
+        ports:
+          java:
+            port: 25565
+            protocol: TCP
+          bedrock:
+            port: 19132
+            protocol: UDP
+          map:
+            port: 8100
+          rcon:
+            port: 25575
+          metrics:
+            port: 25585
+
+    serviceMonitor:
+      metrics:
+        enabled: true
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /
+            interval: 1m
+
+    ingress:
+      map:
+        className: external
+        hosts:
+          - host: mcmap.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: *app
+                  port: map
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+
+    persistence:
+      data:
+        existingClaim: minecraft-server
+      bluemap:
+        type: persistentVolumeClaim
+        size: 10Gi
+        accessMode: ReadWriteOnce
+      bluemap-config:
+        type: configMap
+        name: minecraft-bluemap
+        globalMounts:
+          - path: /data/config/bluemap/core.conf
+            subPath: core.conf
+            readOnly: true
+          - path: /data/config/bluemap/storages/file.conf
+            subPath: file.conf
+            readOnly: true
+          # Maps configuration
+          - path: /data/config/bluemap/maps/nether.conf
+            subPath: nether.conf
+            readOnly: true
+          - path: /data/config/bluemap/maps/end.conf
+            subPath: end.conf
+            readOnly: true
+      geyser:
+        type: configMap
+        name: geyser-config
+        globalMounts:
+          - path: /data/config/Geyser-Fabric/config.yml
+            subPath: config.yml
+            readOnly: true
