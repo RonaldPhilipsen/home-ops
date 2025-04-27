@@ -27,3 +27,6 @@ spec:
       VOLSYNC_CLAIM: minecraft-server
       VOLSYNC_CAPACITY: "12Gi"
       VOLSYNC_SCHEDULE: "0 */3 * * *" # Every 3hrs
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
