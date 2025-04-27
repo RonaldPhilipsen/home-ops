@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: gha-runner-scale-set
+  name: &name gha-runner-scale-set
 spec:
   interval: 30m
   chart:
@@ -25,33 +25,44 @@ spec:
   dependsOn:
     - name: gha-runner-scale-set-controller
       namespace: actions-runner-system
-  valuesFrom:
-    - targetPath: githubConfigSecret.github_app_id
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
-    - targetPath: githubConfigSecret.github_app_installation_id
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
-    - targetPath: githubConfigSecret.github_app_private_key
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
     nameOverride: gha-runner-scale-set
     runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/RonaldPhilipsen/home-ops
+    githubConfigSecret: actions-runner-controller-auth-secret
     minRunners: 1
-    maxRunners: 6
+    maxRunners: 3
     containerMode:
-      type: dind
+      type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: longhorn-ssd
+        resources:
+          requests:
+            storage: 25Gi
+    controllerServiceAccount:
+      name: gha-runner-scale-set-controller
+      namespace: actions-runner-system
     template:
       spec:
         containers:
           - name: runner
             image: ghcr.io/home-operations/actions-runner:2.323.0@sha256:3d4ddadb661a179b973a45e253ebc4f349de571ba4d1f637ed99e279f475a482
             command: ["/home/runner/run.sh"]
-    controllerServiceAccount:
-      name: gha-runner-scale-set-controller
-      namespace: actions-runner-system
+            env:
+            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+              value: "false"
+            - name: NODE
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+              volumeMounts:
+              - mountPath: /var/run/secrets/talos.dev
+                name: talos
+                readOnly: true
+
+        serviceAccountName: *name
+        volumes:
+          - name: talos
+            secret:
+              secretName: *name
