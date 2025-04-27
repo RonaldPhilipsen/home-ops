@@ -13,7 +13,7 @@ concurrency:
 jobs:
   pre-job:
     name: Flux Local Pre-Job
-    runs-on: ubuntu-latest
+    runs-on: home-ops-runner
     outputs:
       any_changed: ${{ steps.changed-files.outputs.any_changed }}
     steps:
@@ -29,21 +29,21 @@ jobs:
   test:
     name: Flux Local Test
     needs: pre-job
-    runs-on: ubuntu-latest
+    runs-on: home-ops-runner
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run flux-local test
-        uses: docker://ghcr.io/allenporter/flux-local:v7.3.0
+        uses: docker://ghcr.io/allenporter/flux-local:v7.4.0
         with:
           args: test --enable-helm --all-namespaces --path /github/workspace/kubernetes/flux/cluster -v
 
   diff:
     name: Flux Local Diff
     needs: pre-job
-    runs-on: ubuntu-latest
+    runs-on: home-ops-runner
     permissions:
       pull-requests: write
     strategy:
@@ -65,7 +65,7 @@ jobs:
           path: default
 
       - name: Run flux-local diff
-        uses: docker://ghcr.io/allenporter/flux-local:v7.3.0
+        uses: docker://ghcr.io/allenporter/flux-local:v7.4.0
         with:
           args: >-
             diff ${{ matrix.resources }}
@@ -109,7 +109,7 @@ jobs:
   flux-local-status:
     name: Flux Local Success
     needs: ["test", "diff"]
-    runs-on: ubuntu-latest
+    runs-on: home-ops-runner
     if: ${{ always() }}
     steps:
       - name: Any jobs failed?

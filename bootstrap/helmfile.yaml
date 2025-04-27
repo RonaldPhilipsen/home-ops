@@ -38,7 +38,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: coredns/coredns
-    version: 1.39.2
+    version: 1.40.0
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/coredns/app/helm/values.yaml']
     needs: ['kube-system/cilium']
 
@@ -46,7 +46,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: spegel/spegel
-    version: 0.1.1
+    version: 0.2.0
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/spegel/app/helm/values.yaml']
     needs: ['kube-system/coredns']
 
@@ -54,7 +54,7 @@ releases:
     namespace: cert-manager
     atomic: true
     chart: jetstack/cert-manager
-    version: v1.17.1
+    version: v1.17.2
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
     needs: ['kube-system/spegel']
 

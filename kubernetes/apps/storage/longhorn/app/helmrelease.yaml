@@ -28,7 +28,7 @@ spec:
       enabled: true
       createPrometheusRules: true
     defaultSettings:
-      backupTarget: s3://longhorn
+      backupTarget: s3://longhorn/
       backupTargetCredentialSecret: longhorn-secret
       defaultReplicaCount: 3
       backupstorePollInterval: 0
@@ -43,9 +43,12 @@ spec:
       defaultLonghornStaticStorageClass: longhorn
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       taintToleration: CriticalAddonsOnly:Exists; node-role.kubernetes.io/control-plane:NoSchedule
+      v1DataEngine: false
+      v2DataEngine: true
+      dataEngine: v2
     ingress:
       enabled: true
-      ingressClassName: internal
+      className: internal
       host: longhorn.${SECRET_DOMAIN}
     longhornDriver:
       tolerations: &tolerations

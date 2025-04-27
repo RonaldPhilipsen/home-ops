@@ -5,13 +5,14 @@ kind: Cluster
 metadata:
   name: postgres
 spec:
-  instances: 5
+  instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 20Gi
+    size: 25Gi
     storageClass: openebs-hostpath
+    resizeInUseVolumes: False
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
@@ -30,7 +31,7 @@ spec:
   monitoring:
     enablePodMonitor: true
   backup:
-    retentionPolicy: 30d
+    retentionPolicy: 10d
     barmanObjectStore: &barmanObjectStore
       data:
         compression: bzip2
