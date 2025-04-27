@@ -32,7 +32,7 @@ spec:
       retries: 3
 
   dependsOn:
-    - name: gha-runner-scale-set-controller
+    - name: actions-runner-controller
       namespace: actions-runner-system
   values:
     nameOverride: gha-runner-scale-set
