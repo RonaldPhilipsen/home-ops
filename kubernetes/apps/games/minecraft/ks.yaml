@@ -20,7 +20,7 @@ spec:
     namespace: flux-system
   wait: true
   components:
-    - ../../../../flux/components/volsync/b2
+    - ../../../../../components/volsync
   postBuild:
     substitute:
       APP: *app
