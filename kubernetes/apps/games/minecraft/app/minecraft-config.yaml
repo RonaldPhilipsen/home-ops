@@ -42,23 +42,3 @@ data:
     floodgate:beta
   # https://vanillatweaks.net/share#oNYxlz
   VANILLA_TWEAKS_SHARE_CODES: oNYxlz # Coord HUD, Anti-Endermen Griefing
-  ## RCON
-  RCON_PASSWORD:
-    valueFrom:
-      secretKeyRef:
-        name: &secret-name minecraft-secret
-        key: rcon_password
-  ENABLE_QUERY: "true"
-  # Whitelist / Ops
-  WHITELIST:
-    valueFrom:
-      secretKeyRef:
-        name: *secret-name
-        key: whitelist
-  EXISTING_WHITELIST_FILE: SYNC_FILE_MERGE_LIST
-  OPS:
-    valueFrom:
-      secretKeyRef:
-        name: *secret-name
-        key: ops
-  EXISTING_OPS_FILE: SYNCHRONIZE

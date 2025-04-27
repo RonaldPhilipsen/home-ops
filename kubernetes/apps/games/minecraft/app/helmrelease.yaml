@@ -73,6 +73,28 @@ spec:
             envFrom:
             - configMapRef:
                 name: minecraft-server-config
+            env:
+              ## RCON
+              RCON_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret-name minecraft-secret
+                    key: rcon_password
+              ENABLE_QUERY: "true"
+              # Whitelist / Ops
+              WHITELIST:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret-name
+                    key: whitelist
+              EXISTING_WHITELIST_FILE: SYNC_FILE_MERGE_LIST
+              OPS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret-name
+                    key: ops
+              EXISTING_OPS_FILE: SYNCHRONIZE
+
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
