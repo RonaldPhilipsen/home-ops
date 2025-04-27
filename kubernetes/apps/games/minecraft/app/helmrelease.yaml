@@ -70,62 +70,9 @@ spec:
                   periodSeconds: 1
                   failureThreshold: 300
                   exec: *mc-health
-            env:
-              # Server Configuration
-              ## General
-              EULA: "true"
-              SERVER_NAME: MPOF
-              TYPE: FABRIC
-              FORCE_REDOWNLOAD:
-              # renovate: depName=minecraft datasource=custom.minecraft versioning=semver-coerced
-              VERSION: 1.21.5
-              MOTD: be nice
-              DIFFICULTY: hard
-              SPAWN_PROTECTION: 0
-              SEED: "-2135836821937050197"
-              FORCE_REDOWLOAD: "true"
-              ENABLE_WHITELIST: "true"
-              # Logging
-              ENABLE_ROLLING_LOGS: "true"
-              LOG_TIMESTAMP: "true"
-              # Performance
-              JVM_XX_OPTS: -XX:MaxRAMPercentage=75
-              MAX_MEMORY: 14G
-              USE_AIKAR_FLAGS: "true"
-              SNOOPER_ENABLED: "false"
-              VIEW_DISTANCE: 14
-              ## Mods
-              REMOVE_OLD_MODS: "true"
-              MODRINTH_DEFAULT_VERSION_TYPE: release
-              MODRINTH_PROJECTS: >
-                fabric-api,
-                fabricexporter,
-                spark,
-                bluemap,
-                geyser:beta,
-                floodgate:beta
-              # https://vanillatweaks.net/share#oNYxlz
-              VANILLA_TWEAKS_SHARE_CODES: oNYxlz # Coord HUD, Anti-Endermen Griefing
-              ## RCON
-              RCON_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret-name minecraft-secret
-                    key: rcon_password
-              ENABLE_QUERY: "true"
-              # Whitelist / Ops
-              WHITELIST:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret-name
-                    key: whitelist
-              EXISTING_WHITELIST_FILE: SYNC_FILE_MERGE_LIST
-              OPS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret-name
-                    key: ops
-              EXISTING_OPS_FILE: SYNCHRONIZE
+            envFrom:
+            - configMapRef:
+                name: minecraft-server-config
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
@@ -143,7 +90,9 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
-          "lbipam.cilium.io/ips": "172.16.20.150"
+          annotations:
+          external-dns.alpha.kubernetesio/hostname: mc.${SECRET_DOMAIN}
+          lbipam.cilium.io/ips: "172.16.20.150"
         ports:
           java:
             port: 25565
@@ -170,16 +119,16 @@ spec:
 
     ingress:
       map:
-        className: nginx-external
+        className: external
         hosts:
-          - host: mcmap.${DOMAIN}
+          - host: mcmap.${SECRET_DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: *app
                   port: map
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
 
     persistence:
       data:
