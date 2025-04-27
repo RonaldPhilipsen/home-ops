@@ -38,7 +38,7 @@ spec:
   dependsOn:
     - name: actions-runner-controller
       namespace: *namespace
-    - name: longhorn
+    - name: openebs
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/actions-runner-system/actions-runner-controller/runners
