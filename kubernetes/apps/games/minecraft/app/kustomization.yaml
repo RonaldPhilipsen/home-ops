@@ -11,6 +11,7 @@ configMapGenerator:
     files:
       - core.conf=./config/bluemap/core.conf
       - file.conf=./config/bluemap/storages/file.conf
+      - overworld.conf=./config/bluemap/maps/overworld.conf
       - nether.conf=./config/bluemap/maps/nether.conf
       - end.conf=./config/bluemap/maps/end.conf
   - name: geyser-config
