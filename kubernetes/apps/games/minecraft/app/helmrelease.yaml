@@ -107,6 +107,7 @@ spec:
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: mc.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           lbipam.cilium.io/ips: "172.16.20.150"
         ports:
           java:
