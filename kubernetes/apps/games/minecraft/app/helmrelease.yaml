@@ -148,11 +148,12 @@ spec:
 
     persistence:
       data:
-        existingClaim: minecraft-server
+        existingClaim: *app
       bluemap:
         type: persistentVolumeClaim
         size: 10Gi
         accessMode: ReadWriteOnce
+        storageClass: longhorn-ssd
       bluemap-config:
         type: configMap
         name: minecraft-bluemap
