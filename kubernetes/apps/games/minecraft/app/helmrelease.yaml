@@ -29,16 +29,9 @@ spec:
         runAsUser: 568
         runAsGroup: 568
         fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: always
         seccompProfile:
           type: RuntimeDefault
-    initContainers:
-    - name: init-permissions
-      image: busybox
-      command: ['sh', '-c', 'chown -R 568:568 /data']
-      volumeMounts:
-      - name: data
-        mountPath: /data
     controllers:
       minecraft:
         annotations:
