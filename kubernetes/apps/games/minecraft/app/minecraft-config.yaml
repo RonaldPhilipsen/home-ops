@@ -26,7 +26,7 @@ data:
   LOG_TIMESTAMP: "true"
   # Performance
   JVM_XX_OPTS: -XX:MaxRAMPercentage=75
-  MAX_MEMORY: 8Gi
+  MAX_MEMORY: 8G
   USE_AIKAR_FLAGS: "true"
   SNOOPER_ENABLED: "false"
   VIEW_DISTANCE: "14"
