@@ -6,8 +6,6 @@ metadata:
 parameters:
   dataEngine: v2
   dataLocality: "best-effort"
-  disableRevisionCounter: "true"
-  fromBackup: ""
   fsType: ext4
   numberOfReplicas: "3"
   staleReplicaTimeout: "30"
