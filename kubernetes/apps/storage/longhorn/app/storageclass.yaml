@@ -41,7 +41,7 @@ parameters:
   dataEngine: v2
   dataLocality: "best-effort"
   fsType: ext4
-  numberOfReplicas: "1"
+  numberOfReplicas: "3"
 provisioner: driver.longhorn.io
 reclaimPolicy: Retain
 volumeBindingMode: Immediate
