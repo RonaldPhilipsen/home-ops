@@ -152,7 +152,7 @@ spec:
         type: persistentVolumeClaim
         size: 10Gi
         accessMode: ReadWriteOnce
-        storageClass: longhorn-ssd
+        storageClass: longhorn-retain
       bluemap-config:
         type: configMap
         name: minecraft-bluemap
