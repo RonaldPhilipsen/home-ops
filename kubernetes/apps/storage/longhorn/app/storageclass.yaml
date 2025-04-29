@@ -15,3 +15,33 @@ parameters:
 provisioner: driver.longhorn.io
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
+
+---
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-ephemeral
+parameters:
+  dataEngine: v2
+  dataLocality: "best-effort"
+  fsType: ext4
+  numberOfReplicas: "1"
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+
+---
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-retain
+parameters:
+  dataEngine: v2
+  dataLocality: "best-effort"
+  fsType: ext4
+  numberOfReplicas: "1"
+provisioner: driver.longhorn.io
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
