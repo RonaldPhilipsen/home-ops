@@ -32,6 +32,13 @@ spec:
         fsGroupChangePolicy: Always
         seccompProfile:
           type: RuntimeDefault
+    initContainers:
+      - name: init-permissions
+        image: busybox
+        command: ['sh', '-c', 'chown -R 568:568 /data']
+        volumeMounts:
+        - name: data
+          mountPath: /data
     controllers:
       minecraft:
         annotations:
