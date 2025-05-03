@@ -6,6 +6,7 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./minecraft-config.yaml
+  - ./pvc.yaml
 configMapGenerator:
   - name: minecraft-bluemap
     files:

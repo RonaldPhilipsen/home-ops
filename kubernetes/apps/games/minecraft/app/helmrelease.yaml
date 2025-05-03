@@ -159,7 +159,7 @@ spec:
         type: persistentVolumeClaim
         size: 10Gi
         accessMode: ReadWriteOnce
-        storageClass: longhorn-retain
+        storageClass: nfs-provision
       bluemap-config:
         type: configMap
         name: minecraft-bluemap
