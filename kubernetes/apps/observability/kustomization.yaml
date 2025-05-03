@@ -9,3 +9,4 @@ components:
 resources:
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
+  - ./omada-exporter/ks.yaml
