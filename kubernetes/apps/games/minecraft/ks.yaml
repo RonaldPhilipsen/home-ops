@@ -19,13 +19,9 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: true
-  components:
-    - ../../../../components/volsync
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: "12Gi"
-      VOLSYNC_SCHEDULE: "0 */3 * * *" # Every 3hrs
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
