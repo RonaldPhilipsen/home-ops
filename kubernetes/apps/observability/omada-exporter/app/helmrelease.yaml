@@ -31,7 +31,7 @@ spec:
               repository: ghcr.io/charlie-haley/omada_exporter
               tag: 0.13.1
             env:
-              OMADA_HOST: https://192.168.0.2:8043
+              OMADA_HOST: https://192.168.0.2:443
               OMADA_INSECURE: true
               OMADA_REQUEST_TIMEOUT: 60
             envFrom:
