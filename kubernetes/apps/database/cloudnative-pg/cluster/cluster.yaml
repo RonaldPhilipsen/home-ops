@@ -56,7 +56,7 @@ spec:
           name: cloudnative-pg-secret
           key: AWS_SECRET_ACCESS_KEY
   externalClusters:
-    - name: &previousCluster postgres-v1
+    - name: clusterBackup
       barmanObjectStore:
         destinationPath: s3://pg-backup
         endpointURL: http://172.16.20.7:9000
