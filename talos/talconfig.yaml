@@ -80,10 +80,27 @@ nodes:
         mtu: 1500
         vip:
           ip: "172.16.20.2"
+  - hostname: "k8s-delta"
+    ipAddress: "172.16.20.6"
+    installDiskSelector:
+      serial: "50026B73831CDD8A"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer-secureboot/8f0be96362d30b90d391b8044ca9389670e270d066b0e4b243f1f2046f811c2f
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "e20:7c:14:f4:83:26"
+        dhcp: false
+        addresses:
+          - "172.16.20.6/24"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "172.16.20.1"
+        mtu: 1500
 
 # Global patches
 patches:
-  - "@./patches/global/machine-features.yaml"
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
@@ -96,4 +113,5 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/machine-features.yaml"
 
