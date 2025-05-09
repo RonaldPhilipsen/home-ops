@@ -65,8 +65,7 @@ spec:
           secretAccessKey:
             name: cloudnative-pg-secret
             key: AWS_SECRET_ACCESS_KEY
-          wal:
-            maxParallel: 8
+
 ---
 # yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
 apiVersion: v1
