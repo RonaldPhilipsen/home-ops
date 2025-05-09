@@ -33,6 +33,8 @@ spec:
   bootstrap:
     recovery:
       source: clusterBackup
+      recoveryTarget:
+        targetTime: "2025-05-07T00:00:02"
   backup:
     retentionPolicy: 10d
     barmanObjectStore: &barmanObjectStore
