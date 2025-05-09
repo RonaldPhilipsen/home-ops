@@ -33,8 +33,7 @@ spec:
   bootstrap:
     recovery:
       source: clusterBackup
-      recoveryTarget:
-        targetTime: "2025-05-07T00:00:02"
+
   backup:
     retentionPolicy: 10d
     barmanObjectStore: &barmanObjectStore
@@ -57,7 +56,16 @@ spec:
           key: AWS_SECRET_ACCESS_KEY
   externalClusters:
     - name: clusterBackup
-      barmanObjectStore: *barmanObjectStore
+      barmanObjectStore:
+        destinationPath: s3://pg-backup
+        endpointURL: http://172.16.20.7:9000
+        s3Credentials:
+          accessKeyId:
+            name: cloudnative-pg-secret
+            key: AWS_ACCESS_KEY_ID
+          secretAccessKey:
+            name: cloudnative-pg-secret
+            key: AWS_SECRET_ACCESS_KEY
 
 ---
 # yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
