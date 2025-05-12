@@ -46,10 +46,14 @@ spec:
       v1DataEngine: false
       v2DataEngine: true
       dataEngine: v2
-    ingress:
-      enabled: true
-      className: internal
-      host: longhorn.${SECRET_DOMAIN}
+      route:
+        main:
+          enabled: true
+          hostnames: ["longhorn.rphilipsen.nl"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
     longhornDriver:
       tolerations: &tolerations
         - key: CriticalAddonsOnly

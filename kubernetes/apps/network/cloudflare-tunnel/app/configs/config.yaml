@@ -1,0 +1,10 @@
+---
+originRequest:
+  matchSNItoHost: true
+
+ingress:
+  - hostname: rphilipsen.nl
+    service: &svc https://cilium-gateway-external.kube-system.svc.cluster.local
+  - hostname: "*.rphilipsen.nl"
+    service: *svc
+  - service: http_status:404

@@ -98,18 +98,17 @@ spec:
           http:
             port: 8096
 
-    ingress:
+    route:
       app:
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-        hosts:
-          - host: *url
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames: [*url]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:

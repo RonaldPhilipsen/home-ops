@@ -16,11 +16,16 @@ cgroup:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
-dashboards:
+  rollOutPods: true
+  prometheus:
+     serviceMonitor:
+       enabled: true
+gatewayAPI:
   enabled: true
+  enableAlpn: true
+  xffNumTrustedHops: 1
 hubble:
-  enabled: false
+  enabled: true
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.42.0.0/16"

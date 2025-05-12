@@ -1,20 +1,17 @@
 ---
 apiVersion: networking.k8s.io/v1
-kind: Ingress
+kind: HTTPRoute
 metadata:
   name: emqx-dashboard
-  annotations:
-    external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
 spec:
-  ingressClassName: internal
-  rules:
-    - host: emqx.${SECRET_DOMAIN}
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: emqx-dashboard
-                port:
-                  number: 18083
+  route:
+    app:
+      hostnames: [*url]
+      parentRefs:
+        - name: external
+          namespace: kube-system
+          sectionName: https
+      rules:
+        - backendRefs:
+            - name: emqx-dashboard
+              port: 18083

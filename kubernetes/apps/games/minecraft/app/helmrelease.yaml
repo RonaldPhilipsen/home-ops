@@ -139,18 +139,18 @@ spec:
             path: /
             interval: 1m
 
-    ingress:
+    route:
       map:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        className: external
-        hosts:
-          - host: mcmap.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: *app
-                  port: map
+        enabled: true
+        hostnames: ["mcmap.rphilipsen.nl"]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: map
 
     persistence:
       data:
