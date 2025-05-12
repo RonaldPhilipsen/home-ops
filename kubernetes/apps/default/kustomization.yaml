@@ -6,7 +6,6 @@ namespace: default
 components:
   - ../../components/common
 resources:
-  - ./echo/ks.yaml
   - ./nginx-static/ks.yaml
   - ./jellyfin/ks.yaml
   - ./sabnzbd/ks.yaml
