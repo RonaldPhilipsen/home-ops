@@ -77,11 +77,22 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /code/
+            filters:
+              - type: URLRewrite
+                urlRewrite:
+                  path:
+                    type: ReplacePrefixMatch
+                    replacePrefixMatch: /
+            backendRefs:
+              - name: *app
+                port: 12321
           - backendRefs:
               - name: *app
-                port: *port
-
-
+                port: 6052
     persistence:
       config:
         type: nfs
