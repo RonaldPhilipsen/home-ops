@@ -5,6 +5,5 @@ kind: Kustomization
 namespace: games
 components:
   - ../../components/common
-  - ../../components/repos/app-template
 resources:
   - ./minecraft/ks.yaml
