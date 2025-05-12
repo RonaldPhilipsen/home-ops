@@ -67,7 +67,7 @@ nodes:
     machineSpec:
       secureboot: true
     talosImageURL: factory.talos.dev/installer-secureboot/8f0be96362d30b90d391b8044ca9389670e270d066b0e4b243f1f2046f811c2f
-    controlPlane: true
+    controlPlane: false
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e8:ff:1e:d3:f6:d8"
@@ -78,8 +78,6 @@ nodes:
           - network: "0.0.0.0/0"
             gateway: "172.16.20.1"
         mtu: 1500
-        vip:
-          ip: "172.16.20.2"
   - hostname: "k8s-delta"
     ipAddress: "172.16.20.6"
     installDiskSelector:
@@ -87,7 +85,7 @@ nodes:
     machineSpec:
       secureboot: false
     talosImageURL: factory.talos.dev/installer-secureboot/8f0be96362d30b90d391b8044ca9389670e270d066b0e4b243f1f2046f811c2f
-    controlPlane: false
+    controlPlane: true
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "e20:7c:14:f4:83:26"
@@ -98,7 +96,8 @@ nodes:
           - network: "0.0.0.0/0"
             gateway: "172.16.20.1"
         mtu: 1500
-
+        vip:
+          ip: "172.16.20.2"
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"
