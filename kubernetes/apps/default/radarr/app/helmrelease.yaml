@@ -32,7 +32,7 @@ spec:
         supplementalGroups: [1000]
         seccompProfile: { type: RuntimeDefault }
     controllers:
-      radarr:
+      app:
         strategy: Recreate
         initContainers:
           init-db:
@@ -77,7 +77,7 @@ spec:
               capabilities: { drop: ["ALL"] }
     service:
       app:
-        controller: radarr
+        controller: app
         ports:
           http:
             port: *port
