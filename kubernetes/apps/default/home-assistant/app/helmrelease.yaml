@@ -11,7 +11,7 @@ spec:
     name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -20,17 +20,15 @@ spec:
   values:
     controllers:
       home-assistant:
-        pod:
-          hostNetwork: true
         annotations:
-          secret.reloader.stakater.com/reload: home-assistant-secret
+          reloader.stakater.com/auto: "true"
         containers:
-          home-assistant:
+          app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2025.5.1@sha256:06166da72e3f7ba344a7323d3541dc8e316b56df2bbd6994e49d1b4d5bfc3b3b
+              tag: 2025.5.1@sha256:020eecfb33fbc8473a54d24607e0352d4381af51d9963cfa70b7b915115da2d1
             env:
-              TZ: America/New_York
+              TZ: Europe/Amsterdam
               HASS_HTTP_TRUSTED_PROXY_1: 192.168.0.8/24
               HASS_HTTP_TRUSTED_PROXY_2: 10.69.0.0/16
             envFrom:
@@ -45,27 +43,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 2Gi
-          code-server:
-            image:
-              repository: ghcr.io/coder/code-server
-              tag: 4.99.4@sha256:316b7f60051b44b81fdf8972293735c2b0fda9a2b1e88fb6b77195df0c9b9b78
-            args:
-              [
-                "--auth",
-                "none",
-                "--user-data-dir",
-                "/config/.vscode",
-                "--extensions-dir",
-                "/config/.vscode",
-                "--port",
-                "12321",
-                "/config",
-              ]
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 512Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -75,61 +52,36 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     service:
-      home-assistant:
+      app:
         controller: home-assistant
         ports:
           http:
-            port: 8123
-          coiot:
-            port: &coiot 5683
-          code-server:
-            port: 12321
-      lb:
-        controller: home-assistant
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 172.16.20.130
-        ports:
-          coiot-udp:
-            port: *coiot
-            protocol: UDP
+            port: &port 8123
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.rphilipsen.nl"
+          - hass.rphilipsen.nl
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
-    ingress:
+    route:
       home-assistant:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-        className: external
-        hosts:
-          - host: hass.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: *app
-                  port: http
-
-      app-internal:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
-        className: internal
-        hosts:
-          - host: hass.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: *app
-                  port: http
-
-      code-server:
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${SECRET_DOMAIN}
-        className: internal
-        hosts:
-          - host: hass-code.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: *app
-                  port: code-server
+        hostnames: ["hass.rphilipsen.nl"]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       config:
         type: nfs
