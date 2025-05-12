@@ -54,7 +54,7 @@ spec:
         controller: nginx-static
         ports:
           http:
-            port: 8080
+            port: &port 8080
 
     route:
       app:

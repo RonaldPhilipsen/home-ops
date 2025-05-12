@@ -71,17 +71,6 @@ spec:
               - name: *app
                 port: *port
 
-    route:
-      home-assistant:
-        hostnames: ["hass.rphilipsen.nl"]
-        parentRefs:
-          - name: external
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       config:
         type: nfs
