@@ -59,9 +59,7 @@ spec:
             port: &port 8123
     route:
       app:
-        hostnames:
-          - "{{ .Release.Name }}.rphilipsen.nl"
-          - hass.rphilipsen.nl
+        hostnames: ["home-assistant.rphilipsen.nl", "hass.rphilipsen.nl"]
         parentRefs:
           - name: external
             namespace: kube-system
