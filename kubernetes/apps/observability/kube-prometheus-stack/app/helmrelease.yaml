@@ -24,12 +24,10 @@ spec:
     kind: OCIRepository
     name: kube-prometheus-stack
   install:
-    crds: Skip
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: Skip
     remediation:
       strategy: rollback
       retries: 3
@@ -38,7 +36,10 @@ spec:
       namespace: observability
   values:
     crds:
-      enabled: false
+      enabled: true
+      upgradeJob:
+        enabled: true
+        forceConflicts: true
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       route:
