@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./certificate.yaml
   - ./external.yaml
+  - ./hubble-gateway.yaml
   - ./internal.yaml
   - ./redirect.yaml
   - ./pushsecret.yaml
