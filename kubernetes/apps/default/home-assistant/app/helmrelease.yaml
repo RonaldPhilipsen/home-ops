@@ -59,7 +59,7 @@ spec:
             port: &port 8123
           coiot:
             port: &coiot 5683
-     lb:
+      lb:
         controller: home-assistant
         type: LoadBalancer
         annotations:
