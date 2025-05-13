@@ -42,6 +42,12 @@ spec:
               TZ: "${TIMEZONE}"
               SABNZBD__PORT: &port 8080
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                sab,
+                sab.default,
+                sab.default.svc,
+                sab.default.svc.cluster,
+                sab.default.svc.cluster.local,
+                sab.${SECRET_DOMAIN}
                 sabnzbd,
                 sabnzbd.default,
                 sabnzbd.default.svc,
