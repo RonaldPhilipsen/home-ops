@@ -8,4 +8,5 @@ components:
 resources:
   - ./cloudflare-tunnel/ks.yaml
   - ./cloudflare-dns/ks.yaml
+  - ./external-dns-pihole/ks.yaml
   - ./echo/ks.yaml
