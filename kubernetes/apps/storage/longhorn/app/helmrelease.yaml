@@ -46,14 +46,6 @@ spec:
       v1DataEngine: false
       v2DataEngine: true
       dataEngine: v2
-      route:
-        main:
-          enabled: true
-          hostnames: ["longhorn.rphilipsen.nl"]
-          parentRefs:
-            - name: internal
-              namespace: kube-system
-              sectionName: https
     longhornDriver:
       tolerations: &tolerations
         - key: CriticalAddonsOnly
