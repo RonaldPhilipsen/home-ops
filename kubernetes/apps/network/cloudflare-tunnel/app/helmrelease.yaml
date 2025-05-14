@@ -85,15 +85,13 @@ spec:
             subPath: config.yaml
             readOnly: true
 ---
-apiVersion: v1
-kind: Service
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
 metadata:
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: external.rphilipsen.nl
-    external-dns.alpha.kubernetes.io/target: d16f2d9f-e4e5-4a84-97bd-080843d550de.cfargotunnel.com
-    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-  name: cloudflare-external-dns
-  namespace: network
+  name: cloudflare-tunnel
 spec:
-  type: ExternalName
-  externalName: d16f2d9f-e4e5-4a84-97bd-080843d550de.cfargotunnel.com
+  endpoints:
+    - dnsName: "external.${SECRET_DOMAIN}"
+      recordType: CNAME
+      targets: ["d16f2d9f-e4e5-4a84-97bd-080843d550de.cfargotunnel.com"]
