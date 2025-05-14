@@ -6,4 +6,5 @@ resources:
   - ./clusterissuer.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./rbac.yaml
 
