@@ -123,7 +123,7 @@ spec:
             port: 19132
             protocol: UDP
           map:
-            port: 8100
+            port: &map 8100
           rcon:
             port: 25575
           metrics:
