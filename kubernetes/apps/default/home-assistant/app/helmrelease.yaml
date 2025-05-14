@@ -80,7 +80,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: home-assistant-app
                 port: *port
 
     persistence:
