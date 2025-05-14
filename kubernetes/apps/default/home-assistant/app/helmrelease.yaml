@@ -53,14 +53,14 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: home-assistant
+        controller: *app
         ports:
           http:
             port: &port 8123
           coiot:
             port: &coiot 5683
       lb:
-        controller: home-assistant
+        controller: *app
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 172.16.20.130
@@ -68,6 +68,9 @@ spec:
           coiot-udp:
             port: *coiot
             protocol: UDP
+          https:
+            port: *port
+            protocol: TCP
     route:
       app:
         hostnames: ["home-assistant.rphilipsen.nl", "hass.rphilipsen.nl"]
