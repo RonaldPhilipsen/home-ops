@@ -13,6 +13,10 @@ spec:
   path: ./kubernetes/apps/network/cloudflare-tunnel/app
   prune: true
   retryInterval: 2m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
