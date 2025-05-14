@@ -39,7 +39,7 @@ spec:
             env:
               TZ: "${TIMEZONE}"
               MATTER_SERVER__INSTANCE_NAME: *app
-              MATTER_SERVER__PORT: &wsPort 5580
+              MATTER_SERVER__PORT: &port 5580
               MATTER_SERVER__APPLICATION_URL: &host matter.${SECRET_DOMAIN}
               MATTER_SERVER__LOG_LEVEL: debug
 
@@ -71,13 +71,13 @@ spec:
         ports:
           ws:
             protocol: TCP
-            port: *wsPort
+            port: *port
             primary: true
         externalTrafficPolicy: Cluster
 
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.rphilipsen.nl"]
+        hostnames: ["matter.rphilipsen.nl"]
         parentRefs:
           - name: internal
             namespace: kube-system
