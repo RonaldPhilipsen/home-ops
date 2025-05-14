@@ -84,3 +84,16 @@ spec:
           - path: /etc/cloudflared/config.yaml
             subPath: config.yaml
             readOnly: true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: tunnel.rphilipsen.nl
+    external-dns.alpha.kubernetes.io/target: ${SECRET_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+  name: cloudflare-external-dns
+  namespace: network
+spec:
+  type: ExternalName
+  externalName: ${SECRET_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com

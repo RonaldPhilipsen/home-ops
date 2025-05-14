@@ -39,13 +39,13 @@ spec:
       - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
-            name: cloudflare-dns-secret
+            name: &secret cloudflare-dns-secret
             key: api-token
     extraArgs:
       - --cloudflare-dns-records-per-page=1000
       - --cloudflare-proxied
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
+      - --source=service
       - --gateway-name=external
     policy: sync
     sources: ["crd", "gateway-httproute"]
@@ -55,4 +55,4 @@ spec:
     serviceMonitor:
       enabled: true
     podAnnotations:
-      secret.reloader.stakater.com/reload: cloudflare-dns-secret
+      secret.reloader.stakater.com/reload: *secret
