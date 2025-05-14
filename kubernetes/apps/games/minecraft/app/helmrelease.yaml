@@ -150,7 +150,7 @@ spec:
         rules:
           - backendRefs:
               - name: *app
-                port: map
+                port: *map
 
     persistence:
       data:
