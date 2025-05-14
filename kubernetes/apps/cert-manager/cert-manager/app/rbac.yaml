@@ -33,7 +33,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: cert-manager
+  name: cert-manager-leader-election
   namespace: kube-system
 rules:
   - apiGroups: ["coordination.k8s.io"]
@@ -44,12 +44,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: cert-manager
+  name: cert-manager-leader-election
   namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: cert-manager
+  name: cert-manager-leader-election
 subjects:
   - kind: ServiceAccount
     name: cert-manager
