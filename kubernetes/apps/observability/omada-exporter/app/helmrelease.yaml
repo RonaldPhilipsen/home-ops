@@ -6,10 +6,9 @@ metadata:
   name: omada-exporter
 spec:
   interval: 30m
-  chart:
-    chartRef:
-      kind: OCIRepository
-      name: app-template
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
       retries: 3
