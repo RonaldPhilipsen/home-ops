@@ -9,7 +9,7 @@ rules:
     verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
-    verbs: ["get", "list", "watch"]
+    verbs: ["get", "list", "watch", "update"]
   - apiGroups: ["apiregistration.k8s.io"]
     resources: ["apiservices"]
     verbs: ["get", "list", "watch"]
