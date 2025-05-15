@@ -47,7 +47,7 @@ spec:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: longhorn-ephemeral
+        storageClassName: openebs-hostpath
         resources:
           requests:
             storage: 5Gi
