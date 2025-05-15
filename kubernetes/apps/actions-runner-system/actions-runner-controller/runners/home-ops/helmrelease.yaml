@@ -76,8 +76,6 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-              - mountPath: /home/runner/_work
-                name: runner-work
               - mountPath: /home/runner/_work/_tool
                 name: runner-tool
 
@@ -86,7 +84,5 @@ spec:
           - name: talos
             secret:
               secretName: *name
-          - name: runner-work
-            emptyDir: {}
           - name: runner-tool
             emptyDir: {}
