@@ -47,7 +47,7 @@ spec:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: longhorn-ephemeral
+        storageClassName: openebs-hostpath
         resources:
           requests:
             storage: 5Gi
@@ -76,13 +76,10 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-              - mountPath: /home/runner/_work/_tool
-                name: runner-tool
+
 
         serviceAccountName: *name
         volumes:
           - name: talos
             secret:
               secretName: *name
-          - name: runner-tool
-            emptyDir: {}
