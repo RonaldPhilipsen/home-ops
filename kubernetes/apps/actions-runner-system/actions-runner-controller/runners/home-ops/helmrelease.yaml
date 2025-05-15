@@ -78,7 +78,7 @@ spec:
                 readOnly: true
               - mountPath: /home/runner/_work
                 name: runner-work
-              - mountPath: /home/runner/_tool
+              - mountPath: /home/runner/_work/_tool
                 name: runner-tool
 
         serviceAccountName: *name
