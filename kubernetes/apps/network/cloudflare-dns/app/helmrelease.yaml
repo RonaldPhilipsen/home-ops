@@ -48,7 +48,10 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --gateway-name=external
     policy: sync
-    sources: ["crd", "gateway-httproute"]
+    sources:
+      - "crd"
+      - "gateway-httproute"
+
     txtPrefix: k8s.
     txtOwnerId: default
     domainFilters: ["rphilipsen.nl"]
