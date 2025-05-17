@@ -40,8 +40,8 @@ spec:
     githubConfigUrl: https://github.com/RonaldPhilipsen/home-ops
     githubConfigSecret: home-ops-runner-secret
 
-    minRunners: 1
-    maxRunners: 3
+    minRunners: 2
+    maxRunners: 4
 
     containerMode:
       type: kubernetes
