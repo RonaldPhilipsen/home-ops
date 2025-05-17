@@ -38,7 +38,10 @@ spec:
     provider: pihole
     envFrom:
       - secretRef:
-          name: &secret external-dns-pihole
+          name: &secret external-dns-pihole-secret
+    env:
+      - name: EXTERNAL_DNS_PIHOLE_SERVER
+        value: http://172.16.20.7
     # Pihole only supports A/AAAA/CNAME records so there is no mechanism to track ownership.
     # You don't need to set this flag, but if you leave it unset, you will receive warning
     # logs when ExternalDNS attempts to create TXT records.
