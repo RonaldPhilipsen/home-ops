@@ -1,19 +1,3 @@
-
-
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: pihole-dns
-spec:
-  interval: 5m
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: 1.16.1
-  url: oci://ghcr.io/home-operations/charts-mirror/external-dns
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -24,7 +8,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: pihole-dns
+    name: app-template
   install:
     remediation:
       retries: 3
@@ -34,41 +18,85 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    fullnameOverride: *app
-    provider: pihole
-    image:
-      tag: "v0.17.0"
-    envFrom:
-      - secretRef:
-          name: &secret external-dns-pihole-secret
-    env:
-      - name: EXTERNAL_DNS_PIHOLE_SERVER
-        value: http://172.16.20.7
-      - name: EXTERNAL_DNS_PIHOLE_API_VERSION
-        value: "6"
-
-    # Pihole only supports A/AAAA/CNAME records so there is no mechanism to track ownership.
-    # You don't need to set this flag, but if you leave it unset, you will receive warning
-    # logs when ExternalDNS attempts to create TXT records.
-    registry: noop
-    # IMPORTANT: If you have records that you manage manually in Pi-hole, set
-    # the policy to upsert-only so they do not get deleted.
-    policy: upsert-only
-    logLevel: debug
-    extraArgs:
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
-      - --ignore-ingress-tls-spec
-      - --pihole-api-version=6
-      - --events
-    sources:
-      - "crd"
-      - "gateway-httproute"
-      - "gateway-tlsroute"
-      - "gateway-tcproute"
-      - "gateway-udproute"
-    domainFilters: ["rphilipsen.nl"]
+    controllers:
+      pihole: &controller
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          pihole: &container
+            image:
+              repository: registry.k8s.io/external-dns/external-dns
+              tag: v0.17.0
+            env:
+              - name: EXTERNAL_DNS_PIHOLE_SERVER
+                value: http://172.16.20.7
+            envFrom:
+              - secretRef:
+                  name: *app
+            args:
+              - --source=ingress
+              - --source=service
+              - --registry=noop
+              - --ignore-ingress-tls-spec
+              - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+              - --crd-source-kind=DNSEndpoint
+              - --source=gateway-httproute
+              - --source=gateway-tlsroute
+              - --source=gateway-tcproute
+              - --source=gateway-udproute
+              - --events
+              - --provider=pihole
+              - --pihole-api-version=6
+              - --interval=5m
+              - --log-format=text
+              - --log-level=debug
+              - --metrics-address=:7979
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthz
+                    port: &port 7979
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+    serviceAccount:
+      create: true
+      name: *app
+    service:
+      pihole:
+        controller: pihole
+        ports:
+          http:
+            port: *port
     serviceMonitor:
-      enabled: true
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *secret
+      pihole:
+        serviceName: external-dns-pihole
+        enabled: true
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
