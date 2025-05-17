@@ -35,6 +35,7 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
+    appVersion: 0.17.0
     provider: pihole
     envFrom:
       - secretRef:
