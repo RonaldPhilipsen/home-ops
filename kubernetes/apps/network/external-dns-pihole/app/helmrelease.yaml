@@ -35,6 +35,8 @@ spec:
               - secretRef:
                   name: external-dns-pihole-secret
             args:
+              - --source=ingress
+              - --source=service
               # Pihole only supports A/AAAA/CNAME records so there is no mechanism to track ownership.
               # You don't need to set this flag, but if you leave it unset, you will receive warning
               # logs when ExternalDNS attempts to create TXT records.
