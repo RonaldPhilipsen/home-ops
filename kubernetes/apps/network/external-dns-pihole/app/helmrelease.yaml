@@ -38,7 +38,7 @@ spec:
     provider: pihole
     envFrom:
       - secretRef:
-          name: external-dns-pihole
+          name: &secret external-dns-pihole
     extraArgs:
       - --source=ingress
       - --source=service

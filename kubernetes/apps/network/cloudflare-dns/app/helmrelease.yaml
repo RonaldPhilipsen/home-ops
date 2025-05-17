@@ -51,7 +51,6 @@ spec:
     sources:
       - "crd"
       - "gateway-httproute"
-
     txtPrefix: k8s.
     txtOwnerId: default
     domainFilters: ["rphilipsen.nl"]
