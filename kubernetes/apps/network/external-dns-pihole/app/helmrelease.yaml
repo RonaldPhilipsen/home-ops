@@ -35,8 +35,9 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
-    appVersion: 0.17.0
     provider: pihole
+    image:
+      tag: "v0.17.0"
     envFrom:
       - secretRef:
           name: &secret external-dns-pihole-secret
@@ -50,7 +51,7 @@ spec:
     # IMPORTANT: If you have records that you manage manually in Pi-hole, set
     # the policy to upsert-only so they do not get deleted.
     policy: upsert-only
-    log-level: debug
+    logLevel: debug
     extraArgs:
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
