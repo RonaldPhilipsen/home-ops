@@ -47,7 +47,6 @@ spec:
     # the policy to upsert-only so they do not get deleted.
     policy: upsert-only
     extraArgs:
-      - --source=ingress
       - --source=service
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
       - --crd-source-kind=DNSEndpoint
