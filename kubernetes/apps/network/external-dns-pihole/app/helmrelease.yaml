@@ -33,7 +33,7 @@ spec:
                 value: http://172.16.20.7
             envFrom:
               - secretRef:
-                  name: *app
+                  name: external-dns-pihole-secret
             args:
               - --source=ingress
               - --source=service
