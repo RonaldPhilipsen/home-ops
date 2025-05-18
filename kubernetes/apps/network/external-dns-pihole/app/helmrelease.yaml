@@ -18,13 +18,16 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    serviceAccount:
+      external-dns-pihole: {}
+
     controllers:
       pihole: &controller
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         serviceAccount:
-          external-dns-pihole: {}
+          identifier: external-dns-pihole
         containers:
           pihole: &container
             image:
