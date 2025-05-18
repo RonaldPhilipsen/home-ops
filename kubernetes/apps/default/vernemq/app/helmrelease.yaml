@@ -94,7 +94,7 @@ spec:
           wss:
             port: 8443
           api:
-            port: &api 8888
+            port: &http 8888
 
     route:
       app:
@@ -110,7 +110,7 @@ spec:
                   value: /status.json
             backendRefs: &backendRefs
               - identifier: app
-                port: *api
+                port: *http
           - matches:
               - path:
                   type: PathPrefix
