@@ -74,7 +74,6 @@ spec:
               capabilities:
                 drop:
                   - ALL
-
         serviceAccount:
           identifier: *app
 
@@ -96,6 +95,15 @@ spec:
           api:
             port: 8888
 
+    serviceMonitor:
+      metrics:
+        enabled: true
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /status.json
+            interval: 1m
     route:
       app:
         hostnames:
