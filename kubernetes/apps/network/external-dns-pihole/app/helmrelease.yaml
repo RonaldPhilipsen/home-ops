@@ -88,8 +88,10 @@ spec:
             runAsGroup: 568
             runAsNonRoot: true
     serviceAccount:
-      create: true
-      name: *app
+      create:
+        enabled: true
+      name:
+        value: *app
     service:
       pihole:
         controller: pihole
