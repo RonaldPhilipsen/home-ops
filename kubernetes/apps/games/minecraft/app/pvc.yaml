@@ -1,13 +1,75 @@
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: games-nfs
+provisioner: nfs
+parameters:
+  archiveOnDelete: "false"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minecraft
+spec:
+  storageClassName: games-nfs
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 172.16.20.7
+    path: /config/minecraft
+  mountOptions:
+    - nfsvers=4.2
+    - nconnect=8
+    - noatime
+    - hard
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: minecraft
-  namespace: default
+  namespace: games
 spec:
-  storageClassName: nfs-provision
   accessModes:
     - ReadWriteMany
+  storageClassName: games-nfs
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minecraft-bluemap
+spec:
+  storageClassName: games-nfs
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 172.16.20.7
+    path: /config/minecraft-bluemap
+  mountOptions:
+    - nfsvers=4.2
+    - nconnect=8
+    - noatime
+    - hard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minecraft-bluemap
+  namespace: games
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: games-nfs
   resources:
     requests:
       storage: 15Gi

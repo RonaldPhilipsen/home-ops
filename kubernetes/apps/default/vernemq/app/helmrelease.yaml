@@ -1,0 +1,177 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vernemq
+  namespace: default
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+
+  maxHistory: 3
+
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+
+  uninstall:
+    keepHistory: false
+
+  values:
+    controllers:
+      sonarr:
+        type: statefulset
+        strategy: RollingUpdate
+        replicas: 2
+
+        annotations:
+          secret.reloader.stakater.com/reload: vernemq-secret
+
+        containers:
+          app:
+            image:
+              repository: vernemq/vernemq
+              tag: 2.0.1-alpine
+            env:
+              MY_POD_NAME:
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+              DOCKER_VERNEMQ_DISCOVERY_KUBERNETES: 1
+              DOCKER_VERNEMQ_KUBERNETES_LABEL_SELECTOR: "app.kubernetes.io/name=vernemq"
+            envFrom:
+              - secretRef:
+                  name: vernemq-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health/ping
+                    port: 8888
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 20m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+        serviceAccount:
+          identifier: *app
+
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "mqtt.rphilipsen.nl"
+          lbipam.cilium.io/ips: 172.16.20.102
+        ports:
+          mqtt:
+            port: 1883
+          mqtts:
+            port: 8883
+          ws:
+            port: 8080
+          wss:
+            port: 8443
+          api:
+            port: 8888
+
+    route:
+      app:
+        hostnames:
+          - "vernemq.rphilipsen.nl"
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - matches:
+              - path:
+                  value: /status.json
+            backendRefs: &backendRefs
+              - identifier: app
+                port: 8888
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /status
+            backendRefs: *backendRefs
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs: *backendRefs
+            filters:
+              - type: URLRewrite
+                urlRewrite:
+                  path:
+                    type: ReplacePrefixMatch
+                    replacePrefixMatch: /status
+
+    persistence:
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /vernemq/data
+      log:
+        type: emptyDir
+        globalMounts:
+          - path: /vernemq/log
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      acl:
+        type: secret
+        name: vernemq-secret
+        globalMounts:
+          - path: /etc/vernemq/vmq.acl
+            subPath: vmq.acl
+
+    serviceAccount:
+      vernemq: {}
+    rbac:
+      roles:
+        vernemq:
+          type: Role
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - pods
+              verbs:
+                - get
+                - list
+            - apiGroups:
+                - apps
+              resources:
+                - statefulsets
+              verbs:
+                - get
+      bindings:
+        vernemq:
+          type: RoleBinding
+          roleRef:
+            identifier: vernemq
+          subjects:
+            - identifier: vernemq
