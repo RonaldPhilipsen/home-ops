@@ -154,12 +154,9 @@ spec:
 
     persistence:
       data:
-        existingClaim: *app
+        existingClaim: minecraft
       bluemap:
-        type: persistentVolumeClaim
-        size: 10Gi
-        accessMode: ReadWriteOnce
-        storageClass: nfs-provision
+        existingClaim: minecraft-bluemap
       bluemap-config:
         type: configMap
         name: minecraft-bluemap
