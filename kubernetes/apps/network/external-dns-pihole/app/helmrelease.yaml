@@ -23,6 +23,7 @@ spec:
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
+        serviceAccount: { identifier: external-dns-pihole }
         containers:
           pihole: &container
             image:
@@ -87,8 +88,7 @@ spec:
             runAsUser: 568
             runAsGroup: 568
             runAsNonRoot: true
-        serviceAccount:
-          external-dns-pihole: {}
+
     service:
       pihole:
         controller: pihole
