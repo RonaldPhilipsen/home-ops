@@ -90,8 +90,7 @@ spec:
     serviceAccount:
       create:
         enabled: true
-      name:
-        value: *app
+      name: *app
     service:
       pihole:
         controller: pihole
