@@ -87,22 +87,19 @@ spec:
         ports:
           mqtt:
             port: 1883
+          mqtts:
+            port: 8883
           ws:
             port: 8080
-      headless:
-        forceRename: "{{ .Release.Name }}" # TODO: Fix this when app-template 4.1.0 is released
-        publishNotReadyAddresses: true
-        clusterIP: None
-        ports:
-          mqtt:
-            port: 1883
-          ws:
-            port: 8080
+          wss:
+            port: 8443
+          api:
+            port: &api 8888
 
     route:
       app:
         hostnames:
-          - 'vernemq.rphilipsen.nl'
+          - "vernemq.rphilipsen.nl"
         parentRefs:
           - name: internal
             namespace: network
@@ -113,7 +110,7 @@ spec:
                   value: /status.json
             backendRefs: &backendRefs
               - identifier: app
-                port: *http
+                port: *api
           - matches:
               - path:
                   type: PathPrefix
@@ -144,6 +141,11 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      acl:
+        type: configMap
+        name: vernemq-acl
+        globalMounts:
+          - path: /vernemq/etc/vmq.acl
 
     serviceAccount:
       vernemq: {}
