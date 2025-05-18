@@ -99,6 +99,38 @@ spec:
           ws:
             port: 8080
 
+    route:
+      app:
+        hostnames:
+          - 'vernemq.rphilipsen.nl'
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - matches:
+              - path:
+                  value: /status.json
+            backendRefs: &backendRefs
+              - identifier: app
+                port: *http
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /status
+            backendRefs: *backendRefs
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /
+            backendRefs: *backendRefs
+            filters:
+              - type: URLRewrite
+                urlRewrite:
+                  path:
+                    type: ReplacePrefixMatch
+                    replacePrefixMatch: /status
+
     persistence:
       data:
         type: emptyDir
