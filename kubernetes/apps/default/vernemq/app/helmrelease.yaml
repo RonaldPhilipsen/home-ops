@@ -31,7 +31,7 @@ spec:
       sonarr:
         type: statefulset
         strategy: RollingUpdate
-        replicas: 2
+        replicas: 3
 
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret
