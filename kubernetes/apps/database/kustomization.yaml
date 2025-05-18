@@ -7,4 +7,3 @@ components:
   - ../../components/common
 resources:
   - ./cloudnative-pg/ks.yaml
-  - ./emqx/ks.yaml
