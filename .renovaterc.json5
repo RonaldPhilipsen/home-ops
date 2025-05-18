@@ -1,250 +1,31 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    'config:recommended',
-    'docker:enableMajor',
-    'helpers:pinGitHubActionDigests',
-    ':automergeBranch',
-    ':dependencyDashboard',
-    ':disableRateLimiting',
-    ':semanticCommits',
+    "config:recommended",
+    "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    "github>RonaldPhilipsen/home-ops//.renovate/autoMerge.json5",
+    "github>RonaldPhilipsen/home-ops//.renovate/customManagers.json5",
+    "github>RonaldPhilipsen/home-ops//.renovate/grafanaDashboards.json5",
+    "github>RonaldPhilipsen/home-ops//.renovate/groups.json5",
+    "github>RonaldPhilipsen/home-ops//.renovate/labels.json5",
+    "github>RonaldPhilipsen/home-ops//.renovate/semanticCommits.json5",
+    ":automergeBranch",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":timezone(Europe/Amsterdam)",
   ],
-  dependencyDashboard: true,
-  dependencyDashboardTitle: 'Renovate Dashboard 🤖',
-  suppressNotifications: [
-    'prEditedNotification',
-    'prIgnoreNotification',
-  ],
-  schedule: [
-    'every weekend',
-  ],
-  ignorePaths: [
-    '**/*.sops.*',
-  ],
+  dependencyDashboardTitle: "Renovate Dashboard 🤖",
+  suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
+  ignorePaths: ["**/*.sops.*", "**/resources/**"],
   flux: {
-    managerFilePatterns: [
-      '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
-    ],
+    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml$/"],
   },
-  'helm-values': {
-    managerFilePatterns: [
-      '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
-    ],
-  },
-  helmfile: {
-    managerFilePatterns: [
-      '/(^|/)helmfile\\.ya?ml(?:\\.j2)?$/',
-    ],
+  "helm-values": {
+    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml$/"],
   },
   kubernetes: {
-    managerFilePatterns: [
-      '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
-    ],
+    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml$/"],
   },
-  kustomize: {
-    managerFilePatterns: [
-      '/(^|/)kustomization\\.ya?ml(?:\\.j2)?$/',
-    ],
-  },
-  packageRules: [
-    {
-      description: 'CoreDNS Group',
-      groupName: 'CoreDNS',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        '/coredns/',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-    },
-    {
-      description: 'Flux Operator Group',
-      groupName: 'Flux Operator',
-      matchPackageNames: [
-        '/flux-operator/',
-        '/flux-instance/',
-      ],
-      matchDatasources: [
-        'docker',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-    },
-    {
-      description: 'Spegel Group',
-      groupName: 'Spegel',
-      matchDatasources: [
-        'docker',
-      ],
-      matchPackageNames: [
-        '/spegel/',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-    },
-    {
-      description: 'Auto-merge GitHub Actions',
-      matchManagers: [
-        'github-actions',
-      ],
-      automerge: true,
-      automergeType: 'branch',
-      matchUpdateTypes: [
-        'minor',
-        'patch',
-        'digest',
-      ],
-      minimumReleaseAge: '3 days',
-      ignoreTests: true,
-    },
-    {
-      matchUpdateTypes: [
-        'major',
-      ],
-      semanticCommitType: 'feat',
-      commitMessagePrefix: '{{semanticCommitType}}({{semanticCommitScope}})!:',
-      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
-    },
-    {
-      matchUpdateTypes: [
-        'minor',
-      ],
-      semanticCommitType: 'feat',
-      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
-    },
-    {
-      matchUpdateTypes: [
-        'patch',
-      ],
-      semanticCommitType: 'fix',
-      commitMessageExtra: '( {{currentVersion}} → {{newVersion}} )',
-    },
-    {
-      matchUpdateTypes: [
-        'digest',
-      ],
-      semanticCommitType: 'chore',
-      commitMessageExtra: '( {{currentDigestShort}} → {{newDigestShort}} )',
-    },
-    {
-      matchDatasources: [
-        'docker',
-      ],
-      semanticCommitScope: 'container',
-      commitMessageTopic: 'image {{depName}}',
-    },
-    {
-      matchDatasources: [
-        'helm',
-      ],
-      semanticCommitScope: 'helm',
-      commitMessageTopic: 'chart {{depName}}',
-    },
-    {
-      matchManagers: [
-        'github-actions',
-      ],
-      semanticCommitType: 'ci',
-      semanticCommitScope: 'github-action',
-      commitMessageTopic: 'action {{depName}}',
-    },
-    {
-      matchDatasources: [
-        'github-releases',
-      ],
-      semanticCommitScope: 'github-release',
-      commitMessageTopic: 'release {{depName}}',
-    },
-    {
-      matchUpdateTypes: [
-        'major',
-      ],
-      labels: [
-        'type/major',
-      ],
-    },
-    {
-      matchUpdateTypes: [
-        'minor',
-      ],
-      labels: [
-        'type/minor',
-      ],
-    },
-    {
-      matchUpdateTypes: [
-        'patch',
-      ],
-      labels: [
-        'type/patch',
-      ],
-    },
-    {
-      matchDatasources: [
-        'docker',
-      ],
-      addLabels: [
-        'renovate/container',
-      ],
-    },
-    {
-      matchDatasources: [
-        'helm',
-      ],
-      addLabels: [
-        'renovate/helm',
-      ],
-    },
-    {
-      matchManagers: [
-        'github-actions',
-      ],
-      addLabels: [
-        'renovate/github-action',
-      ],
-    },
-    {
-      matchDatasources: [
-        'github-releases',
-      ],
-      addLabels: [
-        'renovate/github-release',
-      ],
-    },
-  ],
-  customManagers: [
-    {
-      description: 'Process annotated dependencies',
-      customType: 'regex',
-      managerFilePatterns: [
-        '/(^|/).+\\.env(?:\\.j2)?$/',
-        '/(^|/).+\\.sh(?:\\.j2)?$/',
-        '/(^|/).+\\.ya?ml(?:\\.j2)?$/',
-      ],
-      matchStrings: [
-        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)',
-        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)',
-      ],
-      datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
-    },
-    {
-      customType: 'regex',
-      description: [
-        'Process CloudnativePG Postgresql version',
-      ],
-      managerFilePatterns: [
-        '/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/',
-      ],
-      matchStrings: [
-        'image(Name)?: (?<depName>\\S+):(?<currentValue>.*\\-.*)',
-      ],
-      datasourceTemplate: 'docker',
-      versioningTemplate: 'redhat',
-    },
-  ],
 }
