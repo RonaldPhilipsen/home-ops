@@ -87,8 +87,8 @@ spec:
             runAsUser: 568
             runAsGroup: 568
             runAsNonRoot: true
-    serviceAccount:
-      external-dns-pihole: {}
+        serviceAccount:
+          external-dns-pihole: {}
     service:
       pihole:
         controller: pihole
