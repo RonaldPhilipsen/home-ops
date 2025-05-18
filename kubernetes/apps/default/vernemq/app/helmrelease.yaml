@@ -142,10 +142,11 @@ spec:
         globalMounts:
           - path: /tmp
       acl:
-        type: configMap
-        name: vernemq-acl
+        type: secret
+        name: vernemq-secret
         globalMounts:
           - path: /vernemq/etc/vmq.acl
+            subPath: vmq.acl
 
     serviceAccount:
       vernemq: {}
