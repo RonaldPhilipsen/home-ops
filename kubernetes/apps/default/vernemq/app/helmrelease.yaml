@@ -145,7 +145,7 @@ spec:
         type: secret
         name: vernemq-secret
         globalMounts:
-          - path: /vernemq/etc/vmq.acl
+          - path: /etc/vernemq/vmq.acl
             subPath: vmq.acl
 
     serviceAccount:
