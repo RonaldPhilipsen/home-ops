@@ -48,7 +48,7 @@ metadata:
 spec:
   storageClassName: games-nfs
   capacity:
-    storage: 5Gi
+    storage: 15Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -72,4 +72,4 @@ spec:
   storageClassName: games-nfs
   resources:
     requests:
-      storage: 20Gi
+      storage: 15Gi
