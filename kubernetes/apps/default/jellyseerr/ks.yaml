@@ -8,7 +8,7 @@ metadata:
 spec:
   dependsOn:
     - name: cloudnative-pg-cluster
-      namespace: database
+      namespace: default
   targetNamespace: default
   path: ./kubernetes/apps/default/jellyseerr/app
   prune: true
