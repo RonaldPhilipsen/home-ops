@@ -10,7 +10,7 @@ spec:
     - name: onepassword-connect
       namespace: external-secrets
     - name: cloudnative-pg-cluster
-      namespace: database
+      namespace: default
   path: ./kubernetes/apps/default/prowlarr/app
   prune: true
   sourceRef:

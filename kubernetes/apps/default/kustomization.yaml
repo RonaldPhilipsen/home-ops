@@ -6,7 +6,15 @@ namespace: default
 components:
   - ../../components/common
 resources:
+# Common
   - ./nginx-static/ks.yaml
+  - ./cloudnative-pg/ks.yaml
+# Home Automation
+  - ./home-assistant/ks.yaml
+  - ./esphome/ks.yaml
+  - ./vernemq/ks.yaml
+# - ./matter-server/ks.yaml
+# Media
   - ./jellyfin/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./jellyseerr/ks.yaml
@@ -16,8 +24,4 @@ resources:
   - ./recyclarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
-# Home Automation
-  - ./esphome/ks.yaml
-  - ./home-assistant/ks.yaml
-  # - ./matter-server/ks.yaml
-  - ./vernemq/ks.yaml
+
