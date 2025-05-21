@@ -51,7 +51,7 @@ spec:
                 memory: 1024M
 
     service:
-      app:
+      esphome:
         controller: esphome
         ports:
           http:
