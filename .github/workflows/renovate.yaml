@@ -40,7 +40,7 @@ permissions:
 jobs:
   main:
     name: Renovate
-    runs-on: homelab-runner
+    runs-on: home-ops-runner
     permissions:
       packages: read
     steps:
