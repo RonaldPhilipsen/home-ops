@@ -1,47 +1,29 @@
-allowVolumeExpansion: true
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: longhorn-ssd
-parameters:
-  dataEngine: v2
-  dataLocality: "best-effort"
-  disableRevisionCounter: "true"
-  fromBackup: ""
-  fsType: ext4
-  numberOfReplicas: "3"
-  staleReplicaTimeout: "30"
-  unmapMarkSnapChainRemoved: ignored
-provisioner: driver.longhorn.io
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
+# ---
+# allowVolumeExpansion: true
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: longhorn-ephemeral
+# parameters:
+#   dataEngine: v2
+#   dataLocality: "best-effort"
+#   fsType: ext4
+#   numberOfReplicas: "1"
+# provisioner: driver.longhorn.io
+# reclaimPolicy: Delete
+# volumeBindingMode: Immediate
 
----
-allowVolumeExpansion: true
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: longhorn-ephemeral
-parameters:
-  dataEngine: v2
-  dataLocality: "best-effort"
-  fsType: ext4
-  numberOfReplicas: "1"
-provisioner: driver.longhorn.io
-reclaimPolicy: Delete
-volumeBindingMode: Immediate
-
----
-allowVolumeExpansion: true
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: longhorn-retain
-parameters:
-  dataEngine: v2
-  dataLocality: "best-effort"
-  fsType: ext4
-  numberOfReplicas: "3"
-provisioner: driver.longhorn.io
-reclaimPolicy: Retain
-volumeBindingMode: Immediate
+# ---
+# allowVolumeExpansion: true
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: longhorn-retain
+# parameters:
+#   dataEngine: v2
+#   dataLocality: "best-effort"
+#   fsType: ext4
+#   numberOfReplicas: "3"
+# provisioner: driver.longhorn.io
+# reclaimPolicy: Retain
+# volumeBindingMode: Immediate
