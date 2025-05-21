@@ -77,7 +77,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: esphome-esphome
                 port: *esphome
     persistence:
       config:
