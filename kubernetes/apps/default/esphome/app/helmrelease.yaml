@@ -60,7 +60,6 @@ spec:
         controller: esphome
         type: LoadBalancer
         annotations:
-          external-dns.alpha.kubernetesio/hostname: &host esphome.${SECRET_DOMAIN}
           lbipam.cilium.io/ips: 172.16.20.131
         ports:
           ws:
@@ -77,22 +76,9 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
-          - matches:
-              - path:
-                  type: PathPrefix
-                  value: /code/
-            filters:
-              - type: URLRewrite
-                urlRewrite:
-                  path:
-                    type: ReplacePrefixMatch
-                    replacePrefixMatch: /
-            backendRefs:
-              - name: *app
-                port: 12321
           - backendRefs:
               - name: *app
-                port: 6052
+                port: *esphome
     persistence:
       config:
         type: nfs
