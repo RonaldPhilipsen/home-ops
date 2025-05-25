@@ -11,9 +11,6 @@ spec:
       namespace: kube-system
       sectionName: https
   rules:
-    - matches:
-      - path:
-          value: /hook/
     - backendRefs:
         - name: webhook-receiver
           port: 80
