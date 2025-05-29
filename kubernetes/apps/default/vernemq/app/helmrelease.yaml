@@ -28,7 +28,7 @@ spec:
 
   values:
     controllers:
-      sonarr:
+      vernemq:
         type: statefulset
         strategy: RollingUpdate
         replicas: 2
