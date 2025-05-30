@@ -1,0 +1,159 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app blocky
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    crds: CreateReplace
+    timeout: 2m
+    remediation:
+      retries: 1
+  upgrade:
+    crds: CreateReplace
+    timeout: 2m
+    remediation:
+      retries: 1
+  values:
+    controllers:
+      *app :
+        strategy: RollingUpdate
+        replicas: 6
+        containers:
+          app:
+            image:
+              repository: ghcr.io/0xerr0r/blocky
+              tag: v0.26.2
+            env:
+              TZ: Europe/Amsterdam
+            envFrom:
+              - secretRef:
+                  name: blocky-secret
+            probes:
+              readiness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /app/blocky
+                      - healthcheck
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              liveness: *probes
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: &sec
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                add:
+                  - NET_BIND_SERVICE
+                drop:
+                  - ALL
+      ui:
+        strategy: RollingUpdate
+        containers:
+          ui:
+            image:
+              repository: ghcr.io/ivvija/blocky-ui
+              tag: v0.1@sha256:ae84fc71b4550f34a06c0cc8acce78d2accb8de8c57ce220e6b293cfa6689e20
+            env:
+              API_BASE_URL: http://blocky:4000/api
+            securityContext: *sec
+    defaultPodOptions:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/controller: blocky
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      http:
+        controller: *app
+        ports:
+          http:
+            port: 4000
+      internal-dns:
+        controller: *app
+        clusterIP: 172.16.20.104
+        ports:
+          dns-tcp:
+            port: 53
+            protocol: TCP
+          dns-udp:
+            primary: true
+            port: 53
+            protocol: UDP
+          dns-tls:
+            port: 853
+            protocol: TCP
+      external-dns:
+        controller: *app
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 172.16.20.103
+        ports:
+          dns-tcp:
+            port: 53
+            protocol: TCP
+          dns-udp:
+            primary: true
+            port: 53
+            protocol: UDP
+          dns-tls:
+            port: 853
+            protocol: TCP
+      ui:
+        controller: ui
+        ports:
+          http:
+            port: 3000
+    route:
+      *app :
+        hostnames:
+          - blocky.rphilipsen.nl
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: ui
+                port: 3000
+      dns-udp:
+        kind: UDPRoute
+        parentRefs:
+          - name: internal
+            namespace: network
+            sectionName: blocky-udp
+        rules:
+          - backendRefs:
+              - identifier: internal-dns
+                port: 53
+    persistence:
+      config:
+        type: configMap
+        name: blocky-config
+        globalMounts:
+          - path: /app/config.yml
+            subPath: config.yml
+            readOnly: true
