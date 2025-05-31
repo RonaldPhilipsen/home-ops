@@ -3,8 +3,8 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyfin
-  namespace: default
+  name: &app restfox
+  namespace: network
 spec:
   interval: 1h
   chartRef:
@@ -20,42 +20,28 @@ spec:
       retries: 0
   uninstall:
     keepHistory: false
-  dependsOn:
-      - name: intel-device-plugin-gpu
-        namespace: kube-system
+
   values:
     defaultPodOptions:
-      enableServiceLinks: false
-      nodeSelector:
-        intel.feature.node.kubernetes.io/gpu: "true"
       securityContext:
-        runAsUser: 568
-        runAsGroup: 568
+        runAsUser: 1000
+        runAsGroup: 1000
         runAsNonRoot: false
-        fsGroup: 1000
-        fsGroupChangePolicy: "OnRootMismatch"
-        supplementalGroups: [160, 140, 241, 0, 10, 121, 44, 65537]
       hostNetwork: false
 
     controllers:
-      jellyfin:
+      restfox:
         annotations:
           reloader.stakater.com/auto: "true"
         strategy: Recreate
         containers:
           main:
             image:
-              repository: jellyfin/jellyfin
-              tag: 10.10.7
+              repository: flawiddsouza/restfox
+              tag: 0.37.0
               pullPolicy: IfNotPresent
-
             env:
-              TZ: ${TIMEZONE}
-              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
-              JELLYFIN_FFmpeg__probesize: 50000000
-              JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: &url "{{ .Release.Name }}.${SECRET_DOMAIN}"
-
+              CUSTOM_PORT_ON_HOST: "4004" # default, but here for future reference
             securityContext:
               privileged: true
 
@@ -65,8 +51,8 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
-                    port: &port 8096
+                    path: /
+                    port: &port 4004
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -78,51 +64,29 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 30
-            resources:
-              requests:
-                gpu.intel.com/i915: 1
-              limits:
-                gpu.intel.com/i915: 1
-                # memory: 8Gi
+
 
     service:
       app:
-        controller: jellyfin
+        controller: restfox
         ports:
           http:
-            port: 8096
+            port: 4004
 
     route:
       app:
-        hostnames: [*url]
+        hostnames: ["restfox.rphilipsen.nl", "www.restfox.rphilipsen.nl"]
         parentRefs:
-          - name: external
+          - name: internal
             namespace: kube-system
             sectionName: https
         rules:
           - backendRefs:
               - name: *app
                 port: *port
-
-    persistence:
-      config:
-        existingClaim: jellyfin
-
-      data:
-        existingClaim: media-nfs
-
-      transcode:
-        type: emptyDir
-        globalMounts:
-          - path: /transcode
-
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /cache
