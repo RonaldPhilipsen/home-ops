@@ -4,21 +4,21 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &name flux-webhook
-  namespace: flux-system
+  namespace: &namespace flux-system
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: flux-instance
+      namespace: *namespace
   interval: 1h
   retryInterval: 2m
   timeout: 5m
   prune: false
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *name
   path: ./kubernetes/apps/flux-system/flux-webhook/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   wait: true
-  dependsOn:
-    - name: flux-instance
-      namespace: flux-system
