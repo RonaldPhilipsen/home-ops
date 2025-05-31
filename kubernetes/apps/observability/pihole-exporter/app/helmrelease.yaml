@@ -25,6 +25,8 @@ spec:
             image:
               repository: ghcr.io/osnabrugge/pihole-exporter
               tag: v1.0.1@sha256:c99456442c542d9d517afe2e863b92b2036548f0ee84c22c62f91a9e3396803c
+            env:
+              PORT: &port 9617
             envFrom:
               - secretRef:
                   name: *app
