@@ -47,7 +47,7 @@ spec:
             image:
               repository: jellyfin/jellyfin
               tag: 10.10.7
-              pullPolicy: Always
+              pullPolicy: IfNotPresent
 
             env:
               TZ: ${TIMEZONE}

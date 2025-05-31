@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app restfox
+  namespace: network
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 0
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 0
+  uninstall:
+    keepHistory: false
+
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: false
+      hostNetwork: false
+
+    controllers:
+      restfox:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          main:
+            image:
+              repository: flawiddsouza/restfox
+              tag: 0.37.0
+              pullPolicy: IfNotPresent
+            env:
+              CUSTOM_PORT_ON_HOST: "4004" # default, but here for future reference
+            securityContext:
+              privileged: true
+
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 4004
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
+
+
+    service:
+      app:
+        controller: restfox
+        ports:
+          http:
+            port: 4004
+
+    route:
+      app:
+        hostnames: ["restfox.rphilipsen.nl", "www.restfox.rphilipsen.nl"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
