@@ -7,4 +7,3 @@ resources:
   - ./secret.sops.yaml
   - ./httproute.yaml
   - ./receiver.yaml
-  - ./gateway.yaml
