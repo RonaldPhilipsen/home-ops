@@ -12,9 +12,9 @@ spec:
   gatewayClassName: cilium
   addresses:
     - type: IPAddress
-      value: 172.16.20.12
+      value: 172.16.20.31
     - type: IPAddress
-      value: ::ffff:172.16.20.12
+      value: ::ffff:172.16.20.31
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
