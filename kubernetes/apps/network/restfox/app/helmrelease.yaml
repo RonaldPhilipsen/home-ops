@@ -83,7 +83,7 @@ spec:
       app:
         hostnames: ["restfox.rphilipsen.nl", "www.restfox.rphilipsen.nl"]
         parentRefs:
-          - name: internal
+          - name: external
             namespace: kube-system
             sectionName: https
         rules:
