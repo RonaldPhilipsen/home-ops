@@ -13,8 +13,8 @@ spec:
   addresses:
     - type: IPAddress
       value: 172.16.20.13
-    - type: IPAddress
-      value: ::ffff:172.16.20.13
+    # - type: IPAddress
+    #   value: ::ffff:172.16.20.13
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
