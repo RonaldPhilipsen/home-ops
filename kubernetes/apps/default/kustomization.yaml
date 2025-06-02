@@ -7,7 +7,6 @@ components:
   - ../../components/common
 resources:
 # Common
-  - ./nginx-static/ks.yaml
   - ./cloudnative-pg/ks.yaml
 # Home Automation
   - ./home-assistant/ks.yaml
@@ -24,4 +23,6 @@ resources:
   - ./recyclarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
-
+# Other
+  - ./nginx-static/ks.yaml
+  - ./restfox/ks.yaml

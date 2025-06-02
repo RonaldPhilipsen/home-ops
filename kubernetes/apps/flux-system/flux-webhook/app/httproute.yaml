@@ -7,8 +7,8 @@ metadata:
 spec:
   hostnames: ["flux-webhook.rphilipsen.nl"]
   parentRefs:
-    - name: flux
-      namespace: flux-system
+    - name: external
+      namespace: kube-system
       sectionName: https
   rules:
     - backendRefs:
