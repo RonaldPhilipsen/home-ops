@@ -10,4 +10,3 @@ resources:
   - ./cloudflare-dns/ks.yaml
   - ./external-dns-pihole/ks.yaml
   - ./echo/ks.yaml
-  - ./restfox/ks.yaml
