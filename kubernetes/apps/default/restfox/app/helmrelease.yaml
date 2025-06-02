@@ -4,7 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app restfox
-  namespace: network
+  namespace: default
 spec:
   interval: 1h
   chartRef:
@@ -81,7 +81,7 @@ spec:
 
     route:
       app:
-        hostnames: ["restfox.rphilipsen.nl", "www.restfox.rphilipsen.nl"]
+        hostnames: ["restfox.rphilipsen.nl"]
         parentRefs:
           - name: external
             namespace: kube-system
