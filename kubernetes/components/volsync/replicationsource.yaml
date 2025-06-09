@@ -5,23 +5,29 @@ kind: ReplicationSource
 metadata:
   name: "${APP}"
 spec:
-  sourcePVC: "${CLAIM:=${APP}}"
+  sourcePVC: "${VOLSYNC_CLAIM:=${APP}}"
   trigger:
     schedule: "0 * * * *"
   restic:
-    repository: "${APP}-volsync"
-    copyMethod: "${VOLSYNC_COPYMETHOD:=Clone}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn-snapshot}"
-    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=10Gi}"
-    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
-    accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
+    copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
     pruneIntervalDays: 7
+    repository: "${APP}-volsync-secret" # name of the secret created by the ExternalSecret
+    # storage parameters
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
+    accessModes:
+      - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
+    # cache parameters
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn-cache}"
+    cacheAccessModes:
+      - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
+    moverSecurityContext:
+      runAsUser: ${VOLSYNC_PUID:=568}
+      runAsGroup: ${VOLSYNC_PGID:=568}
+      fsGroup: ${VOLSYNC_PGID:=568}
     retain:
       hourly: 24
       daily: 6
       weekly: 5
       monthly: 3
-    moverSecurityContext:
-      runAsUser: ${VOLSYNC_PUID:=568}
-      runAsGroup: ${VOLSYNC_PGID:=568}
-      fsGroup: ${VOLSYNC_PGID:=568}
