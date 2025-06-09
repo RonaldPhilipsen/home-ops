@@ -16,6 +16,7 @@ spec:
     cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn-snapshot}"
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=10Gi}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
+    accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
     capacity: "${VOLSYNC_CAPACITY:=15Gi}"
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=568}
