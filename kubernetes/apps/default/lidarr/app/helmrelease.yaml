@@ -49,7 +49,7 @@ spec:
               repository: ghcr.io/home-operations/lidarr
               tag: 2.12.1.4636@sha256:eded02b53dc2818dd865dd5814f43bdaad9d7bcd07687edbc3131d1f0f3d3ca1
             env:
-              TZ: America/Toronto
+              TZ: Europe/Amsterdam
               LIDARR__APP__INSTANCENAME: Lidarr
               LIDARR__APP__THEME: dark
               LIDARR__AUTH__METHOD: External
@@ -84,7 +84,7 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.rphilipsen.nl"]
+        hostnames: ["lidarr.rphilipsen.nl"]
         parentRefs:
           - name: internal
             namespace: kube-system
@@ -96,7 +96,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: lidarr
+        existingClaim: *app
 
       data:
         existingClaim: media-nfs
