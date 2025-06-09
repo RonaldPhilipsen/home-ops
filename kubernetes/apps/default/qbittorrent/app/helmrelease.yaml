@@ -28,7 +28,7 @@ spec:
               repository: ghcr.io/home-operations/qbittorrent
               tag: 5.1.0@sha256:37aefd713ba31d51255995261616f1144378887bc5f21665a0ebf851fb85f69a
             env:
-              TZ: ${TIMEZONE}
+              TZ: "Europe/Amsterdam"
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: false
@@ -63,7 +63,7 @@ spec:
       terminationGracePeriodSeconds: 300
     service:
       app:
-        controller: qbittorrent
+        controller: *app
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 172.16.20.140
@@ -88,6 +88,6 @@ spec:
 
     persistence:
       config:
-        existingClaim: qbittorrent
+        existingClaim: *app
       data:
         existingClaim: media-nfs

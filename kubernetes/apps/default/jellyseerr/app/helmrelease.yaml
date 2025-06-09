@@ -35,7 +35,7 @@ spec:
               repository: docker.io/fallenbagel/jellyseerr
               tag: "2.5.2"
             env:
-              TZ: ${TIMEZONE}
+              TZ: "Europe/Amsterdam"
               PORT: &port 5055
 
             envFrom: *envFrom

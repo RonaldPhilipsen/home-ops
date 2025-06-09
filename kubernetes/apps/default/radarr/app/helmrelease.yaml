@@ -48,7 +48,7 @@ spec:
               repository: ghcr.io/home-operations/radarr
               tag: 5.26.0.10051@sha256:9a9bbec11725e485a2cd0fb1bd199ec0c358aa7b09c81ae712c2cfb9d555fde5
             env:
-              TZ: ${TIMEZONE}
+              TZ: "Europe/Amsterdam"
               RADARR__APP__INSTANCENAME: Radarr
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
@@ -94,7 +94,7 @@ spec:
                 port: *port
     persistence:
       config:
-        existingClaim: radarr
+        existingClaim: *app
       data:
         existingClaim: media-nfs
     PodAnnotations:

@@ -44,7 +44,7 @@ spec:
               repository: ghcr.io/home-operations/sonarr
               tag: 4.0.14.2938@sha256:5126f7ae94745a8e58e6963e1f67e905766c096832eff08b0678355ad0cdecee
             env:
-              TZ: ${TIMEZONE}
+              TZ: "Europe/Amsterdam"
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
               SONARR__AUTH__METHOD: External
