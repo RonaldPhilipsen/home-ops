@@ -27,3 +27,7 @@ spec:
       runAsUser: ${VOLSYNC_PUID:=568}
       runAsGroup: ${VOLSYNC_PGID:=568}
       fsGroup: ${VOLSYNC_PGID:=568}
+    enableFileDeletion: true
+    cleanupCachePVC: true
+    # true for Rook-Ceph, false for Longhorn
+    cleanupTempPVC: false
