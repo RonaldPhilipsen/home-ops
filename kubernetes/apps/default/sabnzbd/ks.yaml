@@ -4,15 +4,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app sabnzbd
-  namespace: flux-system
+  namespace: &namespace flux-system
 spec:
   targetNamespace: default
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
+    - name: longhorn
+      namespace: storage
+  components:
+    - ../../../../components/volsync
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/sabnzbd/app
   prune: true
   sourceRef:
@@ -24,6 +28,6 @@ spec:
   retryInterval: 1m
   timeout: 5m
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
