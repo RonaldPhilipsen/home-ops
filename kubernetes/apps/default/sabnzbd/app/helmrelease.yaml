@@ -47,13 +47,13 @@ spec:
                 sab.default.svc,
                 sab.default.svc.cluster,
                 sab.default.svc.cluster.local,
-                sab.${SECRET_DOMAIN}
+                sab.rphilipsen.nl
                 sabnzbd,
                 sabnzbd.default,
                 sabnzbd.default.svc,
                 sabnzbd.default.svc.cluster,
                 sabnzbd.default.svc.cluster.local,
-                sabnzbd.${SECRET_DOMAIN}
+                sabnzbd.rphilipsen.nl
             envFrom:
               - secretRef:
                   name: sabnzbd-secret
@@ -86,7 +86,7 @@ spec:
             port: *port
     route:
       app:
-        hostnames: ["sab.rphilipsen.nl"]
+        hostnames: ["sab.rphilipsen.nl", "sabnzbd.rphilipsen.nl"]
         parentRefs:
           - name: internal
             namespace: kube-system
