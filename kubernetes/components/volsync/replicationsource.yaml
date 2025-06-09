@@ -13,7 +13,7 @@ spec:
     pruneIntervalDays: 7
     repository: "${APP}-volsync-secret" # name of the secret created by the ExternalSecret
     # storage parameters
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
     accessModes:
       - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
