@@ -13,7 +13,7 @@ spec:
     repository: "${APP}-${VOLSYNC_REPOSITORY:=volsync}"
     copyMethod: Direct
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-hostpath}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn-snapshot}"
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=10Gi}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
     capacity: "${VOLSYNC_CAPACITY:=15Gi}"
