@@ -54,7 +54,7 @@ spec:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
-              JELLYFIN_PublishedServerUrl: &url "{{ .Release.Name }}.${SECRET_DOMAIN}"
+              JELLYFIN_PublishedServerUrl: &url "jellyfin.rphilipsen.nl"
 
             securityContext:
               privileged: true
