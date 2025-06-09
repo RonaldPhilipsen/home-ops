@@ -2,23 +2,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyseerr
-  namespace: default
-spec:
-  storageClassName: nfs-provision
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 15Gi
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: jellyseerr-cache
 spec:
-  storageClassName: nfs-provision
+  storageClassName: longhorn
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:

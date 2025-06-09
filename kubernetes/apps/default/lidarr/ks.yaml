@@ -11,6 +11,13 @@ spec:
       namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: default
+    - name: longhorn
+      namespace: storage
+  components:
+    - ../../../../components/volsync
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/default/lidarr/app
   prune: true
   sourceRef:
@@ -22,6 +29,6 @@ spec:
   retryInterval: 1m
   timeout: 5m
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi

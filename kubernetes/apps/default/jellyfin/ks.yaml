@@ -6,6 +6,11 @@ metadata:
   name: jellyfin
   namespace: &namespace default
 spec:
+  dependsOn:
+    - name: longhorn
+      namespace: storage
+  components:
+    - ../../../../components/volsync
   path: ./kubernetes/apps/default/jellyfin/app
   prune: true
   sourceRef:
@@ -18,6 +23,6 @@ spec:
   retryInterval: 1m
   timeout: 5m
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 15Gi
