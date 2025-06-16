@@ -39,6 +39,12 @@ spec:
           enabled: false
         zfs:
           enabled: false
+        loki:
+          enabled: false
+        alloy:
+          enabled: false
+        minio:
+          enabled: false
       replicated:
         mayastor:
           enabled: false
