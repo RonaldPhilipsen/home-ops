@@ -28,6 +28,5 @@ spec:
       runAsGroup: ${VOLSYNC_PGID:=568}
       fsGroup: ${VOLSYNC_PGID:=568}
     enableFileDeletion: true
-    cleanupCachePVC: true
-    # true for Rook-Ceph, false for Longhorn
-    cleanupTempPVC: false
+    cleanupCachePVC: false  # https://github.com/backube/volsync/issues/1504
+    cleanupTempPVC: false  # https://github.com/backube/volsync/issues/1504
