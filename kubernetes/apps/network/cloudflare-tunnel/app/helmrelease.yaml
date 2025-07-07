@@ -92,6 +92,6 @@ metadata:
   name: cloudflare-tunnel
 spec:
   endpoints:
-    - dnsName: "external.${SECRET_DOMAIN}"
+    - dnsName: "external.rphilipsen.nl"
       recordType: CNAME
       targets: ["d16f2d9f-e4e5-4a84-97bd-080843d550de.cfargotunnel.com"]

@@ -51,9 +51,9 @@ spec:
       emailConfigs:
         # Whether to notify about resolved alerts.
         - sendResolved: true
-          to: 'alerts@${SECRET_DOMAIN}'
-          from: 'alertmanager@${SECRET_DOMAIN}'
-          hello: k8s@${SECRET_DOMAIN}
+          to: 'alerts@rphilipsen.nl'
+          from: 'alertmanager@rphilipsen.nl'
+          hello: k8s@rphilipsen.nl
           # The smarthost and SMTP sender used for mail notifications.
           smarthost: ${ALERTMANAGER_SMTP_HOST}
           authUsername: ${ALERTMANAGER_SMTP_USERNAME}
