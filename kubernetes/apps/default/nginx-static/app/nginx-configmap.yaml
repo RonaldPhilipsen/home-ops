@@ -7,7 +7,8 @@ data:
   nginx.conf: |
     events {
         multi_accept       on;
-        worker_connections 65535;
+        worker_connections 32767;
+        worker_rlimit_nofile 65535;
     }
 
     http {
@@ -35,19 +36,47 @@ data:
         server {
             listen	8080;
             listen	[::]:8080;
-            server_name www.${SECRET_DOMAIN} ${SECRET_DOMAIN};
+            server_name www.rphilipsen.nl rphilipsen.nl www.philipsen.it philipsen.it;
 
             proxy_read_timeout 10;
 
             location / {
-                # If the request is for "/", proxy to index.html in the S3 path
                 if ($uri = "/") {
-                    rewrite ^ /index.html break;
+                    rewrite ^ /index.html last;
                 }
+                # If the request is for "/", proxy to index.html in the S3 path
+
+                rewrite ^ $request_uri;
+                rewrite ^/1(/.*) $1 break;
+                return 400;
 
                 # Proxy all requests to S3
-                proxy_set_header Host $http_host;
-                proxy_pass http://172.16.20.7:9000/static/${SECRET_DOMAIN}$uri;
+                proxy_set_header Host $host;
+                proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$1;
             }
       } # end server
     } # end http
+
+  trees.conf: |
+    server {
+          listen	8080;
+          listen	[::]:8080;
+          server_name "www.trees100.nl" "trees100.nl",
+
+          proxy_read_timeout 10;
+
+          location / {
+              # If the request is for "/", proxy to index.html in the S3 path
+              if ($uri = "/") {
+                  rewrite ^ /index.html last;
+              }
+
+              rewrite ^ $request_uri;
+              rewrite ^/1(/.*) $1 break;
+              return 400;
+
+              # Proxy all requests to S3
+              proxy_set_header Host $host;
+              proxy_pass http://172.16.20.7:9000/static/trees100.nl$1;
+          }
+    };

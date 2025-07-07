@@ -52,7 +52,7 @@ spec:
           name: alertmanager
           global:
             resolveTimeout: 5m
-        externalUrl: https://alertmanager.${SECRET_DOMAIN}
+        externalUrl: https://alertmanager.rphilipsen.nl
         storage:
           volumeClaimTemplate:
             spec:

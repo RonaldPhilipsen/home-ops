@@ -113,7 +113,7 @@ spec:
         controller: *app
         type: LoadBalancer
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: mc.${SECRET_DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: mc.rphilipsen.nl
           lbipam.cilium.io/ips: "172.16.20.150"
         ports:
           java:
