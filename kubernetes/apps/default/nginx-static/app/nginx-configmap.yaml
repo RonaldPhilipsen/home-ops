@@ -7,8 +7,7 @@ data:
   nginx.conf: |
     events {
         multi_accept       on;
-        worker_connections 32767;
-        worker_rlimit_nofile 65535;
+        worker_connections 65535;
     }
 
     http {
