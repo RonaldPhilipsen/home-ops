@@ -19,21 +19,57 @@ spec:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
   listeners:
-    - name: http
-      protocol: HTTP
-      port: 80
-      hostname: "*.rphilipsen.nl"
-      allowedRoutes:
-        namespaces:
-          from: Same
-    - name: https
-      protocol: HTTPS
+    - name: rphilipsen
+      hostname: "rphilipsen.nl"
       port: 443
-      hostname: "*.rphilipsen.nl"
-      allowedRoutes:
-        namespaces:
-          from: All
+      protocol: HTTPS
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: rphilipsen-nl-tls
+            name: rphilipsen-nl-production-tls
+    - name: rphilipsen-www
+      hostname: "*.rphilipsen.nl"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rphilipsen-nl-production-tls
+    - name: trees100
+      hostname: "trees100.nl"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: trees100-nl-production-tls
+    - name: trees100-www
+      hostname: "*.trees100.nl"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: trees100-nl-production-tls
+    - name: philipsen
+      hostname: "philipsen.it"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: philipsen-it-production-tls
+    - name: philipsen-www
+      hostname: "*.philipsen.it"
+      port: 443
+      protocol: HTTPS
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: philipsen-it-production-tls

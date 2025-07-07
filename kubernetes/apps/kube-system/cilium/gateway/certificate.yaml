@@ -1,13 +1,41 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: rphilipsen-nl
+  name: "rphilipsen-nl-production"
 spec:
-  secretName: rphilipsen-nl-tls
+  secretName: "rphilipsen-nl-tls"
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: rphilipsen.nl
+  commonName: "rphilipsen.nl"
   dnsNames: ["rphilipsen.nl", "*.rphilipsen.nl"]
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "trees100-nl-production"
+spec:
+  secretName: "trees100-nl-tls"
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "trees100.nl"
+  dnsNames: ["trees100.nl", "*.trees100.nl"]
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "philipsen-it-production"
+spec:
+  secretName: "philipsen-it-tls"
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "philipsen.it"
+  dnsNames: ["philipsen.it", "*.philipsen.it"]
