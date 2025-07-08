@@ -62,22 +62,18 @@ spec:
           [
             "rphilipsen.nl",
             "www.rphilipsen.nl",
+            "philipsen.it",
+            "www.philipsen.it",
+            "trees100.nl",
+            "www.trees100.nl",
           ]
         parentRefs:
           - name: external
             namespace: kube-system
             sectionName: rphilipsen-https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-      philipsen:
-        hostnames:
-          [
-            "philipsen.it",
-            "www.philipsen.it",
-          ]
-        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: trees100-https
           - name: external
             namespace: kube-system
             sectionName: philipsen-it-https
@@ -85,20 +81,8 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-        trees100:
-          hostnames:
-            [
-              "trees100.nl",
-              "www.trees100.nl",
-            ]
-          parentRefs:
-            - name: external
-              namespace: kube-system
-              sectionName: trees100-https
-          rules:
-            - backendRefs:
-                - name: *app
-                  port: *port
+
+
 
     persistence:
       config:
