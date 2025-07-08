@@ -37,3 +37,27 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rphilipsen-nl-tls
+    - name: trees100-https
+      hostname: "*.trees100.nl"
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: trees100-nl-tls
+    - name: philipsen-it-https
+      hostname: "*.philipsen.it"
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: philipsen-it-tls
