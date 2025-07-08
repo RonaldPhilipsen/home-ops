@@ -57,24 +57,48 @@ spec:
             port: &port 8080
 
     route:
-      app:
+      rphilipsen:
         hostnames:
           [
             "rphilipsen.nl",
             "www.rphilipsen.nl",
-            "philipsen.it",
-            "www.philipsen.it",
-            "trees100.nl",
-            "www.trees100.nl",
           ]
         parentRefs:
           - name: external
             namespace: kube-system
-            sectionName: https
+            sectionName: rphilipsen-https
         rules:
           - backendRefs:
               - name: *app
                 port: *port
+      philipsen:
+        hostnames:
+          [
+            "philipsen.it",
+            "www.philipsen.it",
+          ]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: philipsen-it-https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+        trees100:
+          hostnames:
+            [
+              "trees100.nl",
+              "www.trees100.nl",
+            ]
+          parentRefs:
+            - name: external
+              namespace: kube-system
+              sectionName: trees100-https
+          rules:
+            - backendRefs:
+                - name: *app
+                  port: *port
 
     persistence:
       config:
