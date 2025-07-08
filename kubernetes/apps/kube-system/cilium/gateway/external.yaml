@@ -27,7 +27,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: rphilipsen-nl-production-tls
+            name: rphilipsen-nl-tls
     - name: rphilipsen-www
       hostname: "*.rphilipsen.nl"
       port: 443
@@ -36,7 +36,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: rphilipsen-nl-production-tls
+            name: rphilipsen-nl-tls
     - name: trees100
       hostname: "trees100.nl"
       port: 443
@@ -45,7 +45,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: trees100-nl-production-tls
+            name: trees100-nl-tls
     - name: trees100-www
       hostname: "*.trees100.nl"
       port: 443
@@ -54,7 +54,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: trees100-nl-production-tls
+            name: trees100-nl-tls
     - name: philipsen
       hostname: "philipsen.it"
       port: 443
@@ -63,7 +63,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: philipsen-it-production-tls
+            name: philipsen-it-tls
     - name: philipsen-www
       hostname: "*.philipsen.it"
       port: 443
@@ -72,4 +72,4 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: philipsen-it-production-tls
+            name: philipsen-it-tls
