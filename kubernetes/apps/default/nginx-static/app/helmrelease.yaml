@@ -92,9 +92,6 @@ spec:
           - path: /etc/nginx/nginx.conf
             subPath: nginx.conf # Ensure this matches the key name in the ConfigMap
             readOnly: true
-          - path: /etc/nginx/sites-enabled/trees.conf
-            subPath: trees.conf # Ensure this matches the key name in the ConfigMap
-            readOnly: true
       var:
         type: emptyDir
         globalMounts:
