@@ -77,7 +77,7 @@ spec:
         parentRefs:
           - name: external
             namespace: kube-system
-            sectionName: https
+            sectionName: rphilipsen-https
         rules:
           - backendRefs:
               - name: home-assistant-app
