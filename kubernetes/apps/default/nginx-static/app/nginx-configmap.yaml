@@ -11,63 +11,73 @@ data:
     }
 
     http {
-        charset                utf-8;
-        sendfile               on;
-        tcp_nopush             on;
-        tcp_nodelay            on;
-        server_tokens          off;
-        log_not_found          off;
-        types_hash_max_size    2048;
-        types_hash_bucket_size 64;
-        client_max_body_size   16M;
+      charset                utf-8;
+      sendfile               on;
+      tcp_nopush             on;
+      tcp_nodelay            on;
+      server_tokens          off;
+      log_not_found          off;
+      types_hash_max_size    2048;
+      types_hash_bucket_size 64;
+      client_max_body_size   16M;
 
-        # MIME
-        include                mime.types;
-        default_type           application/octet-stream;
+      # MIME
+      include                mime.types;
+      default_type           application/octet-stream;
 
-        # Logging
-        access_log  /var/log/nginx/access.log combined buffer=512k flush=1m;
-        error_log   /var/log/nginx/error.log warn;
+      # Logging
+      access_log  /var/log/nginx/access.log combined buffer=512k flush=1m;
+      error_log   /var/log/nginx/error.log warn;
 
-        # Set the DNS resolver to the Kubernetes DNS service
-        resolver kube-dns.kube-system.svc.cluster.local valid=30s;
+      # Set the DNS resolver to the Kubernetes DNS service
+      resolver kube-dns.kube-system.svc.cluster.local valid=30s;
 
-        server {
-            listen	8080;
-            listen	[::]:8080;
-            server_name www.rphilipsen.nl rphilipsen.nl www.philipsen.it philipsen.it;
+      server {
+        listen	8080;
+        listen	[::]:8080;
+        server_name www.rphilipsen.nl rphilipsen.nl;
 
-            proxy_read_timeout 10;
+        proxy_read_timeout 10;
 
-            location / {
-                # If the request is for "/", proxy to index.html in the S3 path
-                if ($uri = "/") {
-                    rewrite ^ /index.html last;
-                }
-
-                # Proxy all requests to S3
-                proxy_set_header Host $host;
-                proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$uri;
-            }
+        location / {
+          # If the request is for "/", proxy to index.html in the S3 path
+          if ($uri = "/") {
+            rewrite ^ /index.html last;
+          }
+          proxy_set_header Host $host;
+          proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$uri;
+        }
       } # end server
+
+      server {
+        listen	8080;
+        listen	[::]:8080;
+        server_name www.trees100.nl trees100.nl;
+
+        proxy_read_timeout 10;
+
+        location / {
+          # If the request is for "/", proxy to index.html in the S3 path
+          if ($uri = "/") {
+            rewrite ^ /index.html last;
+          }
+          proxy_set_header Host $host;
+          proxy_pass http://172.16.20.7:9000/static/trees100.nl$uri;
+        }
+      }
+
+      server {
+        listen 8080;
+        listen [::]:8080;
+        server_name www.philipsen.it philipsen.it;
+        proxy_read_timeout 10;
+        location / {
+          if ($uri = "/") {
+            rewrite ^ /index.html last;
+          }
+          proxy_set_header Host $host;
+          proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$uri;
+        }
+      }
     } # end http
 
-  trees.conf: |
-    server {
-          listen	8080;
-          listen	[::]:8080;
-          server_name "www.trees100.nl" "trees100.nl",
-
-          proxy_read_timeout 10;
-
-          location / {
-              # If the request is for "/", proxy to index.html in the S3 path
-              if ($uri = "/") {
-                  rewrite ^ /index.html last;
-              }
-
-              # Proxy all requests to S3
-              proxy_set_header Host $host;
-              proxy_pass http://172.16.20.7:9000/static/trees100.nl$uri;
-          }
-    };
