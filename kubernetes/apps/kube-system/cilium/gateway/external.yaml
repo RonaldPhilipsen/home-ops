@@ -31,6 +31,9 @@ spec:
       hostname: "*.rphilipsen.nl"
       port: 443
       protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
@@ -41,6 +44,9 @@ spec:
       hostname: "*.trees100.nl"
       port: 443
       protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
@@ -51,6 +57,9 @@ spec:
       hostname: "*.philipsen.it"
       port: 443
       protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
         mode: Terminate
         certificateRefs:
