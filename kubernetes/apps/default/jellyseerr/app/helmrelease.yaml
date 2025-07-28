@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: docker.io/fallenbagel/jellyseerr
-              tag: "2.7.0"
+              tag: "2.7.2"
             env:
               TZ: "Europe/Amsterdam"
               PORT: &port 5055
