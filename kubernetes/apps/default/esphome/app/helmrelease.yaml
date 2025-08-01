@@ -89,4 +89,4 @@ spec:
       esphome-cache:
         type: emptyDir
         globalMounts:
-          - path: /config/.esphome
+          - path: /cache
