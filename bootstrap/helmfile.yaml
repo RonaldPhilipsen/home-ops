@@ -5,71 +5,51 @@ helmDefaults:
   cleanupOnFail: true
   wait: true
   waitForJobs: true
-  # waitRetries: 3 # Not supported by Helm yet
-
-repositories:
-  - name: controlplaneio
-    url: ghcr.io/controlplaneio-fluxcd/charts
-    oci: true
-
-  - name: coredns
-    url: ghcr.io/coredns/charts
-    oci: true
-
-  - name: cilium
-    url: https://helm.cilium.io
-
-  - name: jetstack
-    url: https://charts.jetstack.io
-
-  - name: spegel
-    url: ghcr.io/spegel-org/helm-charts
-    oci: true
 
 releases:
   - name: cilium
     namespace: kube-system
     atomic: true
-    chart: cilium/cilium
+    chart: oci://ghcr.io/home-operations/charts-mirror/cilium
     version: 1.18.1
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
 
   - name: coredns
     namespace: kube-system
     atomic: true
-    chart: coredns/coredns
+    chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.43.2
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/coredns/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
     needs: ['kube-system/cilium']
 
   - name: spegel
     namespace: kube-system
     atomic: true
-    chart: spegel/spegel
+    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
     version: 0.3.0
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/spegel/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
     needs: ['kube-system/coredns']
 
   - name: cert-manager
     namespace: cert-manager
     atomic: true
-    chart: jetstack/cert-manager
+    chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.18.2
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
     needs: ['kube-system/spegel']
 
   - name: flux-operator
     namespace: flux-system
     atomic: true
-    chart: controlplaneio/flux-operator
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     version: 0.28.0
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/flux-system/flux-operator/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager']
 
   - name: flux-instance
     namespace: flux-system
     atomic: true
-    chart: controlplaneio/flux-instance
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
     version: 0.28.0
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/flux-system/flux-instance/app/helm/values.yaml']
+    values: ['./values.yaml.gotmpl']
     needs: ['flux-system/flux-operator']
