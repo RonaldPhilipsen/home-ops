@@ -8,3 +8,5 @@ resources:
   - ./snapshot.yaml
   - ./storageclass.yaml
   - ./httproute.yaml
+  - ./servicemonitor.yaml
+
