@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/ocirepository-source-v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -25,38 +25,87 @@ spec:
     name: cilium
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: cilium-values
   values:
-    hubble:
+    autoDirectNodeRoutes: true
+    bpf:
+      masquerade: true
+      # Ref: https://github.com/siderolabs/talos/issues/10002
+      hostLegacyRouting: true
+    cni:
+      # Required for pairing with Multus CNI
+      exclusive: false
+    cgroup:
+      automount:
+        enabled: false
+      hostRoot: /sys/fs/cgroup
+    # NOTE: devices might need to be set if you have more than one active NIC on your hosts
+    # devices: eno+ eth+
+    dashboards:
       enabled: true
-      metrics:
-        enabled:
-          - dns:query
-          - drop
-          - tcp
-          - flow
-          - port-distribution
-          - icmp
-          - http
+    endpointRoutes:
+      enabled: true
+    envoy:
+      rollOutPods: true
+      prometheus:
         serviceMonitor:
           enabled: true
-        dashboards:
-          enabled: true
-      relay:
-        enabled: true
-        rollOutPods: true
-        prometheus:
-          serviceMonitor:
-            enabled: true
-      ui:
-        enabled: true
-        rollOutPods: true
+    gatewayAPI:
+      enabled: true
+    hubble:
+      enabled: false
+    ipam:
+      mode: kubernetes
+    ipv4NativeRoutingCIDR: "10.42.0.0/16"
+    k8sServiceHost: 127.0.0.1
+    k8sServicePort: 7445
+    kubeProxyReplacement: true
+    kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+    l2announcements:
+      enabled: true
+    loadBalancer:
+      algorithm: maglev
+      mode: "dsr"
+    localRedirectPolicy: true
     operator:
-      tolerations: []
+      dashboards:
+        enabled: true
+      prometheus:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      replicas: 1
+      rollOutPods: true
+    prometheus:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        trustCRDsExist: true
+    rollOutCiliumPods: true
+    routingMode: native
+    securityContext:
+      capabilities:
+        ciliumAgent:
+          - CHOWN
+          - KILL
+          - NET_ADMIN
+          - NET_RAW
+          - IPC_LOCK
+          - SYS_ADMIN
+          - SYS_RESOURCE
+          - PERFMON
+          - BPF
+          - DAC_OVERRIDE
+          - FOWNER
+          - SETGID
+          - SETUID
+        cleanCiliumState:
+          - NET_ADMIN
+          - SYS_ADMIN
+          - SYS_RESOURCE
+    socketLB:
+      hostNamespaceOnly: true

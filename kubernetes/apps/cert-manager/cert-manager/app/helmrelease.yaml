@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/ocirepository-source-v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
@@ -19,14 +19,17 @@ kind: HelmRelease
 metadata:
   name: cert-manager
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: cert-manager
   install:
-    crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
-    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     crds:
       enabled: true
