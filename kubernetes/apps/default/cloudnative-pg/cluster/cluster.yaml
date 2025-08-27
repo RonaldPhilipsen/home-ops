@@ -46,7 +46,7 @@ spec:
       endpointURL: http://172.16.20.7:9000
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v4
+      serverName: &currentCluster postgres-v5
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -59,7 +59,7 @@ spec:
       barmanObjectStore:
         destinationPath: s3://pg-backup
         endpointURL: http://172.16.20.7:9000
-        serverName: &previouscluster postgres-v3
+        serverName: &previouscluster postgres-v4
         s3Credentials:
           accessKeyId:
             name: cloudnative-pg-secret
