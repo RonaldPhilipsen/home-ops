@@ -25,7 +25,6 @@ spec:
       esphome:
         pod:
           hostNetwork: true
-
         containers:
           app:
             image:
@@ -49,7 +48,14 @@ spec:
                 memory: 64M
               limits:
                 memory: 1024M
-
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
     service:
       esphome:
         controller: esphome
@@ -67,7 +73,6 @@ spec:
             port: *esphome
             primary: true
         externalTrafficPolicy: Cluster
-
     route:
       app:
         hostnames: ["{{ .Release.Name }}.rphilipsen.nl"]
