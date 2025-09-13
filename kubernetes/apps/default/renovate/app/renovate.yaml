@@ -14,8 +14,6 @@ spec:
               # Update this to the latest available and then enable Renovate on
               # the manifest
               image: renovate/renovate:41.97.9
-              args:
-                - RonaldPhilipsen/home-ops
               # Environment Variables
               env:
                 - name: LOG_LEVEL
@@ -23,3 +21,4 @@ spec:
               envFrom:
                 - secretRef:
                     name: renovate-secret
+          restartPolicy: OnFailure
