@@ -20,15 +20,13 @@ spec:
   values:
     fullnameOverride: *app
     provider: pihole
-    env:
-      - name: EXTERNAL_DNS_PIHOLE_SERVER
-        value: http://172.16.20.7
     envFrom:
       - secretRef:
           name: &secret external-dns-pihole-secret
     extraArgs:
       - --pihole-api-version=6
       - --metrics-address=:7979
+      - --pihole-server=http://172.16.20.7
     triggerLoopOnEvent: true
     policy: upsert-only
     sources:
@@ -45,3 +43,6 @@ spec:
       enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
+    serviceAccount:
+      create: false
+      name: external-dns-pihole
