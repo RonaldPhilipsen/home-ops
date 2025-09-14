@@ -26,7 +26,7 @@ spec:
     extraArgs:
       - --pihole-api-version=6
       - --metrics-address=:7979
-      - --pihole-server=http://172.16.20.7
+      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
     triggerLoopOnEvent: true
     policy: upsert-only
     sources:
@@ -35,6 +35,8 @@ spec:
       - "service"
     txtPrefix: k8s.
     txtOwnerId: default
+    logLevel: debug
+    logFormat: text
     domainFilters:
       - rphilipsen.nl
       - philipsen.it
