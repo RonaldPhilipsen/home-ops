@@ -33,7 +33,7 @@ spec:
         strategy: RollingUpdate
         replicas: 3
         annotations:
-          secret.reloader.stakater.com/reload: "auto"
+          secret.reloader.stakater.com/reload: vernemq-secret
         pod:
           securityContext:
             runAsUser: 10000
@@ -48,8 +48,6 @@ spec:
                         values:
                           - vernemq
                   topologyKey: kubernetes.io/hostname
-        annotations:
-          secret.reloader.stakater.com/reload: vernemq-secret
 
         containers:
           app:
