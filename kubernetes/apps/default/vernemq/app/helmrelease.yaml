@@ -11,21 +11,6 @@ spec:
     kind: OCIRepository
     name: app-template
 
-  maxHistory: 3
-
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-
-  uninstall:
-    keepHistory: false
-
   values:
     controllers:
       vernemq:
@@ -73,7 +58,7 @@ spec:
                   name: vernemq-secret
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   httpGet:
@@ -96,7 +81,7 @@ spec:
                         curl -s localhost:8888/status.json |
                         jq -e '.[0] | [to_entries.[].value.num_retained] | .[0] as $x | all(.[]; . == $x)'
                   periodSeconds: 10
-                  timeoutSeconds: 30
+                  timeoutSeconds: 90
             resources:
               requests:
                 cpu: 20m
