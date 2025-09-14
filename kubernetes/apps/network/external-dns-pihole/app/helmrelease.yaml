@@ -33,7 +33,7 @@ spec:
       - --log-level=debug
       - --metrics-address=:7979
       - --log-format=text
-  triggerLoopOnEvent: true
+    triggerLoopOnEvent: true
     policy: upsert
     sources:
       - "crd"
