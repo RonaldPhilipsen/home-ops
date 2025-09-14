@@ -28,17 +28,19 @@ spec:
           name: &secret external-dns-pihole-secret
     extraArgs:
       - --pihole-api-version=6
-      - --log-format=text
-      - --log-level=debug
       - --metrics-address=:7979
     triggerLoopOnEvent: true
     policy: upsert-only
     sources:
       - "crd"
       - "gateway-httproute"
+      - "service"
     txtPrefix: k8s.
     txtOwnerId: default
-    domainFilters: ["rphilipsen.nl", "philipsen.it", "trees100.nl"]
+    domainFilters:
+      - rphilipsen.nl
+      - philipsen.it
+      - trees100.nl
     serviceMonitor:
       enabled: true
     podAnnotations:
