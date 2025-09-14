@@ -25,7 +25,7 @@ spec:
         value: http://172.16.20.7
     envFrom:
       - secretRef:
-          name: external-dns-pihole-secret
+          name: &secret external-dns-pihole-secret
     extraArgs:
       - --pihole-api-version=6
       - --interval=5m
