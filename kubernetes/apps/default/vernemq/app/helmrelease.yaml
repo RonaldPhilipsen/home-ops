@@ -52,13 +52,12 @@ spec:
               DOCKER_VERNEMQ_ALLOW_PUBLISH_DURING_NETSPLIT: "on"
               DOCKER_VERNEMQ_ALLOW_SUBSCRIBE_DURING_NETSPLIT: "on"
               DOCKER_VERNEMQ_ALLOW_UNSUBSCRIBE_DURING_NETSPLIT: "on"
-
             envFrom:
               - secretRef:
                   name: vernemq-secret
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   httpGet:
@@ -66,6 +65,7 @@ spec:
                     port: 8888
                   periodSeconds: 10
                   timeoutSeconds: 5
+                  failureThreshold: 10
               readiness: *probes
               startup:
                 <<: *probes
@@ -82,6 +82,7 @@ spec:
                         jq -e '.[0] | [to_entries.[].value.num_retained] | .[0] as $x | all(.[]; . == $x)'
                   periodSeconds: 10
                   timeoutSeconds: 90
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 20m
