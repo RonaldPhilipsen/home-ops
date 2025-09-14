@@ -43,6 +43,3 @@ spec:
       enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: *secret
-    serviceAccount:
-      create: false
-      name: external-dns-pihole
