@@ -31,8 +31,18 @@ spec:
       vernemq:
         type: statefulset
         strategy: RollingUpdate
-        replicas: 2
-
+        replicas: 3
+        pod:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - vernemq
+                  topologyKey: kubernetes.io/hostname
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret
 
@@ -85,7 +95,7 @@ spec:
                         curl -s localhost:8888/status.json |
                         jq -e '.[0] | [to_entries.[].value.num_retained] | .[0] as $x | all(.[]; . == $x)'
                   periodSeconds: 10
-                  timeoutSeconds: 5
+                  timeoutSeconds: 30
             resources:
               requests:
                 cpu: 20m
