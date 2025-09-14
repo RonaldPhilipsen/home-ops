@@ -70,6 +70,15 @@ spec:
               DOCKER_VERNEMQ_ALLOW_PUBLISH_DURING_NETSPLIT: 'on'
               DOCKER_VERNEMQ_ALLOW_SUBSCRIBE_DURING_NETSPLIT: 'on'
               DOCKER_VERNEMQ_ALLOW_UNSUBSCRIBE_DURING_NETSPLIT: 'on'
+
+              # Kubernetes namespace (required for discovery)
+              DOCKER_VERNEMQ_KUBERNETES_NAMESPACE: "default"
+              DOCKER_VERNEMQ_CLUSTER_LEAVE_NODE_ON_UNSUBSCRIBE: "on"
+              DOCKER_VERNEMQ_CLUSTER_TRADE_CONSISTENCY: "on"
+              DOCKER_VERNEMQ_CLUSTER_PURGE_OFFLINE_NODES_AFTER: "60000" # 60 seconds
+              DOCKER_VERNEMQ_CLUSTER_FORMATION_TIMEOUT: "120000" # 2 minutes
+              DOCKER_VERNEMQ_CLUSTER_JOIN_TIMEOUT: "60000" # 1 minute
+
             envFrom:
               - secretRef:
                   name: vernemq-secret
