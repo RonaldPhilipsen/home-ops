@@ -31,16 +31,29 @@ spec:
       vernemq:
         type: statefulset
         strategy: RollingUpdate
-        replicas: 2
-
+        replicas: 3
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret
+        pod:
+          securityContext:
+            runAsUser: 10000
+            runAsNonRoot: true
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - vernemq
+                  topologyKey: kubernetes.io/hostname
 
         containers:
           app:
             image:
               repository: vernemq/vernemq
-              tag: 2.1.1-alpine
+              tag: 2.1.1-alpine@sha256:78f6ba747178e00c39b96f7cf7672b8f0f9fc593ffa584b0b34257f670095b89
             env:
               MY_POD_NAME:
                 valueFrom:
@@ -49,14 +62,23 @@ spec:
               DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
               DOCKER_VERNEMQ_DISCOVERY_KUBERNETES: 1
               DOCKER_VERNEMQ_KUBERNETES_LABEL_SELECTOR: "app.kubernetes.io/name=vernemq"
-              DOCKER_VERNEMQ_LEVELDB__MAXIMUM_MEMORY: '10485760' # in bytes
-              DOCKER_VERNEMQ_LEVELDB__WRITE_BUFFER_SIZE_MIN: '1048576'
-              DOCKER_VERNEMQ_LEVELDB__WRITE_BUFFER_SIZE_MAX: '2097152'
+              DOCKER_VERNEMQ_LEVELDB__MAXIMUM_MEMORY: "128000000"
+              DOCKER_VERNEMQ_LEVELDB__WRITE_BUFFER_SIZE_MIN: "2500000"
+              DOCKER_VERNEMQ_LEVELDB__WRITE_BUFFER_SIZE_MAX: "7500000"
               # allow clients to failover when pods are restarting
               DOCKER_VERNEMQ_ALLOW_REGISTER_DURING_NETSPLIT: 'on'
               DOCKER_VERNEMQ_ALLOW_PUBLISH_DURING_NETSPLIT: 'on'
               DOCKER_VERNEMQ_ALLOW_SUBSCRIBE_DURING_NETSPLIT: 'on'
               DOCKER_VERNEMQ_ALLOW_UNSUBSCRIBE_DURING_NETSPLIT: 'on'
+
+              # Kubernetes namespace (required for discovery)
+              DOCKER_VERNEMQ_KUBERNETES_NAMESPACE: "default"
+              DOCKER_VERNEMQ_CLUSTER_LEAVE_NODE_ON_UNSUBSCRIBE: "on"
+              DOCKER_VERNEMQ_CLUSTER_TRADE_CONSISTENCY: "on"
+              DOCKER_VERNEMQ_CLUSTER_PURGE_OFFLINE_NODES_AFTER: "60000" # 60 seconds
+              DOCKER_VERNEMQ_CLUSTER_FORMATION_TIMEOUT: "120000" # 2 minutes
+              DOCKER_VERNEMQ_CLUSTER_JOIN_TIMEOUT: "60000" # 1 minute
+
             envFrom:
               - secretRef:
                   name: vernemq-secret
@@ -85,7 +107,7 @@ spec:
                         curl -s localhost:8888/status.json |
                         jq -e '.[0] | [to_entries.[].value.num_retained] | .[0] as $x | all(.[]; . == $x)'
                   periodSeconds: 10
-                  timeoutSeconds: 5
+                  timeoutSeconds: 30
             resources:
               requests:
                 cpu: 20m
@@ -164,14 +186,15 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /vernemq/data
-      log:
+      tmpfs:
         type: emptyDir
-        globalMounts:
-          - path: /vernemq/log
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
+        advancedMounts:
+          vernemq:
+            app:
+              - path: /vernemq/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp
       acl:
         type: secret
         name: vernemq-secret
