@@ -34,11 +34,10 @@ spec:
       - --metrics-address=:7979
       - --log-format=text
     triggerLoopOnEvent: true
-    policy: upsert
+    policy: upsert-only
     sources:
       - "crd"
       - "gateway-httproute"
-      - "service"
     txtPrefix: k8s.
     txtOwnerId: default
     domainFilters: ["rphilipsen.nl", "philipsen.it", "trees100.nl"]
