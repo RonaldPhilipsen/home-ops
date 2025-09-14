@@ -32,6 +32,8 @@ spec:
         type: statefulset
         strategy: RollingUpdate
         replicas: 3
+        annotations:
+          secret.reloader.stakater.com/reload: "auto"
         pod:
           securityContext:
             runAsUser: 10000
