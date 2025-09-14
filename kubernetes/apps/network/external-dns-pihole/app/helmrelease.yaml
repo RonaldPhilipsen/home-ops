@@ -28,7 +28,6 @@ spec:
           name: &secret external-dns-pihole-secret
     extraArgs:
       - --pihole-api-version=6
-      - --interval=5m
       - --log-format=text
       - --log-level=debug
       - --metrics-address=:7979
