@@ -32,7 +32,6 @@ spec:
       - --log-format=text
       - --log-level=debug
       - --metrics-address=:7979
-      - --log-format=text
     triggerLoopOnEvent: true
     policy: upsert-only
     sources:
