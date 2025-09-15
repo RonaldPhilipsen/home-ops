@@ -45,6 +45,8 @@ spec:
       enabled: true
     hubble:
       enabled: true
+      relay:
+        enabled: false
     ui:
       enabled: true
       standalone:
