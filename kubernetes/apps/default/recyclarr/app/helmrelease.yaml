@@ -20,8 +20,6 @@ spec:
   dependsOn:
   - name: longhorn
     namespace: storage
-  - name: volsync
-    namespace: storage
   values:
     controllers:
       recyclarr:
