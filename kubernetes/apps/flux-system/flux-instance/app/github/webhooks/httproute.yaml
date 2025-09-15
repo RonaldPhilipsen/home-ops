@@ -12,7 +12,7 @@ spec:
       sectionName: rphilipsen-https
   rules:
     - backendRefs:
-        - name: "webhook-receiver"
+        - name: webhook-receiver
           namespace: flux-system
           port: 80
       matches:
