@@ -20,3 +20,18 @@ spec:
       kind: Kustomization
       name: cluster-apps
       namespace: flux-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-receiver
+  namespace: flux-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: notification-controller
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 9292
