@@ -20,7 +20,7 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
-  prune: true
+  prune: false # Do not delete the HelmRelease when this Kustomization is deleted
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
