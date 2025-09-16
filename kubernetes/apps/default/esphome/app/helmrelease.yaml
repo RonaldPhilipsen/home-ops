@@ -82,7 +82,7 @@ spec:
             sectionName: rphilipsen-https
         rules:
           - backendRefs:
-              - name: esphome-esphome
+              - name: esphome
                 port: *esphome
     persistence:
       config:
