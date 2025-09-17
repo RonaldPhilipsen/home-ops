@@ -63,7 +63,6 @@ spec:
       source: source
       # source: clusterBackup
   externalClusters:
-    externalClusters:
     - name: source
       plugin:
         name: barman-cloud.cloudnative-pg.io
