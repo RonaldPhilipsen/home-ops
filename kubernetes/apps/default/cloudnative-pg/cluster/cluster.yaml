@@ -57,7 +57,7 @@ spec:
       isWALArchiver: true
       parameters: &parameters
         barmanObjectName: minio
-        serverName: postgres17-v1
+        serverName: postgres-v5
   bootstrap:
     recovery:
       source: source
