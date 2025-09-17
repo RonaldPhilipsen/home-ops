@@ -44,3 +44,9 @@ subjects:
   - kind: ServiceAccount
     name: barman-cloud
     namespace: default
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: barman-cloud
+  namespace: default
