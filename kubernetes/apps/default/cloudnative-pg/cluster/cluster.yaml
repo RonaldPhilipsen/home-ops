@@ -27,63 +27,56 @@ spec:
     requests:
       cpu: 500m
     limits:
+      hugepages-2Mi: 1Gi
       memory: 2Gi
   monitoring:
     enablePodMonitor: true
+
+  # backup:
+  #   retentionPolicy: 10d
+  #   barmanObjectStore: &barmanObjectStore
+  #     data:
+  #       compression: bzip2
+  #     wal:
+  #       compression: bzip2
+  #       maxParallel: 8
+  #     destinationPath: s3://pg-backup
+  #     endpointURL: http://172.16.20.7:9000
+  #     # Note: serverName version needs to be inclemented
+  #     # when recovering from an existing cnpg cluster
+  #     serverName: &currentCluster postgres-v5
+  #     s3Credentials:
+  #       accessKeyId:
+  #         name: cloudnative-pg-secret
+  #         key: AWS_ACCESS_KEY_ID
+  #       secretAccessKey:
+  #         name: cloudnative-pg-secret
+  #         key: AWS_SECRET_ACCESS_KEY
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters: &parameters
+        barmanObjectName: minio
+        serverName: postgres17-v1
   bootstrap:
     recovery:
-      source: clusterBackup
-
-  backup:
-    retentionPolicy: 10d
-    barmanObjectStore: &barmanObjectStore
-      data:
-        compression: bzip2
-      wal:
-        compression: bzip2
-        maxParallel: 8
-      destinationPath: s3://pg-backup
-      endpointURL: http://172.16.20.7:9000
-      # Note: serverName version needs to be inclemented
-      # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v5
-      s3Credentials:
-        accessKeyId:
-          name: cloudnative-pg-secret
-          key: AWS_ACCESS_KEY_ID
-        secretAccessKey:
-          name: cloudnative-pg-secret
-          key: AWS_SECRET_ACCESS_KEY
+      source: source
+      # source: clusterBackup
   externalClusters:
-    - name: clusterBackup
-      barmanObjectStore:
-        destinationPath: s3://pg-backup
-        endpointURL: http://172.16.20.7:9000
-        serverName: &previouscluster postgres-v4
-        s3Credentials:
-          accessKeyId:
-            name: cloudnative-pg-secret
-            key: AWS_ACCESS_KEY_ID
-          secretAccessKey:
-            name: cloudnative-pg-secret
-            key: AWS_SECRET_ACCESS_KEY
-
----
-# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-lb
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: postgres.rphilipsen.nl
-    lbipam.cilium.io/ips: 172.16.20.101
-spec:
-  type: LoadBalancer
-  ports:
-    - name: postgres
-      port: 5432
-      protocol: TCP
-      targetPort: 5432
-  selector:
-    cnpg.io/cluster: postgres
-    role: primary
+    externalClusters:
+    - name: source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters: *parameters
+    # - name: clusterBackup
+    #   barmanObjectStore:
+    #     destinationPath: s3://pg-backup
+    #     endpointURL: http://172.16.20.7:9000
+    #     serverName: &previouscluster postgres-v4
+    #     s3Credentials:
+    #       accessKeyId:
+    #         name: cloudnative-pg-secret
+    #         key: AWS_ACCESS_KEY_ID
+    #       secretAccessKey:
+    #         name: cloudnative-pg-secret
+    #         key: AWS_SECRET_ACCESS_KEY
