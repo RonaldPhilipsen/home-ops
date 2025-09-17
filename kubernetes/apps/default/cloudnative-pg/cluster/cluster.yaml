@@ -80,23 +80,3 @@ spec:
     #       secretAccessKey:
     #         name: cloudnative-pg-secret
     #         key: AWS_SECRET_ACCESS_KEY
-
----
-# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-lb
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: postgres.rphilipsen.nl
-    lbipam.cilium.io/ips: 172.16.20.101
-spec:
-  type: LoadBalancer
-  ports:
-    - name: postgres
-      port: 5432
-      protocol: TCP
-      targetPort: 5432
-  selector:
-    cnpg.io/cluster: postgres
-    role: primary
