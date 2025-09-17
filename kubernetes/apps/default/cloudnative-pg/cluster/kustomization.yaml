@@ -5,4 +5,8 @@ kind: Kustomization
 namespace: default
 resources:
   - ./cluster.yaml
+  - ./objectstore.yaml
+  - ./pooler.yaml
+  - ./prometheusrule.yaml
   - ./scheduledbackup.yaml
+  - ./service.yaml
