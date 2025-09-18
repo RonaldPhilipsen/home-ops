@@ -51,16 +51,24 @@ spec:
       enabled: true
     hubble:
       enabled: true
+      tls:
+        auto:
+          method: certmanager
+          certManagerIssuerRef:
+            group: cert-manager.io
+            kind: ClusterIssuer
+            name: cluster-ca
+      ui:
+        enabled: true
       relay:
-        enabled: false
-    ui:
-      enabled: true
-      rollOutPods: true
+        enabled: true
     ipam:
       mode: kubernetes
-    ipv6:
+    ipv4:
       enabled: true
     ipv4NativeRoutingCIDR: "10.42.0.0/16"
+    ipv6:
+      enabled: true
     ipv6NativeRoutingCIDR: "${CLUSTER_NODE_V6_CIDR}"
     enableIPv6Masquerade: false
     enableIPv4Masquerade: true
@@ -74,6 +82,8 @@ spec:
       algorithm: maglev
       mode: "dsr"
     localRedirectPolicy: true
+    nodeIPAM:
+      enabled: true
     operator:
       dashboards:
         enabled: true
