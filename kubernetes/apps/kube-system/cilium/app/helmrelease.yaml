@@ -62,6 +62,8 @@ spec:
       enabled: true
     ipv4NativeRoutingCIDR: "10.42.0.0/16"
     ipv6NativeRoutingCIDR: "${CLUSTER_NODE_V6_CIDR}"
+    enableIPv6Masquerade: false
+    enableIPv4Masquerade: true
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
     kubeProxyReplacement: true

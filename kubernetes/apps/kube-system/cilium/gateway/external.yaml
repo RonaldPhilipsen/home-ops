@@ -13,8 +13,8 @@ spec:
   addresses:
     - type: IPAddress
       value: 172.16.20.30
-    # - type: IPAddress
-    #   value: 2a02:a446:fe34:20:172:16:20:30
+    - type: IPAddress
+      value: "${GW_EXTERNAL_IP_V6}"
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
