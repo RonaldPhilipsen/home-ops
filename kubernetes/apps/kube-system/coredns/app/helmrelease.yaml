@@ -1,19 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/ocirepository-source-v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: coredns
-spec:
-  interval: 5m
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  url: oci://ghcr.io/coredns/charts/coredns
-  ref:
-    tag: 1.43.3
----
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -29,19 +15,22 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     fullnameOverride: coredns
     image:
       repository: mirror.gcr.io/coredns/coredns
+    replicaCount: 2
     k8sAppLabelOverride: kube-dns
     serviceAccount:
       create: true
     service:
       name: kube-dns
-      clusterIP: "10.43.0.10"
-    replicaCount: 2
+      clusterIPs: [
+          "10.43.0.10",
+          "2a02:a446:fe50:cafe:1::a"
+      ]
+      ipFamilyPolicy: PreferDualStack
     servers:
       - zones:
           - zone: .
