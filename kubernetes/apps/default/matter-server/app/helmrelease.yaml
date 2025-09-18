@@ -55,6 +55,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: *host
           lbipam.cilium.io/ips: 172.16.20.132, ${MATTER_IPV6}
+        ipFamilyPolicy: PreferDualStack
         ports:
           ws:
             protocol: TCP

@@ -12,8 +12,8 @@ additionalApiServerCertSans: &sans
   - "k8s.rphilipsen.nl"
 additionalMachineCertSans: *sans
 
-clusterPodNets: ["10.42.0.0/16"]
-clusterSvcNets: ["10.43.0.0/16"]
+clusterPodNets: ["10.42.0.0/16", 2a02:a446:fe50:cafe:0::/96]
+clusterSvcNets: ["10.43.0.0/16", 2a02:a446:fe50:cafe:1::/112]
 
 # Disable built-in CNI to use Cilium
 cniConfig:
