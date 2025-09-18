@@ -8,19 +8,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: app-template
-  maxHistory: 3
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-  upgrade:
-    crds: CreateReplace
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-      strategy: uninstall
-  uninstall:
-    keepHistory: false
   values:
     controllers:
       matter-server:
@@ -33,7 +20,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-assistant-libs/python-matter-server
-              tag: 8.1.0
+              tag: 8.1.1
               pullPolicy: IfNotPresent
 
             env:
