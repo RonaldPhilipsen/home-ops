@@ -34,9 +34,12 @@ nodes:
         dhcp: false
         addresses:
           - "172.16.20.3/24"
+          - 2a02:a446:fe34::3/64
         routes:
           - network: "0.0.0.0/0"
             gateway: "172.16.20.1"
+          - network: "::/0"
+            gateway: 2a02:a446:fe34::1
         mtu: 1500
         vip:
           ip: "172.16.20.2"
@@ -54,9 +57,12 @@ nodes:
         dhcp: false
         addresses:
           - "172.16.20.4/24"
+          - 2a02:a446:fe34::4/64
         routes:
           - network: "0.0.0.0/0"
             gateway: "172.16.20.1"
+          - network: "::/0"
+            gateway: 2a02:a446:fe34::1
         mtu: 1500
         vip:
           ip: "172.16.20.2"
@@ -74,9 +80,12 @@ nodes:
         dhcp: false
         addresses:
           - "172.16.20.5/24"
+          - 2a02:a446:fe34::5/64
         routes:
           - network: "0.0.0.0/0"
             gateway: "172.16.20.1"
+          - network: "::/0"
+            gateway: 2a02:a446:fe34::1
         mtu: 1500
         vip:
           ip: "172.16.20.2"
