@@ -9,7 +9,6 @@ resources:
 # Common
   - ./cloudnative-pg/ks.yaml
 # Home Automation
-  - ./home-assistant/ks.yaml
   - ./esphome/ks.yaml
   - ./vernemq/ks.yaml
 # - ./matter-server/ks.yaml
@@ -26,3 +25,4 @@ resources:
 # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
+  - ./renovate/ks.yaml
