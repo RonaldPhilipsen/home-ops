@@ -26,3 +26,4 @@ resources:
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
   - ./renovate/ks.yaml
+  - ./dragonfly/ks.yaml
