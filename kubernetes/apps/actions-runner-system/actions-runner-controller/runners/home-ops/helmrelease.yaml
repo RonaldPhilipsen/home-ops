@@ -66,13 +66,13 @@ spec:
             image: ghcr.io/home-operations/actions-runner:2.329.0@sha256:1d26dc36431014527e0d920e7b84878dcf8fd69fb9639598de1af5ccf9210131
             command: ["/home/runner/run.sh"]
             env:
-            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-              value: "false"
-            - name: NODE
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-              volumeMounts:
+              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+                value: "false"
+              - name: NODE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+            volumeMounts:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
