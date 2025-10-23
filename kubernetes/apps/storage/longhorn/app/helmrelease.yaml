@@ -34,7 +34,7 @@ spec:
       backupstorePollInterval: 0
       createDefaultDiskLabeledNodes: true
       restoreVolumeRecurringJobs: true
-      storageOverProvisioningPercentage: 100
+      storageOverProvisioningPercentage: "100"
       storageMinimalAvailablePercentage: 1
       guaranteedEngineManagerCPU: 20
       guaranteedReplicaManagerCPU: 20
