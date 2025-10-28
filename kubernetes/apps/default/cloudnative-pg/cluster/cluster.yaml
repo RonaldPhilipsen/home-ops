@@ -61,7 +61,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: minio
-        serverName: postgres-v6
+        serverName: postgres-v7
   bootstrap:
     recovery:
       source: source
@@ -72,7 +72,7 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: minio
-          serverName: postgres-v5
+          serverName: postgres-v6
     # - name: clusterBackup
     #   barmanObjectStore:
     #     destinationPath: s3://pg-backup
