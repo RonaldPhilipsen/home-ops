@@ -29,7 +29,7 @@ jobs:
   test:
     name: Flux Local Test
     needs: pre-job
-    runs-on: home-ops-runner
+    runs-on: ubuntu-latest
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
     steps:
       - name: Checkout
