@@ -11,7 +11,7 @@ on:
 jobs:
   label-sync:
     name: Label Sync
-    runs-on: ubuntu-latest
+    runs-on: home-ops-runner
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0

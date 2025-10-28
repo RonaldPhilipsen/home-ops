@@ -8,6 +8,10 @@ spec:
   instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
   imageName: ghcr.io/cloudnative-pg/postgresql:18.0
+  affinity:
+    enablePodAntiAffinity: true #default value
+    topologyKey: kubernetes.io/hostname #default value
+    podAntiAffinityType: required #default value
   primaryUpdateStrategy: unsupervised
   storage:
     size: 25Gi
