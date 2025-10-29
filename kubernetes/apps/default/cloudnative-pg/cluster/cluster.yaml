@@ -72,7 +72,7 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: minio
-          serverName: postgres-v6
+          serverName: postgres-v5
     # - name: clusterBackup
     #   barmanObjectStore:
     #     destinationPath: s3://pg-backup
