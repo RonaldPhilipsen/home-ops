@@ -1,15 +1,16 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app recyclarr
-  namespace: &namespace default
+  name: &app jellyseerr
+  namespace: &namespace flux-system
 spec:
-  targetNamespace: *namespace
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
+    - name: cloudnative-pg-cluster
+      namespace: default
     - name: longhorn
       namespace: storage
   components:
@@ -17,17 +18,18 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/recyclarr/app
+  targetNamespace: default
+  path: ./kubernetes/apps/media/jellyseerr/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  wait: false
+  wait: true
   interval: 30m
   retryInterval: 1m
   timeout: 5m
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CAPACITY: 15Gi
