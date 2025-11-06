@@ -6,7 +6,7 @@ metadata:
   name: &app sonarr
   namespace: &namespace flux-system
 spec:
-  path: ./kubernetes/apps/default/sonarr/app
+  path: ./kubernetes/apps/media/sonarr/app
   dependsOn:
   - name: onepassword-connect
     namespace: external-secrets
