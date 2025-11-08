@@ -3,9 +3,6 @@
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
 resources:
-  # Repositories are intentionally included at the flux/meta level to avoid
-  # duplicate resource IDs when building subsets of the repo (for example
-  # when individual app kustomizations include this component). Do not add
-  # `./repos` here to prevent OCIRepository resources (like `app-template`)
-  # from appearing multiple times in the same build.
+  - ./namespace.yaml
+  - ./repos
   - ./sops
