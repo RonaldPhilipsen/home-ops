@@ -10,8 +10,8 @@ spec:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/media/tdarr/app
   dependsOn:
-  - name: longhorn
-    namespace: storage
+    - name: longhorn
+      namespace: storage
   components:
     - ../../../../components/volsync
   prune: true

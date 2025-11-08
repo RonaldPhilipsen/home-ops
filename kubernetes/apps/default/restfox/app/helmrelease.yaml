@@ -71,7 +71,6 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 30
 
-
     service:
       app:
         controller: restfox
