@@ -1,0 +1,18 @@
+---
+# Shared OCIRepository for the app-template charts.
+# Placed in the flux-system namespace so all HelmReleases can refer
+# to a single cluster-wide OCIRepository to avoid duplicate resources
+# during kustomize recursion.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: app-template
+  namespace: flux-system
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 4.4.0
+  url: oci://ghcr.io/bjw-s-labs/helm/app-template
