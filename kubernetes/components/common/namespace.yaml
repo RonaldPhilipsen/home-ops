@@ -1,7 +1,5 @@
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: not-used
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
+# This file previously declared a Namespace resource named "not-used".
+# It has been removed because it appeared to be a placeholder and
+# is not used by any manifests in this repository. If you relied on
+# this namespace, recreate it explicitly where needed.
