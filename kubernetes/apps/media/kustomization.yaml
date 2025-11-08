@@ -2,7 +2,6 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: media
 components:
   - ../../components/common
 resources:
@@ -15,3 +14,4 @@ resources:
   - ./recyclarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./tdarr/ks.yaml
