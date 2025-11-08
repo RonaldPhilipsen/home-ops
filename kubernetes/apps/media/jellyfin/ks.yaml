@@ -11,7 +11,7 @@ spec:
       namespace: storage
   components:
     - ../../../../components/volsync
-  path: ./kubernetes/apps/default/jellyfin/app
+  path: ./kubernetes/apps/media/jellyfin/app
   prune: true
   sourceRef:
     kind: GitRepository

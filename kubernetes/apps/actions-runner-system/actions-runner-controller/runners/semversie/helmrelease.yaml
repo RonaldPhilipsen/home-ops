@@ -61,7 +61,6 @@ spec:
                 name: talos
                 readOnly: true
 
-
         serviceAccountName: *name
         volumes:
           - name: talos

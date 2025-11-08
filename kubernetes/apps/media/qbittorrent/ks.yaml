@@ -19,7 +19,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   targetNamespace: default
-  path: ./kubernetes/apps/default/qbittorrent/app
+  path: ./kubernetes/apps/media/qbittorrent/app
   prune: true
   sourceRef:
     kind: GitRepository

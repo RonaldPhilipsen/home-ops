@@ -35,10 +35,10 @@ spec:
     initContainers:
       - name: init-permissions
         image: busybox
-        command: ['sh', '-c', 'chown -R 568:568 /data']
+        command: ["sh", "-c", "chown -R 568:568 /data"]
         volumeMounts:
-        - name: data
-          mountPath: /data
+          - name: data
+            mountPath: /data
     controllers:
       minecraft:
         annotations:
@@ -72,8 +72,8 @@ spec:
                   failureThreshold: 300
                   exec: *mc-health
             envFrom:
-            - configMapRef:
-                name: minecraft-server-config
+              - configMapRef:
+                  name: minecraft-server-config
             env:
               ## RCON
               RCON_PASSWORD:

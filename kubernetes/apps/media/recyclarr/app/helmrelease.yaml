@@ -18,8 +18,8 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
-  - name: longhorn
-    namespace: storage
+    - name: longhorn
+      namespace: storage
   values:
     controllers:
       recyclarr:

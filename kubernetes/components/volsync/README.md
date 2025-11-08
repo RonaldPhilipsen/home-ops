@@ -8,17 +8,17 @@ This requires `components` and `postBuild` configured on the Flux Kustomization
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app plex
-  namespace: flux-system
+    name: &app plex
+    namespace: flux-system
 spec:
-  # ...
-  components:
-    - ../../../../components/volsync
-  # ...
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CAPACITY: 5Gi
+    # ...
+    components:
+        - ../../../../components/volsync
+    # ...
+    postBuild:
+        substitute:
+            APP: *app
+            VOLSYNC_CAPACITY: 5Gi
 ```
 
 ## Required `postBuild` vars:

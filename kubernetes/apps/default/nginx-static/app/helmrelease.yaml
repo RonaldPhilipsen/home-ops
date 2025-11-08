@@ -82,8 +82,6 @@ spec:
               - name: *app
                 port: *port
 
-
-
     persistence:
       config:
         type: configMap

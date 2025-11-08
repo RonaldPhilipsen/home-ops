@@ -73,15 +73,15 @@ spec:
   #       parameters:
   #         barmanObjectName: minio
   #         serverName: postgres-v5
-    # - name: clusterBackup
-    #   barmanObjectStore:
-    #     destinationPath: s3://pg-backup
-    #     endpointURL: http://172.16.20.7:9000
-    #     serverName: &previouscluster postgres-v4
-    #     s3Credentials:
-    #       accessKeyId:
-    #         name: cloudnative-pg-secret
-    #         key: AWS_ACCESS_KEY_ID
-    #       secretAccessKey:
-    #         name: cloudnative-pg-secret
-    #         key: AWS_SECRET_ACCESS_KEY
+  # - name: clusterBackup
+  #   barmanObjectStore:
+  #     destinationPath: s3://pg-backup
+  #     endpointURL: http://172.16.20.7:9000
+  #     serverName: &previouscluster postgres-v4
+  #     s3Credentials:
+  #       accessKeyId:
+  #         name: cloudnative-pg-secret
+  #         key: AWS_ACCESS_KEY_ID
+  #       secretAccessKey:
+  #         name: cloudnative-pg-secret
+  #         key: AWS_SECRET_ACCESS_KEY
