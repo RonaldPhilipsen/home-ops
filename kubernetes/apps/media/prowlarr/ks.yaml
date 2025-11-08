@@ -13,6 +13,7 @@ spec:
       namespace: default
     - name: longhorn
       namespace: storage
+  targetNamespace: media
   components:
     - ../../../../components/volsync
   commonMetadata:
