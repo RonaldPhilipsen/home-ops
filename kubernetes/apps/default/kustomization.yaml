@@ -6,13 +6,13 @@ namespace: default
 components:
   - ../../components/common
 resources:
-# Common
+  # Common
   - ./cloudnative-pg/ks.yaml
-# Home Automation
+  # Home Automation
   - ./esphome/ks.yaml
   - ./vernemq/ks.yaml
-# - ./matter-server/ks.yaml
-# Other
+  # - ./matter-server/ks.yaml
+  # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
   - ./renovate/ks.yaml

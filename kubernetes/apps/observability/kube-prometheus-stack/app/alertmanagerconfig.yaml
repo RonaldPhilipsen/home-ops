@@ -51,14 +51,14 @@ spec:
       emailConfigs:
         # Whether to notify about resolved alerts.
         - sendResolved: true
-          to: 'alerts@rphilipsen.nl'
-          from: 'alertmanager@rphilipsen.nl'
+          to: "alerts@rphilipsen.nl"
+          from: "alertmanager@rphilipsen.nl"
           hello: k8s@rphilipsen.nl
           # The smarthost and SMTP sender used for mail notifications.
           smarthost: ${ALERTMANAGER_SMTP_HOST}
           authUsername: ${ALERTMANAGER_SMTP_USERNAME}
           authPassword:
-            key:  *secret
+            key: *secret
             name: ALERTMANAGER_SMTP_PASSWORD
           text: >-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
@@ -82,4 +82,3 @@ spec:
                 </small>
               {{- end }}
             {{- end }}
-

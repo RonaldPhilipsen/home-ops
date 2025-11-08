@@ -44,15 +44,15 @@ spec:
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
                 sab,
                 sab.default,
-                sab.default.svc,
-                sab.default.svc.cluster,
-                sab.default.svc.cluster.local,
+                sab.media.svc,
+                sab.media.svc.cluster,
+                sab.media.svc.cluster.local,
                 sab.rphilipsen.nl
                 sabnzbd,
                 sabnzbd.default,
-                sabnzbd.default.svc,
-                sabnzbd.default.svc.cluster,
-                sabnzbd.default.svc.cluster.local,
+                sabnzbd.media.svc,
+                sabnzbd.media.svc.cluster,
+                sabnzbd.media.svc.cluster.local,
                 sabnzbd.rphilipsen.nl
             envFrom:
               - secretRef:
