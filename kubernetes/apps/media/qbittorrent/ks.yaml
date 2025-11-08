@@ -18,7 +18,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  targetNamespace: default
+  targetNamespace: media
   path: ./kubernetes/apps/media/qbittorrent/app
   prune: true
   sourceRef:

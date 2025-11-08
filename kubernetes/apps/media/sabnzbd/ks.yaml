@@ -6,7 +6,7 @@ metadata:
   name: &app sabnzbd
   namespace: &namespace flux-system
 spec:
-  targetNamespace: default
+  targetNamespace: media
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
