@@ -51,7 +51,7 @@ spec:
             port: 3903
     route:
       app:
-        hostnames: ["s3.${SECRET_EXTERNAL_DOMAIN}"]
+        hostnames: ["s3.rphilipsen.nl"]
         parentRefs:
           - name: internal
             namespace: network
