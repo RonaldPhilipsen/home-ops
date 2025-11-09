@@ -12,6 +12,8 @@ kind: PersistentVolume
 metadata:
   name: media-nfs
   namespace: media
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   storageClassName: media-nfs
   capacity:
@@ -19,6 +21,9 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    namespace: media
+    name: media-nfs
   nfs:
     server: 172.16.20.7
     path: /Media
@@ -33,6 +38,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: media-nfs
   namespace: media
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
   accessModes:
     - ReadWriteMany
