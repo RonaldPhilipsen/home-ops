@@ -1,27 +1,20 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app radarr
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: radarr
-  maxHistory: 3
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  uninstall:
-    keepHistory: false
+  interval: 30m
   values:
-    defaultPodOptions:
+    controllers:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -30,9 +23,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [1000]
         seccompProfile: { type: RuntimeDefault }
-    controllers:
-      app:
-        strategy: Recreate
         initContainers:
           init-db:
             image:
@@ -42,7 +32,7 @@ spec:
               - secretRef:
                   name: radarr-secret
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/home-operations/radarr
               tag: 6.0.3.10276@sha256:0ebc60aa20afb0df76b52694cee846b7cf7bd96bb0157f3b68b916e77c8142a0
@@ -70,10 +60,18 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+            resources:
+              requests:
+                cpu: 20m
+                memory: 384Mi
+              limits:
+                memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities:
+                drop:
+                  - ALL
     service:
       app:
         controller: app
