@@ -43,10 +43,10 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: barman-cloud
-    namespace: default
+    namespace: database
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: barman-cloud
-  namespace: default
+  namespace: database
