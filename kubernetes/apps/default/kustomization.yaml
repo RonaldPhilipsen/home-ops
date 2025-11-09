@@ -7,8 +7,6 @@ components:
   - ../../components/flux-alerts
 resources:
   - ./namespace.yaml
-  # Common
-  - ./cloudnative-pg/ks.yaml
   # Home Automation
   - ./esphome/ks.yaml
   # Other
