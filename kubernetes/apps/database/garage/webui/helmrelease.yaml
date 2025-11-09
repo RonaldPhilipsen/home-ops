@@ -59,7 +59,7 @@ spec:
       config:
         enabled: true
         type: configMap
-        name: garage-configmap
+        name: garage
         globalMounts:
           - path: /etc/garage.toml
             subPath: configuration.toml

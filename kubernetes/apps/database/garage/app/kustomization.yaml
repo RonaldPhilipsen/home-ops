@@ -6,9 +6,4 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
-configMapGenerator:
-  - name: garage-configmap
-    files:
-      - ./resources/configuration.toml
-generatorOptions:
-  disableNameSuffixHash: true
+
