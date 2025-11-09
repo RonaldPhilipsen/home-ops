@@ -11,9 +11,6 @@ resources:
   - ./cloudnative-pg/ks.yaml
   # Home Automation
   - ./esphome/ks.yaml
-  - ./vernemq/ks.yaml
   # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
-  - ./renovate/ks.yaml
-  - ./dragonfly/ks.yaml

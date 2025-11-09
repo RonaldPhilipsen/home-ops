@@ -4,13 +4,13 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app dragonfly
-  namespace: &namespace default
+  namespace: &namespace database
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   interval: 1h
-  path: ./kubernetes/apps/default/dragonfly/app
+  path: ./kubernetes/apps/database/dragonfly/app
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -26,7 +26,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app dragonfly-cluster
-  namespace: &namespace default
+  namespace: &namespace database
 spec:
   commonMetadata:
     labels:
@@ -35,7 +35,7 @@ spec:
     - name: dragonfly
       namespace: default
   interval: 1h
-  path: ./kubernetes/apps/default/dragonfly/cluster
+  path: ./kubernetes/apps/database/dragonfly/cluster
   prune: true
   retryInterval: 2m
   sourceRef:

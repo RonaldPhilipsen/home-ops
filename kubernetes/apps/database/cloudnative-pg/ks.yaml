@@ -37,7 +37,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg
       namespace: *namespace
-  path: ./kubernetes/apps/default/cloudnative-pg/cluster
+  path: ./kubernetes/apps/database/cloudnative-pg/cluster
   prune: true
   sourceRef:
     kind: GitRepository
@@ -64,7 +64,7 @@ spec:
       namespace: cert-manager
     - name: cloudnative-pg
       namespace: *namespace
-  path: ./kubernetes/apps/default/cloudnative-pg/barman-cloud
+  path: ./kubernetes/apps/database/cloudnative-pg/barman-cloud
   prune: true
   sourceRef:
     kind: GitRepository
