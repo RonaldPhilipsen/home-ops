@@ -6,8 +6,8 @@ metadata:
   name: vernemq
   namespace: flux-system
 spec:
-  targetNamespace: default
-  path: ./kubernetes/apps/default/vernemq/app
+  targetNamespace: database
+  path: ./kubernetes/apps/database/vernemq/app
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
