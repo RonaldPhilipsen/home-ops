@@ -10,7 +10,7 @@ spec:
   maxHistory: 3
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: minecraft
   install:
     remediation:
       retries: 3
@@ -55,7 +55,7 @@ spec:
           app:
             image:
               repository: ghcr.io/itzg/minecraft-server
-              tag: java21@sha256:5b441575d7342342c8f4667deec8e987797d4831e6bce90afa3f46c3fdba02f6
+              tag: java21@sha256:dacadf7702cc227875e83daced4fdd9db410338ba3f7710ad3e3594c3db65596
             probes:
               liveness: &probes
                 enabled: true
