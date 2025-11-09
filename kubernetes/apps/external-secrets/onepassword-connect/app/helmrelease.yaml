@@ -36,7 +36,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: onepassword-connect-secret
-                    key: 1password-credentials.json
+                    key: 1pw_credentials_json
             probes:
               liveness:
                 enabled: true
@@ -80,7 +80,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: onepassword-connect-secret
-                    key: 1password-credentials.json
+                    key: 1pw_credentials_json
             probes:
               liveness:
                 enabled: true
