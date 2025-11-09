@@ -5,13 +5,10 @@ kind: HelmRelease
 metadata:
   name: external-secrets
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: external-secrets
-  dependsOn:
-    - name: onepassword-connect
-      namespace: external-secrets
+  interval: 30m
   values:
     image:
       repository: ghcr.io/external-secrets/external-secrets
@@ -28,6 +25,7 @@ spec:
     webhook:
       image:
         repository: ghcr.io/external-secrets/external-secrets
+      replicaCount: 2
       serviceMonitor:
         enabled: true
         interval: 1m
