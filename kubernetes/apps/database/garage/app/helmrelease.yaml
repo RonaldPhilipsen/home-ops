@@ -54,7 +54,7 @@ spec:
         hostnames: ["s3.rphilipsen.nl"]
         parentRefs:
           - name: internal
-            namespace: network
+            namespace: kube-system
             sectionName: https
         rules:
           - backendRefs:
