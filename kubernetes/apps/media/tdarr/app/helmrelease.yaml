@@ -47,29 +47,26 @@ spec:
               requests:
                 memory: 1.5Gi
 
-          # node:
-          #   image:
-          #     repository: ghcr.io/haveagitgat/tdarr_node
-          #     tag: 2.52.01
-          #     pullPolicy: IfNotPresent
-          #   env:
-          #     - name: nodeID
-          #       valueFrom:
-          #         fieldRef:
-          #           fieldPath: spec.nodeName
-          #     - name: serverIP
-          #       value: localhost
-          #     - name: serverPort
-          #       value: &server 8266
-          #   resources:
-          #     requests:
-          #       memory: 1Gi
-          #       cpu: 1000m
-          #     limits:
-          #       memory: 2Gi
-          #   securityContext:
-          #     capabilities:
-          #       add: ["SETGID", "SETUID"]
+          node:
+            image:
+              repository: ghcr.io/haveagitgat/tdarr_node
+              tag: 2.52.01
+              pullPolicy: IfNotPresent
+            env:
+              - name: nodeID
+                valueFrom:
+                  fieldRef:
+                    fieldPath: spec.nodeName
+              - name: serverIP
+                value: localhost
+              - name: serverPort
+                value: &server 8266
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 1000m
+              limits:
+                memory: 2Gi
     service:
       app:
         controller: tdarr
