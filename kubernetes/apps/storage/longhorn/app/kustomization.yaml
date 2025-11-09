@@ -9,3 +9,4 @@ resources:
   - ./storageclass.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml
+  - ./ocirepository.yaml
