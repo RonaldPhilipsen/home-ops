@@ -26,6 +26,11 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: "OnRootMismatch"
+        supplementalGroups:
+          - 44 # video
+          - 125 # render
+          - 105 # render
+          - 568
     controllers:
       tdarr:
         containers:
