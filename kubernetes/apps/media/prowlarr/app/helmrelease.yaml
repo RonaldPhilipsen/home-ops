@@ -1,35 +1,26 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app prowlarr
-  namespace: media
+  name: prowlarr
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: prowlarr
-
-  maxHistory: 3
-
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-
-  uninstall:
-    keepHistory: false
-
+  interval: 30m
   values:
     controllers:
       prowlarr:
-        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 2000
+            fsGroupChangePolicy: OnRootMismatch
+            runAsGroup: 2000
+            runAsNonRoot: true
+            runAsUser: 2000
         initContainers:
           init-db:
             image:
@@ -38,7 +29,6 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: prowlarr-secret
-
         containers:
           app:
             image:
@@ -49,12 +39,10 @@ spec:
               PROWLARR__APP__INSTANCENAME: Prowlarr
               PROWLARR__APP__THEME: dark
               PROWLARR__AUTH__METHOD: External
-              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
               PROWLARR__LOG__DBENABLED: "False"
               PROWLARR__LOG__LEVEL: info
-              PROWLARR__SERVER__PORT: &port 80
+              PROWLARR__SERVER__PORT: &port 9696
               PROWLARR__UPDATE__BRANCH: develop
-
             envFrom: *envFrom
 
             probes:
@@ -65,31 +53,23 @@ spec:
                   httpGet:
                     path: /ping
                     port: *port
-                  initialDelaySeconds: 50
+                  initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 10
+                  timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-
+            resources:
+              requests:
+                cpu: 18m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 1Gi
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+              capabilities:
+                drop:
+                  - ALL
 
     service:
       app:
@@ -97,6 +77,12 @@ spec:
         ports:
           http:
             port: *port
+
+    persistence:
+      config:
+        existingClaim: *app
+        globalMounts:
+          - path: /config
 
     route:
       app:
@@ -109,11 +95,6 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-    persistence:
-      config:
-        existingClaim: *app
-        globalMounts:
-          - path: /config
 
     PodAnnotations:
       secret.reloader.stakater.com/reload: prowlarr-secret
