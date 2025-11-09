@@ -77,6 +77,6 @@ spec:
       meta:
         type: nfs
         server: 172.16.20.7
-        path: data/garage/meta
+        path: /data/garage/meta
         globalMounts:
           - path: /meta
