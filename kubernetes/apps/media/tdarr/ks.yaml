@@ -14,6 +14,11 @@ spec:
       namespace: storage
   components:
     - ../../../../components/volsync
+  postBuild:
+    substitute:
+        APP: *app
+        VOLSYNC_CAPACITY: 5Gi
+        NAMESPACE: media
   prune: true
   sourceRef:
     kind: GitRepository

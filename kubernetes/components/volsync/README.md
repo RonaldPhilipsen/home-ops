@@ -19,13 +19,15 @@ spec:
         substitute:
             APP: *app
             VOLSYNC_CAPACITY: 5Gi
+            NAMESPACE: *namespace
 ```
 
-## Required `postBuild` vars:
+## Required `postBuild` vars
 
 - `APP`: The application name
 - `VOLSYNC_CAPACITY`: The PVC size
+- `NAMESPACE` The namespace for the resources
 
-## Optional `postBuild` vars:
+## Optional `postBuild` vars
 
 - TBD
