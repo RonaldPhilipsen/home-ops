@@ -49,7 +49,9 @@ spec:
               LIDARR__LOG__DBENABLED: "False"
               LIDARR__LOG_LEVEL: info
               LIDARR__SERVER__PORT: &port 8686
-            envFrom: lidarr-secret
+            envFrom:
+              - secretRef:
+                  name: lidarr-secret
 
             probes:
               liveness: &probes
