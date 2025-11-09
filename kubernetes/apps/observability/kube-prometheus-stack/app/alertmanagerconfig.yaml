@@ -55,8 +55,8 @@ spec:
           from: "alertmanager@rphilipsen.nl"
           hello: k8s@rphilipsen.nl
           # The smarthost and SMTP sender used for mail notifications.
-          smarthost: ${ALERTMANAGER_SMTP_HOST}
-          authUsername: ${ALERTMANAGER_SMTP_USERNAME}
+          smarthost: smtp.protonmail.ch:587
+          authUsername: webmaster@rphilipsen.nl
           authPassword:
             key: *secret
             name: ALERTMANAGER_SMTP_PASSWORD
