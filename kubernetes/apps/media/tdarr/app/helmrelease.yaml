@@ -40,6 +40,9 @@ spec:
               tag: 2.52.01
             env:
               TZ: Europe/Amsterdam
+            securityContext:
+              capabilities:
+                add: ["SETGID", "SETUID"]
             resources:
               requests:
                 memory: 1.5Gi
@@ -64,6 +67,9 @@ spec:
                 cpu: 1000m
               limits:
                 memory: 2Gi
+            securityContext:
+              capabilities:
+                add: ["SETGID", "SETUID"]
     service:
       app:
         controller: tdarr
