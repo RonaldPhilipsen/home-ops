@@ -11,7 +11,6 @@ resources:
   # Home Automation
   - ./esphome/ks.yaml
   - ./vernemq/ks.yaml
-  # - ./matter-server/ks.yaml
   # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
