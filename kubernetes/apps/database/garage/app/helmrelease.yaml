@@ -92,6 +92,11 @@ spec:
             api_bind_addr = "[::]:3900"
             root_domain = ".s3.rphilipsen.nl"
 
+            [s3_web]
+            bind_addr = "[::]:3902"
+            root_domain = ".s3web.rphilipsen.nl"
+            add_host_to_metrics = true
+
             [admin]
             api_bind_addr = "[::]:3903"
     persistence:
