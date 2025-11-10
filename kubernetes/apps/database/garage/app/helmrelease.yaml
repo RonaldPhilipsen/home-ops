@@ -47,6 +47,8 @@ spec:
         ports:
           s3:
             port: &port 3900
+          web:
+            port: &web 3902
           api:
             port: 3903
     route:
@@ -60,6 +62,16 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+      web:
+        hostnames: ["s3web.rphilipsen.nl"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: rphilipsen-https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *web
     configMaps:
       config:
         data:

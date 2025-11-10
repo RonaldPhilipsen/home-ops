@@ -32,6 +32,10 @@ data:
       # Set the DNS resolver to the Kubernetes DNS service
       resolver kube-dns.kube-system.svc.cluster.local valid=30s;
 
+      upstream s3_backend {
+        server garage.database.svc.cluster.local:3902;
+      }
+
       server {
         listen	8080;
         listen	[::]:8080;
@@ -44,8 +48,12 @@ data:
           if ($uri = "/") {
             rewrite ^ /index.html last;
           }
-          proxy_set_header Host $host;
-          proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$uri;
+
+          proxy_pass http://s3_backend;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $http_host;
+          # Disable buffering to a temporary file.
+          proxy_max_temp_file_size 0;
         }
       } # end server
 
@@ -61,8 +69,11 @@ data:
           if ($uri = "/") {
             rewrite ^ /index.html last;
           }
-          proxy_set_header Host $host;
-          proxy_pass http://172.16.20.7:9000/static/trees100.nl$uri;
+          proxy_pass http://s3_backend;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $http_host;
+          # Disable buffering to a temporary file.
+          proxy_max_temp_file_size 0;
         }
       }
 
@@ -75,8 +86,11 @@ data:
           if ($uri = "/") {
             rewrite ^ /index.html last;
           }
-          proxy_set_header Host $host;
-          proxy_pass http://172.16.20.7:9000/static/rphilipsen.nl$uri;
+          proxy_pass http://s3_backend;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header Host $http_host;
+          # Disable buffering to a temporary file.
+          proxy_max_temp_file_size 0;
         }
       }
     } # end http
