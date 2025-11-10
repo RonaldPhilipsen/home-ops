@@ -29,8 +29,9 @@ data:
       access_log  /var/log/nginx/access.log combined buffer=512k flush=1m;
       error_log   /var/log/nginx/error.log warn;
 
-      # Set the DNS resolver to the Kubernetes DNS service
-      resolver kube-dns.kube-system.svc.cluster.local valid=30s;
+      # Set the DNS resolver to the Kubernetes DNS service (use ClusterIP to ensure nginx accepts it)
+      # kube-dns DNS name can be problematic in the 'resolver' directive; prefer the ClusterIP of kube-dns
+      resolver 10.43.0.10 valid=30s;
 
       upstream s3_backend {
         server garage.database.svc.cluster.local:3902;
