@@ -34,7 +34,7 @@ data:
       resolver 10.43.0.10 valid=30s;
 
       upstream s3_backend {
-        server garage.database.svc.cluster.local:3902;
+        server 192.168.0.10:3902;
       }
 
       server {
