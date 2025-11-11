@@ -92,3 +92,7 @@ spec:
         existingClaim: sabnzbd
       data:
         existingClaim: media-nfs
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
