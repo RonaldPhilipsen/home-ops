@@ -13,13 +13,13 @@ spec:
     repository: "${APP}-volsync-secret"
     copyMethod: Snapshot
     # storage parameters
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn}"
-    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-snapshot}"
     accessModes:
       - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
     # cache parameters
-    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=longhorn}"
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=5Gi}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-hostpath}"
     cacheAccessModes:
       - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
     capacity: "${VOLSYNC_CAPACITY:=5Gi}"
