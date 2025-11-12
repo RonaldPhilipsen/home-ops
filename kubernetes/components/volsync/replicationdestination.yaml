@@ -9,9 +9,11 @@ metadata:
 spec:
   trigger:
     manual: restore-once
-  restic:
+  kopia:
     repository: "${APP}-volsync-secret"
     copyMethod: Snapshot
+    sourceIdentity:
+      sourceName: ${APP}
     # storage parameters
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-snapshot}"
