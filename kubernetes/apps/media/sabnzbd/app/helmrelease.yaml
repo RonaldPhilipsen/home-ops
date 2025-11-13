@@ -89,7 +89,7 @@ spec:
                 port: *port
     persistence:
       config:
-        existingClaim: sabnzbd
+        existingClaim: *app
       data:
         existingClaim: media-nfs
       tmp:
