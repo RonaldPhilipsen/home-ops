@@ -50,13 +50,6 @@ spec:
       namespace: storage
   interval: 1h
   path: ./kubernetes/apps/database/garage/webui
-  components:
-    - ../../../../components/volsync
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CAPACITY: 5Gi
-      NAMESPACE: database
   prune: true
   retryInterval: 2m
   sourceRef:

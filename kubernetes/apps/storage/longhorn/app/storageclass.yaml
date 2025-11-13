@@ -30,4 +30,3 @@ allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 metadata:
   name: longhorn-snapshot
----

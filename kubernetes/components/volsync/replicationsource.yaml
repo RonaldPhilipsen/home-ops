@@ -8,9 +8,8 @@ spec:
   sourcePVC: "${VOLSYNC_CLAIM:=${APP}}"
   trigger:
     schedule: "0 * * * *"
-  restic:
+  kopia:
     copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
-    pruneIntervalDays: 7
     repository: "${APP}-volsync-secret" # name of the secret created by the ExternalSecret
     # storage parameters
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
@@ -22,12 +21,14 @@ spec:
     cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-hostpath}"
     cacheAccessModes:
       - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
+    compression: zstd-fastest
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=568}
       runAsGroup: ${VOLSYNC_PGID:=568}
       fsGroup: ${VOLSYNC_PGID:=568}
+    parallelism: 2
     retain:
       hourly: 24
-      daily: 6
+      daily: 7
       weekly: 5
       monthly: 3
