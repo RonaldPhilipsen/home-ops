@@ -58,7 +58,7 @@ spec:
                   fieldRef:
                     fieldPath: spec.nodeName
               - name: serverIP
-                value: localhost
+                value: 127.0.0.1
               - name: serverPort
                 value: &server 8266
             resources:
