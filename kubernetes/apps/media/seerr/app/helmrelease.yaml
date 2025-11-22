@@ -7,7 +7,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: seerr
+    name: &app seerr
   interval: 1h
   values:
     controllers:
