@@ -9,7 +9,7 @@ resources:
   - ./namespace.yaml
   - ./jellyfin/ks.yaml
   - ./sabnzbd/ks.yaml
-  - ./jellyseerr/ks.yaml
+  - ./seerr/ks.yaml
   - ./lidarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./radarr/ks.yaml
