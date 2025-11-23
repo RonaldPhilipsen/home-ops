@@ -8,9 +8,9 @@ There are **5 stages** outlined below for completing this project, make sure you
 > If you have **3 or more nodes** it is recommended to make 3 of them controller nodes for a highly available control plane. This project configures **all nodes** to be able to run workloads. **Worker nodes** are therefore **optional**.
 >
 > **Minimum system requirements**
-> | Role    | Cores    | Memory        | System Disk               |
+> | Role | Cores | Memory | System Disk |
 > |---------|----------|---------------|---------------------------|
-> | Control/Worker | 4 | 16GB | 256GB SSD/NVMe |
+> | Control/Worker | 3 | 16GB | 256GB SSD/NVMe |
 
 1. Head over to the [Talos Linux Image Factory](https://factory.talos.dev) and follow the instructions. Be sure to only choose the **bare-minimum system extensions** as some might require additional configuration and prevent Talos from booting without it. You can always add system extensions after Talos is installed and working.
 
@@ -46,9 +46,9 @@ There are **5 stages** outlined below for completing this project, make sure you
     mise install
     ```
 
-   📍 _**Having trouble installing the tools?** Try unsetting the `GITHUB_TOKEN` env var and then run these commands again_
+    📍 _**Having trouble installing the tools?** Try unsetting the `GITHUB_TOKEN` env var and then run these commands again_
 
-   📍 _**Having trouble compiling Python?** Try running `mise settings python.compile=0` and then run these commands again_
+    📍 _**Having trouble compiling Python?** Try running `mise settings python.compile=0` and then run these commands again_
 
 ### Stage 3: Cloudflare configuration
 
@@ -56,12 +56,11 @@ There are **5 stages** outlined below for completing this project, make sure you
 > If any of the commands fail with `command not found` or `unknown command` it means `mise` is either not install or configured incorrectly.
 
 1. Create a Cloudflare API token for use with cloudflared and external-dns by reviewing the official [documentation](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) and following the instructions below.
-
-   - Click the blue `Use template` button for the `Edit zone DNS` template.
-   - Name your token `kubernetes`
-   - Under `Permissions`, click `+ Add More` and add permissions `Zone - DNS - Edit` and `Account - Cloudflare Tunnel - Read`
-   - Limit the permissions to a specific account and/or zone resources and then click `Continue to Summary` and then `Create Token`.
-   - **Save this token somewhere safe**, you will need it later on.
+    - Click the blue `Use template` button for the `Edit zone DNS` template.
+    - Name your token `kubernetes`
+    - Under `Permissions`, click `+ Add More` and add permissions `Zone - DNS - Edit` and `Account - Cloudflare Tunnel - Read`
+    - Limit the permissions to a specific account and/or zone resources and then click `Continue to Summary` and then `Create Token`.
+    - **Save this token somewhere safe**, you will need it later on.
 
 2. Create the Cloudflare Tunnel:
 
@@ -88,7 +87,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 4. Push your changes to git:
 
-   📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
+    📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
 
     ```sh
     git add -A
@@ -142,7 +141,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 2. Check the status of Flux and if the Flux resources are up-to-date and in a ready state:
 
-   📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
 
     ```sh
     flux check
@@ -191,7 +190,7 @@ By default Flux will periodically check your git repository for changes. In-orde
 
 1. Obtain the webhook path:
 
-   📍 _Hook id and path should look like `/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123`_
+    📍 _Hook id and path should look like `/hook/12ebd1e363c641dc3c2e430ecf3cee2b3c7a5ac9e1234506f6f5f3ce1230e123`_
 
     ```sh
     kubectl -n flux-system get receiver github-webhook --output=jsonpath='{.status.webhookPath}'
@@ -262,7 +261,7 @@ Below is a general guide on trying to debug an issue with an resource or applica
 
 1. Check if the Flux resources are up-to-date and in a ready state:
 
-   📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
 
     ```sh
     flux get sources git -A
@@ -300,20 +299,21 @@ Resolving problems that you have could take some tweaking of your YAML manifests
 
 Once your cluster is fully configured and you no longer need to run `task configure`, it's a good idea to clean up the repository by removing the [templates](./templates) directory and any files related to the templating process. This will help eliminate unnecessary clutter from the upstream template repository and resolve any "duplicate registry" warnings from Renovate.
 
-1. Tidy up your repository:
+1.  Tidy up your repository:
 
     ```sh
     task template:tidy
     ```
 
-2. Push your changes to git:
+2.  Push your changes to git:
 
-    ```sh
-    git add -A
-    git commit -m "chore: tidy up :broom:"
-    git push
-    ```
-<details>
+        ```sh
+        git add -A
+        git commit -m "chore: tidy up :broom:"
+        git push
+        ```
+
+    <details>
 
 <summary>Click to expand the details</summary>
 
@@ -322,9 +322,9 @@ Once your cluster is fully configured and you no longer need to run `task config
 - **Rate**: $50/hour (no longer than 2 hours / day).
 - **What’s Included**: Assistance with deployment, debugging, or answering questions related to this project.
 - **What to Expect**:
-  1. Sessions will focus on specific questions or issues you are facing.
-  2. I will provide guidance, explanations, and actionable steps to help resolve your concerns.
-  3. Support is limited to this project and does not extend to unrelated tools or custom feature development.
+    1. Sessions will focus on specific questions or issues you are facing.
+    2. I will provide guidance, explanations, and actionable steps to help resolve your concerns.
+    3. Support is limited to this project and does not extend to unrelated tools or custom feature development.
 
 </details>
 

@@ -51,6 +51,7 @@ for crd in $(kubectl get crd -o jsonpath={.items[*].metadata.name} | tr ' ' '\n'
 ```
 
 you should also remove the webhooks to leave your cluster in a usable state:
+
 ```sh
 kubectl delete mutatingwebhookconfigurations longhorn-webhook-mutator
 kubectl delete validatingwebhookconfigurations longhorn-webhook-validator
