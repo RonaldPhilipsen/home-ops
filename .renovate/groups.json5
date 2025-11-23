@@ -15,7 +15,10 @@
       description: "Actions Runner Controller Group",
       groupName: "actions-runner-controller",
       matchDatasources: ["docker"],
-      matchPackageNames: ["/gha-runner-scale-set-controller/", "/gha-runner-scale-set/"],
+      matchPackageNames: [
+        "/gha-runner-scale-set-controller/",
+        "/gha-runner-scale-set/",
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -75,7 +78,10 @@
       description: "Intel Device Plugins Group",
       groupName: "intel-device-plugins",
       matchDatasources: ["docker"],
-      matchPackageNames: ["/intel-device-plugins-operator/", "/intel-device-plugins-gpu/"],
+      matchPackageNames: [
+        "/intel-device-plugins-operator/",
+        "/intel-device-plugins-gpu/",
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

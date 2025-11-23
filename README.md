@@ -4,6 +4,7 @@
 #### home-ops - a mono-repo for my homelab
 
 _... automated via [Flux](https://fluxcd.io), [Renovate](https://github.com/renovatebot/renovate) and [GitHub Actions](https://github.com/features/actions)_ 🐟
+
 </div>
 
 <div align="center">
@@ -17,7 +18,7 @@ _... automated via [Flux](https://fluxcd.io), [Renovate](https://github.com/reno
 ## Overview
 
 This is a monorepository for my home Kubernetes cluster.
-I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools like [Ansible](https://www.ansible.com/),  [Kubernetes](https://kubernetes.io/), [Flux](https://github.com/fluxcd/flux2), [Renovate](https://github.com/renovatebot/renovate), and [GitHub Actions](https://github.com/features/actions).
+I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools like, [Kubernetes](https://kubernetes.io/), [Flux](https://github.com/fluxcd/flux2), [Renovate](https://github.com/renovatebot/renovate), and [GitHub Actions](https://github.com/features/actions).
 
 The purpose here is to learn Kubernetes, while practicing GitOps. I have two longer-term goals:
 
@@ -74,12 +75,12 @@ While most of my infrastructure and workloads are self-hosted I do rely upon the
 
 The alternative solution to these two problems would be to host a Kubernetes cluster in the cloud and deploy applications like [HCVault](https://www.vaultproject.io/), [Vaultwarden](https://github.com/dani-garcia/vaultwarden), [ntfy](https://ntfy.sh/), and [Gatus](https://gatus.io/). However, maintaining another cluster and monitoring another group of workloads is a lot more time and effort than I am willing to put in for now.
 
-| Service                                         | Use                                                               | Cost           |
-|-------------------------------------------------|-------------------------------------------------------------------|----------------|
-| [1Password](https://1password.com/)             | Secrets with [External Secrets](https://external-secrets.io/)     | ~$60/yr        |
-| [Cloudflare](https://www.cloudflare.com/)       | Domain and S3                                                     | Free           |
-| [GitHub](https://github.com/)                   | Hosting this repository and continuous integration/deployments    | Free           |
-|                                                 |                                                                   | Total: ~$5/mo  |
+| Service                                   | Use                                                            | Cost          |
+| ----------------------------------------- | -------------------------------------------------------------- | ------------- |
+| [1Password](https://1password.com/)       | Secrets with [External Secrets](https://external-secrets.io/)  | ~$60/yr       |
+| [Cloudflare](https://www.cloudflare.com/) | Domain and S3                                                  | Free          |
+| [GitHub](https://github.com/)             | Hosting this repository and continuous integration/deployments | Free          |
+|                                           |                                                                | Total: ~$5/mo |
 
 ---
 
@@ -99,17 +100,17 @@ The `external-dns` instance mentioned above another instance is deployed in my c
 
 ### Main Kubernetes Cluster
 
-| Node                | CPU               |  RAM | Storage    | Function             | OS         |
-|---------------------|-------------------|------|------------|----------------------|------------|
-| Beelink EQ13 | Intel N200   | 16GB | 512Gib SSD  | control-plane        | Talos |
-| Beelink EQ13 | Intel N200   | 16GB | 512Gib SSD  | control-plane        | Talos |
-| Beelink EQ13 | Intel N200   | 16GB | 512Gib SSD  | control-plane        | Talos |
+| Node         | CPU        | RAM  | Storage    | Function      | OS    |
+| ------------ | ---------- | ---- | ---------- | ------------- | ----- |
+| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
+| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
+| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
 
 ### Bulk storage
 
-| Node                | CPU               |  RAM | Storage    | Function             | OS         |
-|---------------------|-------------------|------|------------|----------------------|------------|
-| CM3588 | Quad-core ARM Cortex-A76 and quad-core Cortex-A55 CPU    | 16GB | 4* 4 Tib SSD  | Bulk storage        | Debian |
+| Node   | CPU                                                   | RAM  | Storage       | Function     | OS     |
+| ------ | ----------------------------------------------------- | ---- | ------------- | ------------ | ------ |
+| CM3588 | Quad-core ARM Cortex-A76 and quad-core Cortex-A55 CPU | 16GB | 4\* 4 Tib SSD | Bulk storage | Debian |
 
 Big shout out to original [flux-cluster-template](https://github.com/onedr0p/flux-cluster-template), and the [Home Operations](https://discord.gg/home-operations) Discord community.
 
