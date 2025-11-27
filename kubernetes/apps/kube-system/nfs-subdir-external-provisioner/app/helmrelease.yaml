@@ -31,7 +31,7 @@ spec:
     replicaCount: 2
     affinity:
       podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
+        preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
               labelSelector:
