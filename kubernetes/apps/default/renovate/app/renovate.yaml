@@ -13,7 +13,7 @@ spec:
             - name: renovate
               # Update this to the latest available and then enable Renovate on
               # the manifest
-              image: renovate/renovate:42.30.2
+              image: renovate/renovate:42.32.0
               # Environment Variables
               env:
                 - name: LOG_LEVEL
