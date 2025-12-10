@@ -11,7 +11,7 @@ spec:
     - name: RENOVATE_PLATFORM
       value: github
     - name: RENOVATE_GIT_AUTHOR
-      value: "Renovate <renovate@rphilipsen.nl"
+      value: "Renovate <renovate@rphilipsen.nl>"
     - name: RENOVATE_ONBOARDING_CONFIG
       value: |
         {
