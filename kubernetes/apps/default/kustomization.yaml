@@ -11,5 +11,4 @@ resources:
   - ./esphome/ks.yaml
   # Other
   - ./nginx-static/ks.yaml
-  - ./renovate/ks.yaml
   - ./restfox/ks.yaml
