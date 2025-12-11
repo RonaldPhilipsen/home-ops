@@ -24,7 +24,8 @@ spec:
       value: "true"
     - name: RENOVATE_REDIS_URL
       value: "redis://dragonfly.database.svc.cluster.local:6379"
-
+    - name: RENOVATE_DEPENDENCY_DASHBOARD
+      value: "true"
   image: ghcr.io/renovatebot/renovate:42.42.5@sha256:84143d45767b8c81b7c2d1d5a0b8a0db48808e00b1e71c91c5a42eed2bd21182
   parallelism: 5
   resources:
