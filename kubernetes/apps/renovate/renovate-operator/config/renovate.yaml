@@ -26,7 +26,7 @@ spec:
       value: "redis://dragonfly.database.svc.cluster.local:6379"
     - name: RENOVATE_DEPENDENCY_DASHBOARD
       value: "true"
-  image: ghcr.io/renovatebot/renovate:42.46.0@sha256:52db3f829ab28078210aa9d3a872e8707269a932070ef84c319bb6b18297b682
+  image: ghcr.io/renovatebot/renovate:42.50.0@sha256:420532c2770bf504f3f9f4484ba930367f78c95268e4f33621144d8429104a15
   parallelism: 5
   resources:
     requests:
