@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./home-ops
   - ./semversie
+  - ./renovate-operator
