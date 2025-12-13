@@ -15,7 +15,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/DocRphil
     githubConfigSecret: docrphil-runner-secret
-    runnerScaleSetName: docrphil-runner
+    # runnerScaleSetName: docrphil-runner
     minRunners: 0
     maxRunners: 10
 
