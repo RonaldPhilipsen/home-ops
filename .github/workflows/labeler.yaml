@@ -10,7 +10,7 @@ on:
 jobs:
   labeler:
     name: Labeler
-    runs-on: home-ops-runner
+    runs-on:  docrphil-runner
     permissions:
       contents: read
       pull-requests: write
