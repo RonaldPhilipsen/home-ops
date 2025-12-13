@@ -28,7 +28,7 @@ jobs:
   test:
     name: Flux Local Test
     needs: pre-job
-    runs-on: ubuntu-latest
+    runs-on:  docrphil-runner
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
     steps:
       - name: Checkout
