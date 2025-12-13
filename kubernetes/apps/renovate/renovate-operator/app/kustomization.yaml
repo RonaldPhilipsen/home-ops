@@ -6,4 +6,3 @@ namespace: renovate
 resources:
   - ./httproute.yaml
   - ./helmrelease.yaml
-  - ./ocirepository.yaml
