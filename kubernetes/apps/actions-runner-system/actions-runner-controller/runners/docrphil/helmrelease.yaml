@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: self-hosted
+  name: &name docrphil-runner
 spec:
   interval: 1h
   chartRef:
@@ -53,8 +53,8 @@ spec:
                 name: talos
                 readOnly: true
 
-        serviceAccountName: &saname docrphil-runner
+        serviceAccountName: *name
         volumes:
           - name: talos
             secret:
-              secretName: *saname
+              secretName: *name
