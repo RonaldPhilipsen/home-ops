@@ -6,7 +6,7 @@ metadata:
   name: renovate-github
 spec:
   # discoveryFilter:
-  image: ghcr.io/renovatebot/renovate:42.50.0@sha256:420532c2770bf504f3f9f4484ba930367f78c95268e4f33621144d8429104a15
+  image: ghcr.io/renovatebot/renovate:42.52.2@sha256:813d39089b687166b691987d84753c13d3a95f6a5b9e048e9fe65c328072a63e
   parallelism: 5
   resources:
     requests:
@@ -42,7 +42,7 @@ kind: RenovateJob
 metadata:
   name: renovate-docrphil
 spec:
-  image: ghcr.io/renovatebot/renovate:42.50.0@sha256:420532c2770bf504f3f9f4484ba930367f78c95268e4f33621144d8429104a15
+  image: ghcr.io/renovatebot/renovate:42.52.2@sha256:813d39089b687166b691987d84753c13d3a95f6a5b9e048e9fe65c328072a63e
   parallelism: 5
   resources:
     requests:
