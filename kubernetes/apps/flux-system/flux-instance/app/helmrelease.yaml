@@ -23,7 +23,7 @@ spec:
         - notification-controller
       sync:
         kind: GitRepository
-        url: https://github.com/RonaldPhilipsen/home-ops.git
+        url: https://github.com/DocRphil/home-ops.git
         ref: refs/heads/main
         path: kubernetes/flux/cluster
         interval: 1h

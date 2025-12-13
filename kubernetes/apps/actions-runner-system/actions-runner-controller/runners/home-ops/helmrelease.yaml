@@ -27,7 +27,7 @@ spec:
     - name: actions-runner-controller
       namespace: actions-runner-system
   values:
-    githubConfigUrl: https://github.com/RonaldPhilipsen/home-ops
+    githubConfigUrl: https://github.com/DocRphil/home-ops
     githubConfigSecret: home-ops-runner-secret
 
     minRunners: 0
