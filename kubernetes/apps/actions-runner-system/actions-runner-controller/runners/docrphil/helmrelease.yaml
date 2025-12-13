@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &name semversie-runner
+  name: &name docrphil-runner
 spec:
   interval: 1h
   chartRef:
@@ -13,9 +13,9 @@ spec:
     - name: actions-runner-controller
       namespace: actions-runner-system
   values:
-    githubConfigUrl: https://github.com/RonaldPhilipsen/semversie
-    githubConfigSecret: semversie-runner-secret
-
+    githubConfigUrl: https://github.com/DocRphil
+    githubConfigSecret: docrphil-runner-secret
+    # runnerScaleSetName: self-hosted
     minRunners: 0
     maxRunners: 10
 
@@ -35,7 +35,7 @@ spec:
     template:
       metadata:
         labels:
-          app.kubernetes.io/name: semversie-runner
+          app.kubernetes.io/name: self-hosted
       spec:
         containers:
           - name: runner
