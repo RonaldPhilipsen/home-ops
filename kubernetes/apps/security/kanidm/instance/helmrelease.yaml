@@ -28,24 +28,18 @@ spec:
             fsGroupChangePolicy: "OnRootMismatch"
 
         initContainers:
-          kanidm-db-vacuum:
-            image:
-              repository: docker.io/kanidm/server
-              tag: 1.6.3@sha256:8141f14aa62a271204bf3a0e2207d9a7c565e63a1bcd295aff4444e35967f1b8
-
-            args:
-              - kanidmd
-              - database
-              - vacuum
+          01-init-kanidm-admin-password:
+            command:
+              - /bin/sh
               - -c
-              - /data/server.toml
-
-            securityContext:
-              runAsUser: 999
-              runAsGroup: 999
-              runAsNonRoot: true
-              capabilities:
-                drop: ["ALL"]
+              - "[ -s /data/kanidm.db ] || /sbin/kanidmd recover-account -c /data/server.toml admin"
+            image: *img
+            securityContext: *sc
+            resources:
+              requests:
+                cpu: "10m"
+              limits:
+                memory: "150Mi"
 
         containers:
           app:
