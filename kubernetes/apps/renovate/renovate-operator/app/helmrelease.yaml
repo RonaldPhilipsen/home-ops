@@ -27,4 +27,3 @@ spec:
     fullnameOverride: *app
     rbac:
       ownNamespaceOnly: true
-
