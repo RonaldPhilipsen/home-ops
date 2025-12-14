@@ -40,7 +40,7 @@ spec:
     - ../../../../components/volsync
   dependsOn:
     - name: volsync
-      namespace: volsync-system
+      namespace: storage
   interval: 1h
   path: ./kubernetes/apps/security/kanidm/instance
   prune: true
