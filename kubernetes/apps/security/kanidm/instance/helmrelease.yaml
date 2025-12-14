@@ -131,6 +131,22 @@ spec:
           - backendRefs:
               - identifier: app
                 port: 443
+    configMaps:
+      config:
+        enabled: true
+        data:
+          server.toml: |-
+            domain = "idm.rphilipsen.nl"
+            origin = "https://idm.rphilipsen.nl"
+            tls_chain = "/certs/fullchain.pem"
+            tls_key = "/certs/privkey.pem"
+            role = "WriteReplica"
+            log_level = "info"
+            bindaddress = "[::]:8443"
+            ldapbindaddress = "[::]:3636"
+            trust_x_forward_for = true
+            db_path = "/data/kanidm.db"
+            db_fs_type = "other"
 
     persistence:
       data:
@@ -141,13 +157,14 @@ spec:
               - path: /data
 
       config:
+        enabled: true
         type: configMap
-        name: kanidm-configmap
-        advancedMounts:
-          *app :
-            app:
-              - path: /data/server.toml
-                subPath: server.toml
+        name: "kanidm-config"
+        globalMounts:
+          - subPath: "server.toml"
+            path: "/data/server.toml"
+            readOnly: true
+
       certs:
         type: secret
         name: kanidm-tls
