@@ -35,3 +35,5 @@ spec:
       value: "redis://dragonfly.database.svc.cluster.local:6379"
     - name: RENOVATE_DEPENDENCY_DASHBOARD
       value: "true"
+    - name: RENOVATE_FORK_PROCESSING
+      value: "disabled"
