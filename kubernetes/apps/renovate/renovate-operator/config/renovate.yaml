@@ -45,11 +45,11 @@ spec:
     - name: RENOVATE_S3_PATH_STYLE
       value: "true"
     - name: RENOVATE_S3_BUCKET
-      value: "Renovate"
+      value: "renovate"
     - name: RENOVATE_REPOSITORY_CACHE
       value: "enabled"
     - name: RENOVATE_REPOSITORY_CACHE_TYPE
-      value: "s3://Renovate/"
+      value: "s3://renovate/"
     - name: AWS_REGION
       value: "us-east-1"
     - name: AWS_ACCESS_KEY_ID
