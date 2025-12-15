@@ -4,6 +4,9 @@ apiVersion: renovate-operator.mogenius.com/v1alpha1
 kind: RenovateJob
 metadata:
   name: renovate-github
+  annotations:
+    reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "renovate-s3"
 spec:
   # discoveryFilter:
   image: ghcr.io/renovatebot/renovate:42.50.0@sha256:420532c2770bf504f3f9f4484ba930367f78c95268e4f33621144d8429104a15
