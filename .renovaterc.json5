@@ -18,7 +18,11 @@
   ],
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
-  ignorePaths: ["**/*.sops.*", "**/resources/**"],
+  ignorePaths: [
+    "**/*.sops.*",
+    "**/resources/**",
+    "kubernetes/components/volsync/**",
+  ],
   flux: {
     managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],
   },
