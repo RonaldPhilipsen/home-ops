@@ -41,7 +41,7 @@ spec:
     - name: RENOVATE_FORK_PROCESSING
       value: "disabled"
     - name: RENOVATE_S3_ENDPOINT
-      value: "s3.rphilipsen.nl"
+      value: "http://172.16.20.7:3900/"
     - name: RENOVATE_S3_PATH_STYLE
       value: "true"
     - name: RENOVATE_S3_BUCKET
