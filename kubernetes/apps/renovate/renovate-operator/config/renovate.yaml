@@ -37,3 +37,24 @@ spec:
       value: "true"
     - name: RENOVATE_FORK_PROCESSING
       value: "disabled"
+    - name: RENOVATE_S3_ENDPOINT
+      value: "s3.rphilipsen.nl"
+    - name: RENOVATE_S3_PATH_STYLE
+      value: "true"
+    - name: RENOVATE_S3_BUCKET
+      value: "Renovate"
+    - name: RENOVATE_REPOSITORY_CACHE
+      value: "enabled"
+    - name: repositoryCacheType
+      value: "s3://Renovate/"
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: renovate-s3
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: renovate-s3
+          key: AWS_SECRET_ACCESS_KEY
+
