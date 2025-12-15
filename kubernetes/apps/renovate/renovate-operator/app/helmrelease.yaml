@@ -31,4 +31,4 @@ spec:
     rbac:
       ownNamespaceOnly: true
     webhook:
-      enabled: true
+      enabled: false
