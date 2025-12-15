@@ -50,6 +50,8 @@ spec:
       value: "enabled"
     - name: RENOVATE_REPOSITORY_CACHE_TYPE
       value: "s3://renovate/"
+    - name: RENOVATE_REPOSITORY_CACHE_S3_ENDPOINT
+      value: "http://172.16.20.7:3900/"
     - name: AWS_REGION
       value: "us-east-1"
     - name: AWS_ACCESS_KEY_ID
