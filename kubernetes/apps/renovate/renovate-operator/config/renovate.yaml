@@ -13,8 +13,8 @@ spec:
   parallelism: 10
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 200m
+      memory: 256Mi
   schedule: "@hourly"
   secretRef: renovate-secret
   extraEnv:
