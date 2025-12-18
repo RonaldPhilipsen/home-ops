@@ -31,4 +31,9 @@ spec:
     rbac:
       ownNamespaceOnly: true
     webhook:
-      enabled: false
+      enabled: true
+      authentication:
+        enabled: true
+        secretRef:
+          name: renovate-webhook
+          key: WEBHOOK_TOKEN

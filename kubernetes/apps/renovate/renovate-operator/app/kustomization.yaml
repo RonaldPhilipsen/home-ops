@@ -6,3 +6,4 @@ namespace: renovate
 resources:
   - ./httproute.yaml
   - ./helmrelease.yaml
+  - ./externalsecret.yaml
