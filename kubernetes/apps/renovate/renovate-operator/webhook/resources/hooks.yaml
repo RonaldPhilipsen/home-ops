@@ -21,13 +21,6 @@
           parameter:
             source: header
             name: x-hub-signature
-      - # Trigger only for the bjw-s-labs organization
-        match:
-          type: value
-          value: RonaldPhilipsen
-          parameter:
-            source: payload
-            name: repository.owner.login
       - or:
           - # Trigger on GitHub Issue edits
             and:
