@@ -12,6 +12,31 @@ spec:
       namespace: kube-system
       sectionName: rphilipsen-https
   rules:
-    - backendRefs:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
         - name: *app
           port: 8081
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: &app renovate-operator-hook
+spec:
+  hostnames:
+    - renovate.rphilipsen.nl
+  parentRefs:
+    - name: external
+      namespace: kube-system
+      sectionName: rphilipsen-https
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /hook
+      backendRefs:
+        - name: *app
+          port: 8082
