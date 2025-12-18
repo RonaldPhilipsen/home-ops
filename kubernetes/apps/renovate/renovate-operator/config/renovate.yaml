@@ -66,4 +66,3 @@ spec:
         secretKeyRef:
           name: renovate-s3
           key: AWS_SECRET_ACCESS_KEY
-

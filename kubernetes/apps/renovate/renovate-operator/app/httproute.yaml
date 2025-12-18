@@ -12,18 +12,18 @@ spec:
       namespace: kube-system
       sectionName: rphilipsen-https
   rules:
-    - matches:
-      - path:
-          type: PathPrefix
-          value: /hook
-      backendRefs:
-        - name: *app
-          port: 8082
+    # - matches:
+    #     - path:
+    #         type: PathPrefix
+    #         value: /hook
+    #   backendRefs:
+    #     - name: *app
+    #       port: 8082
 
-    - matches:
-      - path:
-          type: PathPrefix
-          value: /
-      backendRefs:
+    # - matches:
+    #     - path:
+    #         type: PathPrefix
+    #         value: /
+    - backendRefs:
         - name: *app
           port: 8081
