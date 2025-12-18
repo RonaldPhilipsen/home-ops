@@ -32,8 +32,8 @@ spec:
       ownNamespaceOnly: true
     webhook:
       enabled: true
-      authentication:
-        enabled: true
-        secretRef:
-          name: renovate-webhook
-          key: WEBHOOK_TOKEN
+      # authentication:
+      #   enabled: true
+      #   secretRef:
+      #     name: renovate-webhook
+      #     key: WEBHOOK_TOKEN
