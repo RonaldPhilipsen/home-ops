@@ -8,3 +8,12 @@ spec:
   kubernetes:
     # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
     version: v1.34.3
+  healthChecks:
+    - apiVersion: volsync.backube/v1alpha1
+      kind: ReplicationSource
+      expr: |-
+        status.conditions.filter(c, c.type == "Synchronizing").all(c, c.status == "False")
+    - apiVersion: longhorn.io/v1beta2
+      kind: Volume
+      expr: |-
+        !(status.robustness in ['degraded'])
