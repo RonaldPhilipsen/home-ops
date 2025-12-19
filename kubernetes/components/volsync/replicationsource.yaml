@@ -4,6 +4,8 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: "${APP}"
+  annotations:
+    volsync.backube/skip-source-check: "true"
 spec:
   sourcePVC: "${VOLSYNC_CLAIM:=${APP}}"
   trigger:
