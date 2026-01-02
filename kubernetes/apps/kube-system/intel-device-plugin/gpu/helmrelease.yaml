@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.34.1@sha256:d72dda51ef191f446bc8f2cb9fb9f9ac88ceba47f777127bf03acb742504cd1c
+    tag: 0.34.1
   url: oci://ghcr.io/home-operations/charts-mirror/intel-device-plugins-gpu
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
