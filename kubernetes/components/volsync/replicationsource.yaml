@@ -32,5 +32,3 @@ spec:
     retain:
       hourly: 24
       daily: 7
-      weekly: 5
-      monthly: 3
