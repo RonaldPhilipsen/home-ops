@@ -34,6 +34,7 @@ spec:
               tag: 1.8.5@sha256:55af50cf02909ff8f62d3a083870e697a47658c2dac94598dc5dbeb7de5955f3
             env:
               KANIDM_ADMIN_BIND_PATH: "/var/run/kanidmd.sock"
+              RUST_LOG: "kanidm=debug"
             # probes:
               # liveness: &probe
               #   enabled: true
