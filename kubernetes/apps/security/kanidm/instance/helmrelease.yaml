@@ -27,25 +27,6 @@ spec:
             fsGroup: 999
             fsGroupChangePolicy: "OnRootMismatch"
 
-        initContainers:
-          01-init-kanidm-admin-password:
-            command:
-              - /bin/sh
-              - -c
-              - "[ -s /data/kanidm.db ] || /sbin/kanidmd recover-account -c /data/server.toml admin"
-            image:
-              repository: docker.io/kanidm/server
-              tag: 1.8.5@sha256:55af50cf02909ff8f62d3a083870e697a47658c2dac94598dc5dbeb7de5955f3
-            securityContext:
-              capabilities:
-                drop:
-                  - ALL
-            resources:
-              requests:
-                cpu: "10m"
-              limits:
-                memory: "150Mi"
-
         containers:
           app:
             image:
@@ -78,7 +59,30 @@ spec:
               capabilities:
                 drop:
                   - ALL
-
+      provision:
+        pod:
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+            fsGroup: 999
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/m00nwtchr/kanidm-provision
+              tag: 1.3.0@sha256:7d7488f26e80f6b8ff6222fec614d7ae3334f40ba97e04913dbef043bea4f004
+            env:
+              KANIDM_INSTANCE: "https://idm.rphilipsen.nl"
+              KANIDM_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: kanidm-secret
+                    key: token
+            securityContext:
+              capabilities:
+                drop:
+                  - ALL
       provision:
         pod:
           securityContext:
