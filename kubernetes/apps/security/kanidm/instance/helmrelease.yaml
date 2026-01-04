@@ -161,10 +161,10 @@ spec:
         suffix: "icon-cache"
         size: 1Gi
         accessMode: ReadWriteOnce
-        advancedMounts:
-          provision:
-            app:
-              - path: /data/icons
+        # advancedMounts:
+        #   provision:
+        #     app:
+        #       - path: /data/icons
 
     rbac:
       roles:
