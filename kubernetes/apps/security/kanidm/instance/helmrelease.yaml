@@ -82,7 +82,7 @@ spec:
             securityContext:
               capabilities:
                 drop:
-                  - ALLs
+                  - ALL
     service:
       app:
         controller: *app
@@ -116,8 +116,8 @@ spec:
           server.toml: |-
             domain = "idm.rphilipsen.nl"
             origin = "https://idm.rphilipsen.nl"
-            # tls_chain = "/certs/fullchain.pem"
-            # tls_key = "/certs/privkey.pem"
+            tls_chain = "/certs/tls.crt"
+            tls_key = "/certs/tls.key"
             role = "WriteReplica"
             log_level = "info"
             bindaddress = "[::]:8443"
