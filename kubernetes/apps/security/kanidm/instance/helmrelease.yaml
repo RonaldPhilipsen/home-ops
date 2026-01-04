@@ -97,7 +97,7 @@ spec:
               KANIDM_TOKEN:
                 valueFrom:
                   secretKeyRef:
-                    name: kanidm-token
+                    name: kanidm-secret
                     key: token
             securityContext:
               capabilities:
