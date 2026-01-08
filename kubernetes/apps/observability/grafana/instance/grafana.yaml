@@ -14,7 +14,7 @@ spec:
       feedback_links_enabled: "false"
       reporting_enabled: "false"
     auth.anonymous:
-      enabled: true
+      enabled: "true"
     log:
       mode: console
     news:
