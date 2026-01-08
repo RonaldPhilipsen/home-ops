@@ -14,7 +14,7 @@ data:
           "doNotUseTLS": true,
           "accessKeyID": "{{ .AWS_ACCESS_KEY_ID }}",
           "secretAccessKey": "{{ .AWS_SECRET_ACCESS_KEY }}",
-          "region": "garage"
+          "region": "us-east-1"
         }
       },
       "hostname": "volsync.storage.svc.cluster.local",
