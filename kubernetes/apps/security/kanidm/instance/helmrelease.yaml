@@ -36,19 +36,19 @@ spec:
               KANIDM_ADMIN_BIND_PATH: "/var/run/kanidmd.sock"
               RUST_LOG: "debug"
             # probes:
-              # liveness: &probe
-              #   enabled: true
-              #   custom: true
-              #   spec:
-              #     httpGet:
-              #       path: /status
-              #       port: &port 8443
-              #       scheme: HTTPS
-              #     initialDelaySeconds: 0
-              #     periodSeconds: 10
-              #     timeoutSeconds: 1
-              #     failureThreshold: 3
-              # readiness: *probe
+            # liveness: &probe
+            #   enabled: true
+            #   custom: true
+            #   spec:
+            #     httpGet:
+            #       path: /status
+            #       port: &port 8443
+            #       scheme: HTTPS
+            #     initialDelaySeconds: 0
+            #     periodSeconds: 10
+            #     timeoutSeconds: 1
+            #     failureThreshold: 3
+            # readiness: *probe
             resources:
               limits:
                 cpu: 50M
