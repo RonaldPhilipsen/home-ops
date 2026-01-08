@@ -67,8 +67,9 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.rphilipsen.nl"
         parentRefs:
-          - name: rphilipsen-https
+          - name: internal
             namespace: kube-system
+            sectionName: rphilipsen-https
     persistence:
       config-file:
         type: secret
