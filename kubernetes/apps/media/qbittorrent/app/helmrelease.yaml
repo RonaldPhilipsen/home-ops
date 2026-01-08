@@ -79,8 +79,8 @@ spec:
         hostnames: ["qb.rphilipsen.nl"]
         parentRefs:
           - name: internal
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: *app

@@ -69,13 +69,13 @@ spec:
           ]
         parentRefs:
           - name: external
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
           - name: external
-            namespace: kube-system
+            namespace: network
             sectionName: trees100-https
           - name: external
-            namespace: kube-system
+            namespace: network
             sectionName: philipsen-it-https
         rules:
           - backendRefs:
