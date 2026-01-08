@@ -13,12 +13,12 @@ spec:
   prune: true
   wait: false
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
   dependsOn:
     - name: kgateway-crds
-      namespace: ai-system
+      namespace: network
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -30,11 +30,11 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 3m
-  path: ./kubernetes/apps/kgateway/cilium/app
+  path: ./kubernetes/apps/network/kgateway/crds/
   prune: true
   wait: false
   sourceRef:
-    kind: OCIRepository
+    kind: GitRepository
     name: flux-system
     namespace: flux-system
 ---
