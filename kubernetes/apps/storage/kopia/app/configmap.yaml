@@ -9,7 +9,7 @@ data:
       "storage": {
         "type": "s3",
         "config": {
-          "bucket": "volsync",
+          "bucket": "kopia",
           "endpoint": "172.16.20.7:3900",
           "doNotUseTLS": true,
           "accessKeyID": "{{ .AWS_ACCESS_KEY_ID }}",
