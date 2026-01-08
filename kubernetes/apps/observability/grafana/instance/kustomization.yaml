@@ -5,5 +5,4 @@ kind: Kustomization
 resources:
   - ./grafanadatasource.yaml
   - ./grafana.yaml
-  - ./sidecar.yaml
-  - ./rbac.yaml
+  - ./servicemonitor.yaml
