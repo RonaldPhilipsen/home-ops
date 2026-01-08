@@ -4,7 +4,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: kgateway
-  namespace: ai-system
+  namespace: network
 spec:
   interval: 5m
   layerSelector:
