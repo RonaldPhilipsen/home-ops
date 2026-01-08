@@ -9,7 +9,7 @@ spec:
   parentRefs:
     - name: external
       namespace: kube-system
-      sectionName: rphilipsen-https
+      sectionName: https
   rules:
     - backendRefs:
         - name: webhook-receiver

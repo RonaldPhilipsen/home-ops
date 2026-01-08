@@ -56,8 +56,8 @@ spec:
         hostnames: ["s3.rphilipsen.nl"]
         parentRefs:
           - name: internal
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: *app
@@ -66,8 +66,8 @@ spec:
         hostnames: ["s3web.rphilipsen.nl"]
         parentRefs:
           - name: internal
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: *app

@@ -101,11 +101,11 @@ spec:
         hostnames: ["idm.rphilipsen.nl"]
         parentRefs:
           - name: external
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
           - name: internal
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - identifier: app

@@ -64,8 +64,8 @@ spec:
           - webhook.rphilipsen.nl
         parentRefs:
           - name: external
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
     service:
       app:
         ports:

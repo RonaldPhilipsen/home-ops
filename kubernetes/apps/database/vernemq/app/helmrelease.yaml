@@ -131,7 +131,7 @@ spec:
         parentRefs:
           - name: internal
             namespace: network
-            sectionName: rphilipsen-https
+            sectionName: https
         rules:
           - matches:
               - path:
