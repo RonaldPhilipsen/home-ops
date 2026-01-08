@@ -40,3 +40,5 @@ spec:
     controller:
       image:
         tag: "v2.1.2"
+    agentgateway:
+      enabled: true
