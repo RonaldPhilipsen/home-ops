@@ -20,7 +20,7 @@ spec:
     news:
       news_feed_enabled: "false"
     server:
-      root_url: https://grafana.turbo.ac
+      root_url: https://grafana.rphilipsen.nl
   deployment:
     spec:
       template:
