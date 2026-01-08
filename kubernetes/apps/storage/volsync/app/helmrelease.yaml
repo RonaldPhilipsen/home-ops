@@ -5,17 +5,15 @@ kind: HelmRelease
 metadata:
   name: volsync
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: volsync
-  dependsOn:
-    - name: snapshot-controller
+  interval: 1h
   values:
     fullnameOverride: volsync # Required for volsync-perfectra1n fork
     image: &image
       repository: ghcr.io/perfectra1n/volsync
-      tag: 0.17.6@sha256:b034605316e89c0f9cf55366c70743994972cb7c12abbdb796ebdecb82dbf963
+      tag: 0.17.6
     kopia: *image
     rclone: *image
     restic: *image
@@ -29,4 +27,3 @@ spec:
       runAsNonRoot: true
       runAsUser: 1000
       runAsGroup: 1000
-      seccompProfile: { type: RuntimeDefault }

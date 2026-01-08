@@ -1,0 +1,24 @@
+# define your template in a config map
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kopia-config-tpl
+data:
+  repository.config: |
+    {
+      "storage": {
+        "type": "s3",
+        "config": {
+          "bucket": "volsync",
+          "endpoint": "http://172.16.20.7:3900/",
+          "doNotUseTLS": true,
+          "accessKeyID": "{{ .AWS_ACCESS_KEY_ID }}",
+          "secretAccessKey": "{{ .AWS_SECRET_ACCESS_KEY }}",
+          "region": "garage"
+        }
+      },
+      "hostname": "volsync.storage.svc.cluster.local",
+      "username": "volsync",
+      "description": "volsync",
+      "enableActions": false
+    }
