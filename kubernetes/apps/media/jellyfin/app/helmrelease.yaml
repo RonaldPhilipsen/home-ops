@@ -103,8 +103,8 @@ spec:
         hostnames: [*url]
         parentRefs:
           - name: external
-            namespace: kube-system
-            sectionName: rphilipsen-https
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: *app

@@ -65,7 +65,7 @@ spec:
       parentRefs:
         - name: internal
           namespace: kube-system
-          sectionName: rphilipsen-https
+          sectionName: https
       rules:
         - backendRefs:
             - name: grafana-service

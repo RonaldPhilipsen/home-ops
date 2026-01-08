@@ -20,7 +20,7 @@ spec:
           parentRefs:
             - name: internal
               namespace: kube-system
-              sectionName: rphilipsen-https
+              sectionName: https
       alertmanagerSpec:
         alertmanagerConfiguration:
           name: alertmanager
@@ -47,7 +47,7 @@ spec:
           parentRefs:
             - name: internal
               namespace: kube-system
-              sectionName: rphilipsen-https
+              sectionName: https
       prometheusSpec:
         externalUrl: https://prometheus.rphilipsen.nl
         podMonitorSelectorNilUsesHelmValues: false
