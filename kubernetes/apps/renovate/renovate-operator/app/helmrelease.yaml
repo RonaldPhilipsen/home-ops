@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.15.0
+    tag: 1.15.0@sha256:e63c1fb8abe365cd9720af1988e5963c985079f0fb64bef5bbb7fe464aa9778d
   url: oci://ghcr.io/mogenius/helm-charts/renovate-operator
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json

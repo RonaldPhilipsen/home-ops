@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.18.5
+    tag: 1.18.5@sha256:8c60a37e45a276413254585a73d44b7f835122bbc362c56cc3f6989ccca3888e
   url: oci://ghcr.io/home-operations/charts-mirror/cilium

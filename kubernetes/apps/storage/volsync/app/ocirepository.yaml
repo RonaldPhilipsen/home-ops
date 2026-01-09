@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.18.2
+    tag: 0.18.2@sha256:9a04be786064a88f0bf3e0c308f0416026e17c6261d117f47f0624cb60e910b8
   url: oci://ghcr.io/home-operations/charts-mirror/volsync-perfectra1n

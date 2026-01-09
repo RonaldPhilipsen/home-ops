@@ -10,5 +10,5 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.34.0
+    tag: 0.34.0@sha256:faa104431135ea32c34a9c7d3a295b1597d48231fe70cdb40a44f76343c59393
   url: oci://ghcr.io/home-operations/charts-mirror/descheduler

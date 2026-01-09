@@ -46,7 +46,7 @@ spec:
           main:
             image:
               repository: jellyfin/jellyfin
-              tag: 10.11.5
+              tag: 10.11.5@sha256:6d819e9ab067efcf712993b23455cc100ee5585919bb297ea5a109ac00cb626e
               pullPolicy: IfNotPresent
 
             env:

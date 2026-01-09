@@ -34,7 +34,7 @@ spec:
           type: RuntimeDefault
     initContainers:
       - name: init-permissions
-        image: busybox
+        image: busybox@sha256:2383baad1860bbe9d8a7a843775048fd07d8afe292b94bd876df64a69aae7cb1
         command: ["sh", "-c", "chown -R 568:568 /data"]
         volumeMounts:
           - name: data

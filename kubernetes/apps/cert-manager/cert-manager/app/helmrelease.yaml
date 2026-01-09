@@ -10,7 +10,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.19.2
+    tag: v1.19.2@sha256:6f7f2d9065fdecb25ae5b1124169cdf0e94092931e2f43f46db8b06a29432b94
   url: oci://quay.io/jetstack/charts/cert-manager
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
