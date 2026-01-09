@@ -9,7 +9,7 @@ metadata:
     secret.reloader.stakater.com/reload: "renovate-s3"
 spec:
   # discoveryFilter:
-  image: ghcr.io/renovatebot/renovate:42.74.2@sha256:3ad0fdb99e2f67d08de4b4a71a611abe8c8547147eebbc07f6e35fef53ac5782
+  image: ghcr.io/renovatebot/renovate:42.76.0@sha256:a0c964fe5e35e5866654a169ae572141ab6f205608ccf04a25a7728fe79cb09b
   parallelism: 10
   resources:
     requests:
