@@ -68,7 +68,7 @@ spec:
           - "{{ .Release.Name }}.rphilipsen.nl"
         parentRefs:
           - name: internal
-            namespace: kube-system
+            namespace: network
             sectionName: rphilipsen-https
     persistence:
       config-file:

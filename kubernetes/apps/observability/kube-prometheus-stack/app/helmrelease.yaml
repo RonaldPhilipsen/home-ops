@@ -16,10 +16,10 @@ spec:
         main:
           enabled: true
           hostnames:
-            - alertmanager.trphilipsen.nl
+            - alertmanager.rphilipsen.nl
           parentRefs:
             - name: internal
-              namespace: kube-system
+              namespace: network
               sectionName: https
       alertmanagerSpec:
         alertmanagerConfiguration:
@@ -46,7 +46,7 @@ spec:
             - prometheus.rphilipsen.nl
           parentRefs:
             - name: internal
-              namespace: kube-system
+              namespace: network
               sectionName: https
       prometheusSpec:
         externalUrl: https://prometheus.rphilipsen.nl
