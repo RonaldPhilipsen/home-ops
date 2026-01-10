@@ -9,7 +9,7 @@ spec:
     - flux-operator.rphilipsen.nl
   parentRefs:
     - name: internal
-      namespace: kube-system
+      namespace: network
       sectionName: https
   rules:
     - backendRefs:
