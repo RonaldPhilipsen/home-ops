@@ -79,9 +79,11 @@ spec:
             subPath: repository.config
             readOnly: true
       repository:
-        type: nfs
-        server: 172.16.20.7
-        path: /exports/Volsync/kopia
+        type: custom
+        volumeSpec:
+          nfs:
+            server: 172.16.20.7
+            path: /exports/Volsync/kopia
         globalMounts:
           - path: /repository
       tmpfs:
