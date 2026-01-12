@@ -78,6 +78,12 @@ spec:
           - path: /config/repository.config
             subPath: repository.config
             readOnly: true
+      repository:
+        type: nfs
+        server: 172.16.20.7
+        path: /data/kopia
+        globalMounts:
+          - path: /repository
       tmpfs:
         type: emptyDir
         advancedMounts:
