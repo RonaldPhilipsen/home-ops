@@ -110,12 +110,12 @@ spec:
       data:
         type: nfs
         server: 172.16.20.7
-        path: /data/garage/data
+        path: /exports/data/garage/data
         globalMounts:
           - path: /data
       meta:
         type: nfs
         server: 172.16.20.7
-        path: /data/garage/meta
+        path: /exports/data/garage/meta
         globalMounts:
           - path: /meta
