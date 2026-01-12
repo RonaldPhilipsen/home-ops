@@ -7,17 +7,12 @@ data:
   repository.config: |
     {
       "storage": {
-        "type": "s3",
+        "type": "filesystem",
         "config": {
-          "bucket": "kopia",
-          "endpoint": "172.16.20.7:3900",
-          "doNotUseTLS": true,
-          "accessKeyID": "{{ .AWS_ACCESS_KEY_ID }}",
-          "secretAccessKey": "{{ .AWS_SECRET_ACCESS_KEY }}",
-          "region": "us-east-1"
+          "path": "/repository"
         }
       },
-      "hostname": "volsync.storage.svc.cluster.local",
+      "hostname": "volsync",
       "username": "volsync",
       "description": "volsync",
       "enableActions": false
