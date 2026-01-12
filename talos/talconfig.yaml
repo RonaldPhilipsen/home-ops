@@ -1,11 +1,16 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
 clusterName: kubernetes
-
-talosVersion: "${talosVersion}"
-kubernetesVersion: "${kubernetesVersion}"
-
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.12.1
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.35.0
 endpoint: https://172.16.20.2:6443
+allowSchedulingOnMasters: true
+cniConfig:
+  name: none
+
+
 additionalApiServerCertSans: &sans
   - "127.0.0.1"
   - "172.16.20.2"
@@ -14,10 +19,6 @@ additionalMachineCertSans: *sans
 
 clusterPodNets: ["10.42.0.0/16"]
 clusterSvcNets: ["10.43.0.0/16"]
-
-# Disable built-in CNI to use Cilium
-cniConfig:
-  name: none
 
 nodes:
   - hostname: "k8s-alpha"
