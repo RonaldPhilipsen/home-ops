@@ -42,6 +42,7 @@ spec:
       v2DataEngine: true
       dataEngine: v2
     longhornDriver:
+      kubeletRootDir: /var/lib/kubelet
       tolerations: &tolerations
         - key: CriticalAddonsOnly
           operator: Exists
