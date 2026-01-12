@@ -109,7 +109,7 @@ spec:
                 name: "repository",
                 nfs: Object.spec.template.spec.volumes.nfs{
                   server: "172.16.20.7",
-                  path: "/data/kopia"
+                  path: "/exports/Volsync/kopia"
                 }
               }
             }
