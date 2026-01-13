@@ -97,7 +97,7 @@ spec:
 
     route:
       app:
-        # kind: TLSRoute
+        kind: TLSRoute
         hostnames: ["idm.rphilipsen.nl"]
         parentRefs:
           - name: external
