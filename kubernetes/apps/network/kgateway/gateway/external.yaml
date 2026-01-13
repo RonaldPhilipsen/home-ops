@@ -32,6 +32,9 @@ spec:
       port: 443
       protocol: HTTPS
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+          - kind: TLSRoute
         namespaces:
           from: All
       tls:

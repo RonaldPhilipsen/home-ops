@@ -35,6 +35,9 @@ spec:
       port: 443
       hostname: "*.rphilipsen.nl"
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+          - kind: TLSRoute
         namespaces:
           from: All
       tls:
