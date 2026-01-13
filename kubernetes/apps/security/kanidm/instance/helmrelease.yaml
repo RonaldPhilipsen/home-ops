@@ -87,6 +87,10 @@ spec:
     service:
       app:
         controller: *app
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "172.16.20.32"
+          external-dns.alpha.kubernetes.io/hostname: idm.rphilipsen.nl
         ports:
           https:
             port: 443
@@ -95,21 +99,6 @@ spec:
             port: 636
             targetPort: 3636
 
-    route:
-      app:
-        kind: TLSRoute
-        hostnames: ["idm.rphilipsen.nl"]
-        parentRefs:
-          - name: external
-            namespace: network
-            sectionName: https
-          - name: internal
-            namespace: network
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: 443
     configMaps:
       config:
         enabled: true
