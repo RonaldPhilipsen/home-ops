@@ -35,11 +35,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/volsync
-  dependsOn:
-    - name: volsync
-      namespace: storage
+  # components:
+  #   - ../../../../components/volsync
+  # dependsOn:
+  #   - name: volsync
+  #     namespace: storage
   interval: 1h
   path: ./kubernetes/apps/security/kanidm/instance
   prune: true
