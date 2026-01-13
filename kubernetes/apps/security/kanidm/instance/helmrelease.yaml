@@ -108,7 +108,6 @@ spec:
             origin = "https://idm.rphilipsen.nl"
             tls_chain = "/certs/tls.crt"
             tls_key = "/certs/tls.key"
-            role = "WriteReplica"
             log_level = "info"
             bindaddress = "[::]:8443"
             ldapbindaddress = "[::]:3636"
