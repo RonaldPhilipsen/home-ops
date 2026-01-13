@@ -54,6 +54,12 @@ spec:
       helperPod:
         image:
           registry: quay.io/
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - SYS_ADMIN
+              - SYS_PTRACE
       hostpathClass:
         enabled: true
         name: openebs-hostpath
