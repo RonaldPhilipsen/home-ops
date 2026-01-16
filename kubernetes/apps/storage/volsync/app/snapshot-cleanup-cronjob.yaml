@@ -1,0 +1,64 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: longhorn-snapshot-cleanup
+  namespace: storage
+spec:
+  schedule: "0 */6 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          serviceAccountName: longhorn-snapshot-cleanup
+          restartPolicy: OnFailure
+          containers:
+            - name: cleanup
+              image: alpine/k8s:1.32.1
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  echo "Finding Longhorn snapshots older than 1 day..."
+                  kubectl get snapshots.longhorn.io -n storage -o json | \
+                  jq -r '.items[] |
+                    select(
+                      .status.creationTime != null and
+                      .status.creationTime != "" and
+                      (now - (.status.creationTime | fromdateiso8601)) > 86400
+                    ) |
+                    .metadata.name' | \
+                  xargs -I {} kubectl delete snapshot.longhorn.io -n storage {} --wait=false
+                  echo "Cleanup completed"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: longhorn-snapshot-cleanup
+  namespace: storage
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: longhorn-snapshot-cleanup
+rules:
+  - apiGroups: ["longhorn.io"]
+    resources: ["snapshots"]
+    verbs: ["get", "list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: longhorn-snapshot-cleanup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: longhorn-snapshot-cleanup
+subjects:
+  - kind: ServiceAccount
+    name: longhorn-snapshot-cleanup
+    namespace: storage
