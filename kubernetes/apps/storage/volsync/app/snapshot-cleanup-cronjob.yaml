@@ -32,7 +32,7 @@ spec:
                       (now - (.status.creationTime | fromdateiso8601)) > 86400
                     ) |
                     .metadata.name' | \
-                  xargs -I {} kubectl delete snapshot.longhorn.io -n storage {} --wait=false
+                  xargs -I {} kubectl delete snapshot.longhorn.io -n storage {}
                   echo "Cleanup completed"
 ---
 apiVersion: v1
