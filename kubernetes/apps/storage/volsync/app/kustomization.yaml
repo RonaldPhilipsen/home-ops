@@ -8,3 +8,4 @@ resources:
   - ./ocirepository.yaml
   - ./mutatingadmissionpolicy.yaml
   - ./prometheusrule.yaml
+  - ./snapshot-cleanup-cronjob.yaml
