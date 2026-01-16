@@ -30,5 +30,6 @@ spec:
       fsGroup: ${VOLSYNC_PGID:=568}
     parallelism: 2
     retain:
-      hourly: 24
-      daily: 7
+      hourly: 6
+      daily: 1
+      weekly: 4
