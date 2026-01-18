@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: cloudnative-pg
+  dependsOn:
+    - name: openebs
+      namespace: storage
+  values:
+    crds:
+      create: true
+    monitoring:
+      podMonitorEnabled: true
+      grafanaDashboard:
+        create: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: cloudnative-pg-secret

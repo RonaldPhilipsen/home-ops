@@ -69,5 +69,5 @@ spec:
       enabled: false
     alloy:
       enabled: false
-    minio:
+    garage:
       enabled: false
