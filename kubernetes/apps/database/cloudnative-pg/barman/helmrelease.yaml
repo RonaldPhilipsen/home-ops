@@ -12,6 +12,5 @@ spec:
   values:
     crds:
       create: true
-
     # Install the plugin in the same namespace as the CNPG operator.
     namespaceOverride: database

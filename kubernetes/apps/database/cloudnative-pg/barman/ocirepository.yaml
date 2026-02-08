@@ -1,14 +1,15 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: barman
+  name: plugin-barman-cloud
 spec:
-  interval: 5m
+  interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 4.6.2
-  url: oci://ghcr.io/bjw-s-labs/helm/app-template
+    # Chart version (Chart.yaml: version)
+    tag: 0.4.0
+  url: oci://ghcr.io/cloudnative-pg/charts/plugin-barman-cloud
