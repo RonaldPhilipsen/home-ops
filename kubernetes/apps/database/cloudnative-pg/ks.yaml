@@ -52,7 +52,7 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cloudnative-pg-barman-cloud
+  name: &app barman
   namespace: &namespace database
 spec:
   targetNamespace: *namespace
@@ -64,7 +64,7 @@ spec:
       namespace: cert-manager
     - name: cloudnative-pg
       namespace: *namespace
-  path: ./kubernetes/apps/database/cloudnative-pg/barman-cloud
+  path: ./kubernetes/apps/database/cloudnative-pg/barman
   prune: true
   sourceRef:
     kind: GitRepository
@@ -74,7 +74,4 @@ spec:
   interval: 1h
   retryInterval: 2m
   timeout: 5m
-  postBuild:
-    substitute:
-      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
-      SIDECAR_IMAGE_VERSION: v0.11.0
+
