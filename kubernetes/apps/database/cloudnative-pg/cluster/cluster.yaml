@@ -4,6 +4,9 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres
+  annotations:
+    # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
@@ -31,15 +34,6 @@ spec:
       parameters: &pluginparams
         barmanObjectName: garage
         serverName: postgres-v1
-
-  # ### for initial setup from raw ###
-  bootstrap:
-    initdb:
-      # set up 'default' db/owner
-      database: default
-      owner: default
-      secret:
-        name: default
 
   # bootstrap:
   #   recovery:
