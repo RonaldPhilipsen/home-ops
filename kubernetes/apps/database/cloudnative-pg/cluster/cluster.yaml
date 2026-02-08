@@ -58,7 +58,7 @@ spec:
       cpu: 500m
     limits:
       hugepages-2Mi: 1Gi
-      memory: 2Gis
+      memory: 2Gi
 
   monitoring:
     enablePodMonitor: true
