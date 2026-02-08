@@ -9,4 +9,5 @@ resources:
   - ./pooler.yaml
   - ./prometheusrule.yaml
   - ./scheduledbackup.yaml
+  - ./externalsecret.yaml
   - ./service.yaml

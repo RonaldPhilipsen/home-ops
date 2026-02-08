@@ -5,11 +5,11 @@ kind: ScheduledBackup
 metadata:
   name: postgres
 spec:
-  backupOwnerReference: self
   cluster:
     name: postgres
+  schedule: "@daily"
   immediate: true
+  backupOwnerReference: self
   method: plugin
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
-  schedule: "@daily"
