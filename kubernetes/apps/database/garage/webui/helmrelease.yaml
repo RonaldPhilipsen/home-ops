@@ -46,7 +46,7 @@ spec:
             port: &port 3909
     route:
       app:
-        hostnames: ["garage.rphilipsen.nl"]
+        hostnames: ["garageui.rphilipsen.nl"]
         parentRefs:
           - name: internal
             namespace: network
