@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kgateway
+  name: agentgateway
   namespace: network
 spec:
   interval: 30m
@@ -17,14 +17,14 @@ spec:
     name: flux-system
     namespace: flux-system
   dependsOn:
-    - name: kgateway-crds
+    - name: agentgateway-crds
       namespace: network
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kgateway-crds
+  name: agentgateway-crds
   namespace: network
 spec:
   interval: 30m
@@ -51,6 +51,10 @@ spec:
   dependsOn:
     - name: cert-manager
       namespace: cert-manager
+    - name: agentgateway-crds
+      namespace: network
+    - name: agentgateway
+      namespace: network
   interval: 1h
   path: ./kubernetes/apps/network/kgateway/gateway
   prune: true
