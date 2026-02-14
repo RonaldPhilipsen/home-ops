@@ -3,13 +3,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: kgateway-crds
+  name: kagentgateway-crds
   namespace: network
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: kgateway-crds
+    name: agentgateway-crds
   install:
     timeout: 10m
     replace: true
