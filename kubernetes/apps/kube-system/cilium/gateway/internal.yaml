@@ -26,14 +26,18 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    - name: rphilipsen-https
-      protocol: HTTPS
-      port: 443
+    - name: https
       hostname: "*.rphilipsen.nl"
+      port: 443
+      protocol: HTTPS
       allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+          - kind: TLSRoute
         namespaces:
           from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: rphilipsen-nl-tls
