@@ -34,6 +34,7 @@ spec:
       parameters: &pluginparams
         barmanObjectName: garage
         serverName: postgres-v1
+        secretName: cloudnative-pg-secret
 
   # bootstrap:
   #   recovery:
