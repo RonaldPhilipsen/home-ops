@@ -3,3 +3,5 @@ machine:
     disableSearchDomain: true
     nameservers:
       - 172.16.20.7
+      - 1.1.1.1
+      - 1.0.0.1
