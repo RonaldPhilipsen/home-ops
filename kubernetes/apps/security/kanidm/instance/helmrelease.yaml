@@ -141,8 +141,6 @@ spec:
             tls_key = "/certs/tls.key"
             log_level = "info"
 
-            trust_x_forward_for = true
-
 
     route:
       app:
