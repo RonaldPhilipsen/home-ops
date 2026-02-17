@@ -15,9 +15,9 @@ spec:
       secretAccessKey:
         name: cloudnative-pg-secret
         key: AWS_SECRET_ACCESS_KEY
-      region:
-        name: cloudnative-pg-secret
-        key: AWS_REGION
+      # region:
+      #   name: cloudnative-pg-secret
+      #   key: AWS_REGION
     wal:
       compression: bzip2
       maxParallel: 8
