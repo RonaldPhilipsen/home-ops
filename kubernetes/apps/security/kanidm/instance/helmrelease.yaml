@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: docker.io/kanidm/server
-              tag: 1.8.5@sha256:55af50cf02909ff8f62d3a083870e697a47658c2dac94598dc5dbeb7de5955f3
+              tag: 1.9.0@sha256:f0e1da0c60214554ba1f56e35b3517219abd3fdcba1503d48ede49f9e8f5d105
             env:
               KANIDM_ADMIN_BIND_PATH: "/var/run/kanidmd.sock"
               RUST_LOG: "debug"
