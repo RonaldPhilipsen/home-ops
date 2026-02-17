@@ -30,13 +30,13 @@ spec:
               - --without-password
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   httpGet:
                     path: /
                     port: *port
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 120
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
