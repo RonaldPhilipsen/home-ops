@@ -49,5 +49,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: system
+  targetNamespace: storage
   timeout: 5m
