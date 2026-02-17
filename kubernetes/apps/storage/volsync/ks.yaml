@@ -40,7 +40,7 @@ spec:
   dependsOn:
     - name: volsync
   interval: 1h
-  path: "./kubernetes/apps/system/volsync/maintenance"
+  path: "./kubernetes/apps/storage/volsync/maintenance"
   postBuild:
     substitute:
       APP: volsync
