@@ -33,7 +33,7 @@ spec:
       isWALArchiver: true
       parameters: &pluginparams
         barmanObjectName: garage
-        serverName: postgres-v1
+        serverName: postgres
 
   # bootstrap:
   #   recovery:
