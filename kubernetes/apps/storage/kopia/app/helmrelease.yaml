@@ -115,5 +115,5 @@ spec:
         hostnames:
           - kopia.rphilipsen.nl
         parentRefs:
-          - name: kgateway-internal
+          - name: internal
             namespace: network
