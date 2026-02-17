@@ -97,13 +97,6 @@ spec:
         expression: >-
           [
             JSONPatch{
-              op: "add", path: "/spec/template/spec/containers/0/volumeMounts/-",
-              value: Object.spec.template.spec.containers.volumeMounts{
-                name: "repository",
-                mountPath: "/repository"
-              }
-            },
-            JSONPatch{
               op: "add", path: "/spec/template/spec/volumes/-",
               value: Object.spec.template.spec.volumes{
                 name: "repository",
@@ -111,6 +104,13 @@ spec:
                   server: "172.16.20.7",
                   path: "/exports/Volsync/kopia"
                 }
+              }
+            },
+            JSONPatch{
+              op: "add", path: "/spec/template/spec/containers/0/volumeMounts/-",
+              value: Object.spec.template.spec.containers.volumeMounts{
+                name: "repository",
+                mountPath: "/repository"
               }
             }
           ]

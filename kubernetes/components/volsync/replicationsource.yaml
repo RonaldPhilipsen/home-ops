@@ -25,9 +25,9 @@ spec:
       - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
     compression: zstd-fastest
     moverSecurityContext:
-      runAsUser: ${VOLSYNC_PUID:=568}
-      runAsGroup: ${VOLSYNC_PGID:=568}
-      fsGroup: ${VOLSYNC_PGID:=568}
+      runAsUser: ${VOLSYNC_PUID:=2000}
+      runAsGroup: ${VOLSYNC_PGID:=2000}
+      fsGroup: ${VOLSYNC_PGID:=2000}
     parallelism: 2
     retain:
       hourly: 6
