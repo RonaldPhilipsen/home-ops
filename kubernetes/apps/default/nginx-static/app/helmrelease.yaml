@@ -30,8 +30,8 @@ spec:
     defaultPodOptions:
       enableServiceLinks: false
       securityContext:
-        runAsUser: 568
-        runAsGroup: 568
+        runAsUser: 2000
+        runAsGroup: 2000
         runAsNonRoot: false
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"

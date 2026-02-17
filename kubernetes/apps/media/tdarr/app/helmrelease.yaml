@@ -24,13 +24,13 @@ spec:
       securityContext:
         runAsUser: 0
         runAsGroup: 0
-        fsGroup: 568
+        fsGroup: 2000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups:
           - 44 # video
           - 125 # render
           - 105 # render
-          - 568
+          - 2000
     controllers:
       tdarr:
         containers:

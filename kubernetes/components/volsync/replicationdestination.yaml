@@ -26,9 +26,9 @@ spec:
       - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
     capacity: "${VOLSYNC_CAPACITY:=5Gi}"
     moverSecurityContext:
-      runAsUser: ${VOLSYNC_PUID:=568}
-      runAsGroup: ${VOLSYNC_PGID:=568}
-      fsGroup: ${VOLSYNC_PGID:=568}
+      runAsUser: ${VOLSYNC_PUID:=2000}
+      runAsGroup: ${VOLSYNC_PGID:=2000}
+      fsGroup: ${VOLSYNC_PGID:=2000}
     enableFileDeletion: true
     cleanupCachePVC: true
     cleanupTempPVC: true

@@ -8,7 +8,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: volsync
-  interval: 1h
+  interval: 30m
   values:
     fullnameOverride: volsync # Required for volsync-perfectra1n fork
     image: &image

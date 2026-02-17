@@ -8,12 +8,33 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kopia
-  interval: 1h
+  interval: 30m
   values:
+    configMaps:
+      config:
+        data:
+          repository.config: |-
+            {
+              "storage": {
+                "type": "filesystem",
+                "config": {
+                  "path": "/repository"
+                }
+              },
+              "hostname": "volsync.{{ .Release.Namespace }}.svc.cluster.local",
+              "username": "volsync",
+              "description": "volsync",
+              "enableActions": false
+            }
     controllers:
       kopia:
-        annotations:
-          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            fsGroup: 2000
+            fsGroupChangePolicy: "OnRootMismatch"
+            runAsGroup: 2000
+            runAsNonRoot: true
+            runAsUser: 2000
         containers:
           app:
             image:
@@ -21,63 +42,57 @@ spec:
               tag: 0.22.3@sha256:17ab64542280197a5368247deaefadc3e3bbe15714ab666c2455a06824e86efd
             env:
               KOPIA_WEB_ENABLED: true
-              KOPIA_WEB_PORT: &port 80
-              TZ: Europe/Amsterdam
+              KOPIA_WEB_PORT: &port 8080
             envFrom:
               - secretRef:
                   name: kopia-secret
             args:
               - --without-password
             probes:
-              liveness: &probes
-                enabled: false
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /
                     port: *port
-                  initialDelaySeconds: 120
                   periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 15m
+              limits:
+                memory: 1Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 1Gi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+              capabilities:
+                drop:
+                  - ALL
     service:
       app:
         ports:
           http:
             port: *port
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.rphilipsen.nl"
-        parentRefs:
-          - name: internal
-            namespace: network
-            sectionName: https
     persistence:
       config-file:
-        type: secret
-        name: kopia-config
+        type: configMap
+        identifier: config
         globalMounts:
           - path: /config/repository.config
             subPath: repository.config
-            readOnly: true
       repository:
         type: nfs
         server: 172.16.20.7
@@ -95,3 +110,10 @@ spec:
                 subPath: logs
               - path: /tmp
                 subPath: tmp
+    route:
+      app:
+        hostnames:
+          - kopia.rphilipsen.nl
+        parentRefs:
+          - name: kgateway-internal
+            namespace: network
