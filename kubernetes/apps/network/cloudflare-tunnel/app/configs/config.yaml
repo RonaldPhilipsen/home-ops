@@ -9,12 +9,12 @@ ingress:
       keepAliveTimeout: 3600s
       originServerName: external.rphilipsen.nl
       tcpKeepAlive: 7200s
-    service: https://external.network.svc.cluster.local:443
+    service: https://cilium-gateway-external.network.svc.cluster.local:443
   - hostname: "rphilipsen.nl"
     originRequest:
       http2Origin: true
       keepAliveTimeout: 3600s
       originServerName: external.rphilipsen.nl
       tcpKeepAlive: 7200s
-    service: https://external.network.svc.cluster.local:443
+    service: https://cilium-gateway-external.network.svc.cluster.local:443
   - service: http_status:404
