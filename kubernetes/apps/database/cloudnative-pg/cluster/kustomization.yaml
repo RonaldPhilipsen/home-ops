@@ -11,3 +11,4 @@ resources:
   - ./externalsecret.yaml
   - ./service.yaml
   - ./databases/radarr.yaml
+  - ./pooler.yaml
