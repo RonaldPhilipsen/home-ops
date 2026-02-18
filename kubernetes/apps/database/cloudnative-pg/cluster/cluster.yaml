@@ -50,7 +50,12 @@ spec:
       parameters: &pluginparams
         barmanObjectName: garage
         serverName: postgres
-
+  managed:
+    roles:
+    - name: radarr
+      login: true
+      superuser: false
+      passwordSecret: radarr-db-credentials
   # bootstrap:
   #   recovery:
   #     source: source
