@@ -10,3 +10,4 @@ resources:
   - ./scheduledbackup.yaml
   - ./externalsecret.yaml
   - ./service.yaml
+  - ./databases/radarr.yaml
