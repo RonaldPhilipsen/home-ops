@@ -7,3 +7,4 @@ resources:
   - ./externalsecret.yaml
   - ./ocirepository.yaml
   - ../../media-nfs.yaml
+  - ./database.yaml
