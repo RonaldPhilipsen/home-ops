@@ -55,7 +55,8 @@ spec:
     - name: radarr
       login: true
       superuser: false
-      passwordSecret: radarr-db-credentials
+      passwordSecret:
+        name: radarr-db-credentials
   # bootstrap:
   #   recovery:
   #     source: source
