@@ -23,6 +23,22 @@ spec:
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
+  env:
+  - name: AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: cloudnative-pg-secret
+        key: AWS_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: cloudnative-pg-secret
+        key: AWS_SECRET_ACCESS_KEY
+  - name: AWS_REGION
+    valueFrom:
+      secretKeyRef:
+        name: cloudnative-pg-secret
+        key: AWS_REGION
   postgresql:
     parameters:
       max_connections: "200"
