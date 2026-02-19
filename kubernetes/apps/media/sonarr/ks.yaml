@@ -12,6 +12,8 @@ spec:
       namespace: external-secrets
     - name: longhorn
       namespace: storage
+    - name: cloudnative-pg-cluster
+      namespace: database
   components:
     - ../../../../components/volsync
   commonMetadata:

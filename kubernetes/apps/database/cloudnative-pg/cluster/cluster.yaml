@@ -55,9 +55,21 @@ spec:
     - name: radarr
       login: true
       superuser: false
-      createdb: true
+      createdb: false
       passwordSecret:
         name: radarr-db-credentials
+    - name: radarr
+      login: true
+      superuser: false
+      createdb: false
+      passwordSecret:
+        name: sonarr-db-credentials
+    - name: lidarr
+      login: true
+      superuser: false
+      createdb: false
+      passwordSecret:
+        name: lidarr-db-credentials
   # bootstrap:
   #   recovery:
   #     source: source

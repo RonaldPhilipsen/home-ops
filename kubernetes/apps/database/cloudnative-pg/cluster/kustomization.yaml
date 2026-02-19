@@ -10,5 +10,8 @@ resources:
   - ./scheduledbackup.yaml
   - ./externalsecret.yaml
   - ./service.yaml
-  - ./databases/radarr.yaml
   - ./pooler.yaml
+
+  - ./databases/radarr.yaml
+  - ./databases/sonarr.yaml
+  - ./databases/lidarr.yaml
