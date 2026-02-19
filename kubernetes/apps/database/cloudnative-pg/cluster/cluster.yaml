@@ -58,7 +58,7 @@ spec:
       createdb: false
       passwordSecret:
         name: radarr-db-credentials
-    - name: radarr
+    - name: sonarr
       login: true
       superuser: false
       createdb: false
