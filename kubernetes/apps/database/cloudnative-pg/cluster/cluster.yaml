@@ -70,6 +70,13 @@ spec:
       createdb: false
       passwordSecret:
         name: lidarr-db-credentials
+    - name: prowlarr
+      login: true
+      superuser: false
+      createdb: false
+      passwordSecret:
+        name: prowlarr-db-credentials
+
   # bootstrap:
   #   recovery:
   #     source: source
