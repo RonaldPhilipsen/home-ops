@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: security
 resources:
   # - ./kanidm/ks.yaml
+  - ./llap/ks.yaml
   - namespace.yaml

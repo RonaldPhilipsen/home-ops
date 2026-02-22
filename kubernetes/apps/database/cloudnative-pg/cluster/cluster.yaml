@@ -77,11 +77,11 @@ spec:
       passwordSecret:
         name: prowlarr-db-credentials
 
-  # bootstrap:
-  #   recovery:
-  #     source: source
-  #     # recoveryTarget:                         # If not present, latest
-  #     #   targetTime: "2025-03-05 00:00:00+00"  # RFC3339 format
+  bootstrap:
+    recovery:
+      source: source
+      # recoveryTarget:                         # If not present, latest
+      #   targetTime: "2025-03-05 00:00:00+00"  # RFC3339 format
 
   externalClusters:
     - name: source
