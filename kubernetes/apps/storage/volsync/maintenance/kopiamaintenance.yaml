@@ -7,7 +7,7 @@ metadata:
   namespace: volsync
 spec:
   repository:
-    repository: volsync-secret
+    repository: kopia-maintenance-secret
   trigger:
     schedule: "30 3,15 * * *"
   enabled: true
