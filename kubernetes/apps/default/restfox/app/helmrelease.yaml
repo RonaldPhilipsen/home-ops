@@ -43,7 +43,7 @@ spec:
             env:
               CUSTOM_PORT_ON_HOST: "4004" # default, but here for future reference
             securityContext:
-              privileged: true
+              privileged: false
 
             probes:
               liveness: &probe
