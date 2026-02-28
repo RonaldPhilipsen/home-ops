@@ -16,3 +16,4 @@ resources:
   - ./databases/sonarr.yaml
   - ./databases/lidarr.yaml
   - ./databases/prowlarr.yaml
+  - ./databases/lldap.yaml
