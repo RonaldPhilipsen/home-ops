@@ -76,6 +76,12 @@ spec:
       createdb: false
       passwordSecret:
         name: prowlarr-db-credentials
+    - name: lldap
+      login: true
+      superuser: false
+      createdb: false
+      passwordSecret:
+        name: lldap-db-credentials
 
   # bootstrap:
   #   recovery:

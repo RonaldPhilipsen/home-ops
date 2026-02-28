@@ -1,0 +1,9 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: lldap-db
+spec:
+  name: lldap
+  owner: lldap
+  cluster:
+    name: postgres
