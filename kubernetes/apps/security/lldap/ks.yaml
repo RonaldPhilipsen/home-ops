@@ -33,3 +33,8 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 5Gi
+      NAMESPACE: media
