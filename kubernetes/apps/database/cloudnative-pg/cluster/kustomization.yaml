@@ -17,3 +17,4 @@ resources:
   - ./databases/lidarr.yaml
   - ./databases/prowlarr.yaml
   - ./databases/lldap.yaml
+  - ./databases/authelia.yaml

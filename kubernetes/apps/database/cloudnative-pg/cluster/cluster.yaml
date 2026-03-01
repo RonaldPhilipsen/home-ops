@@ -82,6 +82,12 @@ spec:
       createdb: false
       passwordSecret:
         name: lldap-db-credentials
+    - name: authelia
+      login: true
+      superuser: false
+      createdb: false
+      passwordSecret:
+        name: authelia-db-credentials
 
   # bootstrap:
   #   recovery:
