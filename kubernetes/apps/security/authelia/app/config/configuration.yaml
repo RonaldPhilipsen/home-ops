@@ -13,7 +13,14 @@ log:
 totp:
   disable: false
 webauthn:
-  disable: true
+  disable: false
+  enable_passkey_login: false
+  display_name: 'Authelia'
+  attestation_conveyance_preference: 'indirect'
+  timeout: '60 seconds'
+  selection_criteria:
+    discoverability: 'preferred'
+    user_verification: 'preferred'
 storage:
   encryption_key: "{{ .STORAGE_ENCRYPTION_KEY }}"
   postgres:
