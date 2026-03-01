@@ -35,7 +35,7 @@ notifier:
     disable_starttls: false
     disable_html_emails: false
 ntp:
-  address: 172.16.20.7
+  address: udp://time.cloudflare.com:123
   version: 4
   max_desync: 3s
   disable_startup_check: false
