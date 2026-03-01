@@ -21,6 +21,19 @@ storage:
     database: '{{ .POSTGRES_DBNAME }}'
     username: '{{ .POSTGRES_USER }}'
     password: '{{ .POSTGRES_PASSWORD }}'
+notifier:
+  smtp:
+    address: 'smtp://{{ .SMTP_HOST }}:{{ .SMTP_PORT }}'
+    timeout: '5s'
+    username: '{{ .SMTP_USERNAME }}'
+    password: '{{ .SMTP_PASSWORD }}'
+    sender: "Authelia <admin@rphilipsen.nl>"
+    identifier: 'localhost'
+    subject: "[Authelia] {title}"
+    startup_check_address: 'test@rphilipsen.nl'
+    disable_require_tls: false
+    disable_starttls: false
+    disable_html_emails: false
 ntp:
   address: 172.16.20.7
   version: 4
