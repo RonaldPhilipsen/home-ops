@@ -10,11 +10,6 @@ server:
   disable_healthcheck: true
 log:
   level: debug
-# duo_api:
-#   disable: false
-#   hostname: "{{ .DUO_API_HOSTNAME }}"
-#   integration_key: "{{ .DUO_API_INTEGRATION_KEY }}"
-#   secret_key: "{{ .DUO_API_SECRET_KEY }}"
 totp:
   disable: false
 webauthn:
