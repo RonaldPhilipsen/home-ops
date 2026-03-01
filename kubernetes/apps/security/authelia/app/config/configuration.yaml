@@ -34,7 +34,7 @@ notifier:
     timeout: '5s'
     username: '{{ .SMTP_USERNAME }}'
     password: '{{ .SMTP_PASSWORD }}'
-    sender: "Authelia <admin@rphilipsen.nl>"
+    sender: "Authelia <webmaster@rphilipsen.nl>"
     identifier: 'localhost'
     subject: "[Authelia] {title}"
     startup_check_address: 'test@rphilipsen.nl'
