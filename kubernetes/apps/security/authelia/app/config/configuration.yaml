@@ -104,7 +104,7 @@ identity_providers:
     scopes: {}
     jwks:
       - key: |
-          {{- .OIDC_JWKS_KEY | b64dec | nindent 10 }}
+          {{- .OIDC_JWKS_PRIVKEY | b64dec | nindent 10 }}
         certificate_chain: |
           {{- .OIDC_JWKS_CERT | b64dec | nindent 10 }}
     cors:
