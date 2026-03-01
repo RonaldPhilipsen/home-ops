@@ -63,7 +63,7 @@ spec:
       hostnames:
         - grafana.rphilipsen.nl
       parentRefs:
-        - name: internal
+        - name: external
           namespace: network
           sectionName: https
       rules:
