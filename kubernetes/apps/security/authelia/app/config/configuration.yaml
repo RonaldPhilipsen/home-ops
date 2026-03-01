@@ -52,7 +52,7 @@ authentication_backend:
     address: "{{ .LLDAP_HOST }}"
     timeout: 5s
     start_tls: false
-    base_dn: dc=rphilipsen,dc=nl.
+    base_dn: dc=rphilipsen,dc=nl
     user: uid=authelia_bind,ou=people,dc=rphilipsen,dc=nl
     password: "{{ .LLDAP_PASSWORD }}"
 access_control:
