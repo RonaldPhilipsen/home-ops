@@ -82,7 +82,7 @@ spec:
       app:
         hostnames: ["restfox.rphilipsen.nl"]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
         rules:

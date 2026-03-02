@@ -80,7 +80,7 @@ spec:
       app:
         hostnames: ["sab.rphilipsen.nl", "sabnzbd.rphilipsen.nl"]
         parentRefs:
-          - name: internal
+          - name: agentgateway-internal
             namespace: network
             sectionName: https
         rules:

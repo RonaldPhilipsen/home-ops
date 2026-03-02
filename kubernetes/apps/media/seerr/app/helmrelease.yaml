@@ -61,7 +61,7 @@ spec:
       app:
         hostnames: ["requests.rphilipsen.nl"]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
         rules:
