@@ -3,7 +3,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: internal
+  name: agentgateway-internal
   annotations:
     external-dns.alpha.kubernetes.io/target: &hostname internal.rphilipsen.nl
   labels:
@@ -15,13 +15,12 @@ spec:
   gatewayClassName: agentgateway
   addresses:
     - type: IPAddress
-      value: 172.16.20.31
+      value: 172.16.20.33
     # - type: IPAddress
     #   value: 2a02:a446:fe34:20:172:16:20:31
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
-      lbipam.cilium.io/ips: 172.16.20.31
   listeners:
     - name: http
       protocol: HTTP
