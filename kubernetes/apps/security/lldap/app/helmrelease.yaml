@@ -62,7 +62,7 @@ spec:
       main:
         hostnames: ["ldap.rphilipsen.nl"]
         parentRefs:
-          - name: internal
+          - name: agentgateway-internal
             namespace: network
             port: 443
         rules:

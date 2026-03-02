@@ -115,5 +115,5 @@ spec:
         hostnames:
           - kopia.rphilipsen.nl
         parentRefs:
-          - name: internal
+          - name: agentgateway-internal
             namespace: network
