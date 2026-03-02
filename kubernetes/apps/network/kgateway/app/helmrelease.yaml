@@ -3,13 +3,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: kgateway
+  name: agentgateway
   namespace: network
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: kgateway
+    name: agentgateway
   install:
     timeout: 10m
     replace: true
