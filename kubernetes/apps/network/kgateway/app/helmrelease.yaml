@@ -37,8 +37,5 @@ spec:
     mode: enabled
   maxHistory: 3
   values:
-    controller:
-      image:
-        tag: "v2.1.2"
     agentgateway:
       enabled: true
