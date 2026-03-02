@@ -62,8 +62,6 @@ spec:
           [
             "rphilipsen.nl",
             "www.rphilipsen.nl",
-            "philipsen.it",
-            "www.philipsen.it",
             "trees100.nl",
             "www.trees100.nl",
           ]
@@ -74,9 +72,6 @@ spec:
           - name: external
             namespace: network
             sectionName: trees100-https
-          - name: external
-            namespace: network
-            sectionName: philipsen-it-https
         rules:
           - backendRefs:
               - name: *app
