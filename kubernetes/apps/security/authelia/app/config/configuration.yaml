@@ -137,6 +137,21 @@ identity_providers:
           - "https://grafana.rphilipsen.nl/login/generic_oauth"
         token_endpoint_auth_method: client_secret_post
         userinfo_signed_response_alg: none
+      - client_id: "{{ .HASS_OAUTH_CLIENT_ID }}"
+        client_name: 'Home Assistant'
+        client_secret: "{{ .HASS_OAUTH_CLIENT_SECRET }}"
+        public: false
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        authorization_policy: 'two_factor'
+        redirect_uris:
+          - 'https://hass.rphilipsen.nl/auth/oidc/callback'
+        scopes:
+          - 'openid'
+          - 'profile'
+          - 'groups'
+        id_token_signed_response_alg: 'RS256'
+        token_endpoint_auth_method: 'client_secret_post'
       # - client_id: "{{ .JELLYFIN_OAUTH_CLIENT_ID }}"
       #   client_name: Jellyfin
       #   client_secret: "{{ .JELLYFIN_OAUTH_CLIENT_SECRET }}"
