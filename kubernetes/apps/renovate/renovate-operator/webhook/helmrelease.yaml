@@ -63,7 +63,7 @@ spec:
         hostnames:
           - webhook.rphilipsen.nl
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
     service:

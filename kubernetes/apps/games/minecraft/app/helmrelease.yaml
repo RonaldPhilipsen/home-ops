@@ -144,7 +144,7 @@ spec:
         enabled: true
         hostnames: ["mcmap.rphilipsen.nl"]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
         rules:

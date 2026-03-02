@@ -68,7 +68,7 @@ spec:
             "www.trees100.nl",
           ]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
           - name: external

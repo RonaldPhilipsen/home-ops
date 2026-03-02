@@ -102,7 +102,7 @@ spec:
       app:
         hostnames: [*url]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
             sectionName: https
         rules:
