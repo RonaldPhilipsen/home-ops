@@ -3,7 +3,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: kgateway
+  name: agentgateway
   namespace: network
 spec:
   interval: 5m
