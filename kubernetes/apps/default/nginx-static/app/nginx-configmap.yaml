@@ -57,41 +57,4 @@ data:
           proxy_max_temp_file_size 0;
         }
       } # end server
-
-      server {
-        listen	8080;
-        listen	[::]:8080;
-        server_name www.trees100.nl trees100.nl;
-
-        proxy_read_timeout 10;
-
-        location / {
-          # If the request is for "/", proxy to index.html in the S3 path
-          if ($uri = "/") {
-            rewrite ^ /index.html last;
-          }
-          proxy_pass http://s3_backend;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $http_host;
-          # Disable buffering to a temporary file.
-          proxy_max_temp_file_size 0;
-        }
-      }
-
-      server {
-        listen 8080;
-        listen [::]:8080;
-        server_name www.philipsen.it philipsen.it;
-        proxy_read_timeout 10;
-        location / {
-          if ($uri = "/") {
-            rewrite ^ /index.html last;
-          }
-          proxy_pass http://s3_backend;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header Host $http_host;
-          # Disable buffering to a temporary file.
-          proxy_max_temp_file_size 0;
-        }
-      }
     } # end http
