@@ -62,16 +62,11 @@ spec:
           [
             "rphilipsen.nl",
             "www.rphilipsen.nl",
-            "trees100.nl",
-            "www.trees100.nl",
           ]
         parentRefs:
           - name: agentgateway-external
             namespace: network
             sectionName: https
-          - name: external
-            namespace: network
-            sectionName: trees100-https
         rules:
           - backendRefs:
               - name: *app

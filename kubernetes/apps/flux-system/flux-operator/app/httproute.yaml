@@ -8,7 +8,7 @@ spec:
   hostnames:
     - flux-operator.rphilipsen.nl
   parentRefs:
-    - name: internal
+    - name: agentgateway-internal
       namespace: network
       sectionName: https
   rules:

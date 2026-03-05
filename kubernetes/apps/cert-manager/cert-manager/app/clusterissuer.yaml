@@ -16,4 +16,4 @@ spec:
               name: cert-manager-secret
               key: api-token
         selector:
-          dnsZones: ["rphilipsen.nl", "trees100.nl", "philipsen.it"]
+          dnsZones: ["rphilipsen.nl"]

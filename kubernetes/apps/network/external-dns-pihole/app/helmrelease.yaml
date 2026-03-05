@@ -57,8 +57,6 @@ spec:
     logFormat: text
     domainFilters:
       - rphilipsen.nl
-      - philipsen.it
-      - trees100.nl
     serviceMonitor:
       enabled: true
     podAnnotations:
