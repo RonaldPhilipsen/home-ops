@@ -16,7 +16,11 @@ spec:
           app:
             image:
               repository: ghcr.io/seerr-team/seerr
+<<<<<<< HEAD
               tag: develop@sha256:282c4749ebe9463e8f99475dfbcbca302e75628ff39dae59154a424002927ff8
+=======
+              tag: v3.1.0@sha256:b35ba0461c4a1033d117ac1e5968fd4cbe777899e4cbfbdeaf3d10a42a0eb7e9
+>>>>>>> 637dd797 (pin seerr)
             env:
               TZ: "Europe/Amsterdam"
               PORT: &port 5055
