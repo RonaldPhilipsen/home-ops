@@ -106,9 +106,28 @@ spec:
                 port: *port
 
     persistence:
-      config:
-        existingClaim: continuwuity-config
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        existingClaim: *app
+      media:
+        size: 5Gi
+        accessMode: ReadWriteOnce
+        storageClass: nfs-provision
+        suffix: "media"
+        retain: true
         globalMounts:
-          - path: /data
-      tmp:
-        type: emptyDir
+          - path: /data/media
+      backups:
+        size: 5Gi
+        accessMode: ReadWriteOnce
+        storageClass: nfs-provision
+        suffix: "backups"
+        globalMounts:
+          - path: /backups
+      config:
+        type: configMap
+        name: conduit-configmap
+        globalMounts:
+          - path: /config/conduit.toml
+            subPath: conduit.toml
