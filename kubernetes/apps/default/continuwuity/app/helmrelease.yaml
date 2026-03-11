@@ -5,6 +5,8 @@ kind: HelmRelease
 metadata:
   name: &app continuwuity
   namespace: default
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   interval: 1h
   chartRef:
