@@ -10,3 +10,4 @@ resources:
   # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
+  - ./continuwuity/ks.yaml
