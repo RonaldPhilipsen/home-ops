@@ -34,8 +34,8 @@ spec:
                   fieldRef:
                     apiVersion: v1
                     fieldPath: status.podIP
-              CONDUWUIT_PORT: &port 8080
-              CONDUWUIT_DATABASE_PATH: /data
+              CONDUWUIT_PORT: &port 8443
+              CONDUWUIT_CONFIG: "/config/conduit.toml"
               CONDUWUIT_WELL_KNOWN__CLIENT: "https://matrix.rphilipsen.nl"
               CONDUWUIT_WELL_KNOWN__SERVER: "matrix.rphilipsen.nl:443"
             envFrom:
