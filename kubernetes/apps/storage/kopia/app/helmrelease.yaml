@@ -24,7 +24,7 @@ spec:
               "hostname": "volsync.{{ .Release.Namespace }}.svc.cluster.local",
               "username": "volsync",
               "description": "volsync",
-              "enableActions": false
+              "enableActions": true
             }
     controllers:
       kopia:
