@@ -1,7 +1,7 @@
 [global]
 server_name = "rphilipsen.nl"
 address = ["::"]
-port = 8008
+port = 8443
 
 log = "info"
 
