@@ -22,11 +22,12 @@ I try to adhere to Infrastructure as Code (IaC) and GitOps practices using tools
 
 The purpose here is to learn Kubernetes, while practicing GitOps. I have two longer-term goals:
 
-1. ~~ migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment ~~
-2. Learn more about managing K8s clusters in prod
+1. ~~migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment~~
+2. ~~Learn more about managing K8s clusters in prod~~
 3. Get some decent NVME SSD's to use as boot drives
-4. ~~ Set up ceph instead of using NFS for PVC s~~
-5. Setup longhorn instead of ceph
+4. ~~Set up ceph instead of using NFS for PVC s~~
+5. ~~Set up longhorn instead of ceph~~
+6. Set up OIDC for more appliations.
 
 ---
 
@@ -44,7 +45,7 @@ My cluster is built using [talos](https://talos.dev/), provisioned on bare-metal
 - [cert-manager](https://cert-manager.io/docs/): Configured to create TLS certs for all ingress services automatically using LetsEncrypt.
 - [external-dns](https://github.com/kubernetes-sigs/external-dns): monitors service and ingress resources, and automatically generates DNS updates for them. This lets me maintain DNS mappings and LetsEncrypt certificates without a cloudflare account or domain.
 - [external-secrets](https://github.com/external-secrets/external-secrets/): managed Kubernetes secrets using [1Password](https://1password.com/).
-- [ingress-nginx](https://github.com/kubernetes/ingress-nginx/): ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer
+- [agentgateway](https://github.com/agentgateway/agentgateway): High performance [gateway-api](https://gateway-api.sigs.k8s.io/) implementation
 - [sops](https://toolkit.fluxcd.io/guides/mozilla-sops/): managed secrets for Kubernetes, Ansible, and Terraform which are committed to Git
 
 ### GitOps
@@ -88,7 +89,7 @@ The alternative solution to these two problems would be to host a Kubernetes clu
 
 ### Home DNS
 
-In cluster I run [blocky](https://github.com/0xERR0R/blocky) deployed. In my cluster `external-dns` is deployed with the `RFC2136` provider which syncs DNS records to. `blocky` is used by non-servers as ad-blocking and caching proxy.
+I run Pi-Hole on the CM3588 as a way to keep DNS alive even when i'm tinkering with the cluster. I use `external-dns` with the pi-hole plugin. This syncs the recods both the `external` and `internal` gateways to my local DNS resolver.
 
 ### Public DNS
 
@@ -102,9 +103,9 @@ The `external-dns` instance mentioned above another instance is deployed in my c
 
 | Node         | CPU        | RAM  | Storage    | Function      | OS    |
 | ------------ | ---------- | ---- | ---------- | ------------- | ----- |
-| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
-| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
-| Beelink EQ13 | Intel N200 | 16GB | 512Gib SSD | control-plane | Talos |
+| Beelink EQ13 | Intel N200 | 32GB | 512Gib SSD | control-plane | Talos |
+| Beelink EQ13 | Intel N200 | 32GB | 512Gib SSD | control-plane | Talos |
+| Beelink EQ13 | Intel N200 | 32GB | 512Gib SSD | control-plane | Talos |
 
 ### Bulk storage
 
