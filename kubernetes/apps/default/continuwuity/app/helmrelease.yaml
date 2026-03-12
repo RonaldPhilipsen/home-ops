@@ -76,6 +76,26 @@ spec:
             sectionName: https
         hostnames:
           - &host matrix.rphilipsen.nl
+      federation:
+        annotations:
+          external-dns.alpha.kubernetes.io/external: "true"
+        parentRefs:
+          - name: agentgateway-external
+            namespace: network
+            sectionName: https
+        hostnames:
+          - rphilipsen.nl
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /_matrix
+              - path:
+                  type: PathPrefix
+                  value: /_synapse
+            backendRefs:
+              - name: continuwuity
+                port: *port
       well-known:
         annotations:
           external-dns.alpha.kubernetes.io/external: "true"
