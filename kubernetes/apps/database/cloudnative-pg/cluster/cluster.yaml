@@ -24,21 +24,21 @@ spec:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
   env:
-  - name: AWS_ACCESS_KEY_ID
-    valueFrom:
-      secretKeyRef:
-        name: cloudnative-pg-secret
-        key: AWS_ACCESS_KEY_ID
-  - name: AWS_SECRET_ACCESS_KEY
-    valueFrom:
-      secretKeyRef:
-        name: cloudnative-pg-secret
-        key: AWS_SECRET_ACCESS_KEY
-  - name: AWS_REGION
-    valueFrom:
-      secretKeyRef:
-        name: cloudnative-pg-secret
-        key: AWS_REGION
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_SECRET_ACCESS_KEY
+    - name: AWS_REGION
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_REGION
   postgresql:
     parameters:
       max_connections: "200"
@@ -52,42 +52,42 @@ spec:
         serverName: postgres
   managed:
     roles:
-    - name: radarr
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: radarr-db-credentials
-    - name: sonarr
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: sonarr-db-credentials
-    - name: lidarr
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: lidarr-db-credentials
-    - name: prowlarr
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: prowlarr-db-credentials
-    - name: lldap
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: lldap-db-credentials
-    - name: authelia
-      login: true
-      superuser: false
-      createdb: false
-      passwordSecret:
-        name: authelia-db-credentials
+      - name: radarr
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: radarr-db-credentials
+      - name: sonarr
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: sonarr-db-credentials
+      - name: lidarr
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: lidarr-db-credentials
+      - name: prowlarr
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: prowlarr-db-credentials
+      - name: lldap
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: lldap-db-credentials
+      - name: authelia
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: authelia-db-credentials
 
   # bootstrap:
   #   recovery:

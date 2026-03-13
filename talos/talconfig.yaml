@@ -10,7 +10,6 @@ allowSchedulingOnMasters: true
 cniConfig:
   name: none
 
-
 additionalApiServerCertSans: &sans
   - "127.0.0.1"
   - "172.16.20.2"

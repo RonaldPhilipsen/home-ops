@@ -11,4 +11,3 @@ spec:
     kind: ClusterIssuer
   commonName: "rphilipsen.nl"
   dnsNames: ["rphilipsen.nl", "*.rphilipsen.nl"]
-

@@ -2,18 +2,8 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "1Password Connect Group",
-      groupName: "1password-connect",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["/1password/"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
-      minimumGroupSize: 2,
-    },
-    {
       description: "Actions Runner Controller Group",
-      groupName: "actions-runner-controller",
+      groupName: "Actions Runner Controller",
       matchDatasources: ["docker"],
       matchPackageNames: [
         "/gha-runner-scale-set-controller/",
@@ -22,11 +12,46 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 2,
+    },
+    {
+      description: "Cert-Manager Group",
+      groupName: "Cert-Manager",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cert-manager/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Cilium Group",
+      groupName: "Cilium",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/cilium/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "CoreDNS Group",
+      groupName: "CoreDNS",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/coredns/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "External Secrets Operator Group",
+      groupName: "External Secrets Operator",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/external-secrets/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
     },
     {
       description: "Flux Operator Group",
-      groupName: "flux-operator",
+      groupName: "Flux Operator",
       matchDatasources: ["docker"],
       matchPackageNames: [
         "/flux-operator/",
@@ -40,7 +65,7 @@
     },
     {
       description: "Intel Device Plugins Group",
-      groupName: "intel-device-plugins",
+      groupName: "Intel-Device-Plugins",
       matchDatasources: ["docker"],
       matchPackageNames: [
         "/intel-device-plugins-operator/",
@@ -49,33 +74,24 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 2,
     },
     {
-      description: "Kubernetes Group",
-      groupName: "kubernetes",
+      description: "Spegel Group",
+      groupName: "Spegel",
       matchDatasources: ["docker"],
-      matchPackageNames: [
-        "/kube-apiserver/",
-        "/kube-controller-manager/",
-        "/kube-proxy/",
-        "/kube-scheduler/",
-        "/kubelet/",
-      ],
+      matchPackageNames: ["/spegel/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 5,
     },
     {
-      description: "Talos Group",
-      groupName: "talos",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["/installer/"],
+      description: "Plugin Barman Cloud Group",
+      groupName: "Barman",
+      matchDatasources: ["docker", "github-tags"],
+      matchPackageNames: ["/plugin-barman-cloud/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 2,
     },
   ],
 }
