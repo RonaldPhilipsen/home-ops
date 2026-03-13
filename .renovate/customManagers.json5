@@ -5,9 +5,9 @@
       customType: "regex",
       description: "Process annotated dependencies",
       managerFilePatterns: [
-        "/\\.env(?:\\.j2)?$/",
-        "/\\.sh(?:\\.j2)?$/",
-        "/\\.yaml(?:\\.j2)?$/",
+        "/(^|/).+\\.env$/",
+        "/(^|/).+\\.sh$/",
+        "/(^|/).+\\.ya?ml(?:\\.j2)?$/",
       ],
       matchStrings: [
         // # renovate: datasource=github-releases depName=foo/bar
@@ -17,6 +17,17 @@
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",
       ],
       datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
+    },
+    {
+      customType: "regex",
+      description: "Match and update imageName with tag and digest",
+      fileMatch: [".*\\.ya?ml"],
+      matchStrings: [
+        "imageName: (?<depName>[^:\\s]+):(?<currentValue>[^@\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)",
+      ],
+      datasourceTemplate: "docker",
+      packageNameTemplate: "{{depName}}",
+      autoReplaceStringTemplate: "imageName: {{depName}}:{{newValue}}@{{#if newDigest}}{{{newDigest}}}{{else}}{{{currentDigest}}}{{/if}}",
     },
     {
       customType: "regex",

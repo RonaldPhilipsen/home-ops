@@ -58,11 +58,7 @@ spec:
 
     route:
       rphilipsen:
-        hostnames:
-          [
-            "rphilipsen.nl",
-            "www.rphilipsen.nl",
-          ]
+        hostnames: ["rphilipsen.nl", "www.rphilipsen.nl"]
         parentRefs:
           - name: agentgateway-external
             namespace: network
