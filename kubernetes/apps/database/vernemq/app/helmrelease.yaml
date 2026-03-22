@@ -114,6 +114,7 @@ spec:
             port: 8443
           api:
             port: 8888
+        trafficDistribution: PreferSameNode
 
     serviceMonitor:
       metrics:
