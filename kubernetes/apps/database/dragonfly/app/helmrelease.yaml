@@ -84,7 +84,7 @@ spec:
             port: *port
           metrics:
             port: 8080
-          trafficDistribution: PreferSameNode
+        trafficDistribution: PreferSameNode
     serviceMonitor:
       app:
         serviceName: *app
