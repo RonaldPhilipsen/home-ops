@@ -17,3 +17,4 @@ spec:
   selector:
     cnpg.io/cluster: postgres
     role: primary
+  trafficDistribution: PreferSameNode
