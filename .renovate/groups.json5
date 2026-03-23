@@ -93,5 +93,14 @@
         commitMessageTopic: "{{{groupName}}} group",
       },
     },
+    {
+      description: "Tdarr group",
+      groupName: "Tdarr",
+      matchDatasources: ["docker", "github-tags"],
+      matchPackageNames: ["/haveagitgat/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
   ],
 }
