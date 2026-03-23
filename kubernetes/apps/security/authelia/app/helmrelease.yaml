@@ -57,6 +57,7 @@ spec:
         parentRefs:
           - name: agentgateway-external
             namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: authelia
