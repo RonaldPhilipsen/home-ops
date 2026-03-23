@@ -55,7 +55,7 @@ spec:
       main:
         hostnames: ["auth.rphilipsen.nl"]
         parentRefs:
-          - name: external
+          - name: agentgateway-external
             namespace: network
         rules:
           - backendRefs:
