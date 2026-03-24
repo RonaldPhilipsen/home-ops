@@ -3,16 +3,6 @@ kind: Pooler
 metadata:
   name: pooler
 spec:
-  affinity:
-    podAntiAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-      - labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - pooler
-        topologyKey: "kubernetes.io/hostname"
   cluster:
     name: postgres
   instances: 3
@@ -23,6 +13,18 @@ spec:
         app: pooler
     spec:
       type: LoadBalancer
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - pooler
+            topologyKey: "kubernetes.io/hostname"
   pgbouncer:
     poolMode: session
     parameters:
