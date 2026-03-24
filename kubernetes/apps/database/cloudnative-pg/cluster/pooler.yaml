@@ -25,6 +25,14 @@ spec:
                 values:
                 - pooler
             topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: pgbouncer
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
   pgbouncer:
     poolMode: session
     parameters:
