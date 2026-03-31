@@ -58,8 +58,8 @@ spec:
           smarthost: smtp.protonmail.ch:587
           authUsername: webmaster@rphilipsen.nl
           authPassword:
-            key: *secret
-            name: ALERTMANAGER_SMTP_PASSWORD
+            name: *secret
+            key: ALERTMANAGER_SMTP_PASSWORD
           text: >-
             [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
             {{ .CommonLabels.alertname }}
