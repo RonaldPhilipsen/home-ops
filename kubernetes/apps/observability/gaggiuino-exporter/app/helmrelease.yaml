@@ -16,9 +16,9 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
-              tag: v1.0.6
+              tag: v1.0.8
             env:
-              GAGGIUINO_HOST: 172.16.10.32:80
+              GAGGIUINO_BASE_URL: http://172.16.10.32:80
 
             securityContext:
               allowPrivilegeEscalation: false
