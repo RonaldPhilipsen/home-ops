@@ -18,7 +18,7 @@ spec:
           hostnames:
             - alertmanager.rphilipsen.nl
           parentRefs:
-            - name: internal
+            - name: agentgateway-internal
               namespace: network
               sectionName: https
       alertmanagerSpec:
@@ -45,7 +45,7 @@ spec:
           hostnames:
             - prometheus.rphilipsen.nl
           parentRefs:
-            - name: internal
+            - name: agentgateway-internal
               namespace: network
               sectionName: https
       prometheusSpec:
