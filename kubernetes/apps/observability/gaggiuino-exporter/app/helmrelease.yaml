@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
-              tag: sha256-e3f065ac2571c858d56f797363af73334b71b1b14b1e10f8c9135b7eb79bb196
+              tag: v1.0.5
             env:
               GAGGIUINO_HOST: http://172.16.10.32:80
 
