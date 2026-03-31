@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
-              tag: v1.0.8
+              tag: v1.0.9
             env:
               GAGGIUINO_BASE_URL: http://172.16.10.32:80
 
