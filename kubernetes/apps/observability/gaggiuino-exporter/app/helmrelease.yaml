@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app gaggiuino-exporter
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: gaggiuino-exporter
+  values:
+    controllers:
+      gaggiuino-exporter:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
+              tag: sha256-e3f065ac2571c858d56f797363af73334b71b1b14b1e10f8c9135b7eb79bb196
+            env:
+              GAGGIUINO_HOST: http://172.16.10.32:80
+
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 15m
+              limits:
+                memory: 120M
+        pod:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            fsGroup: 65534
+            fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 9995
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 15s
+            scrapeTimeout: 1m

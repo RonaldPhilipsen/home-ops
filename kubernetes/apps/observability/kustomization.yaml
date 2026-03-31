@@ -11,3 +11,4 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./omada-exporter/ks.yaml
   - ./pihole-exporter/ks.yaml
+  - ./gaggiuino-exporter/ks.yaml
