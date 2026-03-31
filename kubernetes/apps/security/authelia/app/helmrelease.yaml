@@ -58,6 +58,9 @@ spec:
           - name: agentgateway-external
             namespace: network
             sectionName: https
+          - name: agentgateway-internal
+            namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - name: authelia
