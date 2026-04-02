@@ -35,5 +35,5 @@ spec:
             type: PathPrefix
             value: /webhook
       backendRefs:
-        - name: *app
+        - name: renovate-operator
           port: 8082
