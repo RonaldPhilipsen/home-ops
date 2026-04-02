@@ -22,9 +22,6 @@ spec:
   skipForks: true
   webhook:
     enabled: true
-    secretref:
-      name: renovate-secret
-      key: GITHUB_WEBHOOK_SECRET
   provider:
     name: github
   extraEnv:
