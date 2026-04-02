@@ -21,10 +21,7 @@ spec:
   secretRef: renovate-secret
   provider:
     name: github
-    endpoint: https://api.github.com # optional for github or gitlab (if not self-hosted)
   extraEnv:
-    - name: LOG_LEVEL
-      value: info
     - name: RENOVATE_ONBOARDING_CONFIG
       value: |
         {
@@ -58,10 +55,10 @@ spec:
     - name: AWS_ACCESS_KEY_ID
       valueFrom:
         secretKeyRef:
-          name: renovate-s3
+          name: renovate-secret
           key: AWS_ACCESS_KEY_ID
     - name: AWS_SECRET_ACCESS_KEY
       valueFrom:
         secretKeyRef:
-          name: renovate-s3
+          name: renovate-secret
           key: AWS_SECRET_ACCESS_KEY
