@@ -70,6 +70,7 @@ spec:
                 requests:
                   storage: 50Gi
     prometheus-node-exporter:
+      enabled: false
       fullnameOverride: node-exporter
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
