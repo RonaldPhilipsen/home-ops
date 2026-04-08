@@ -2,7 +2,18 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Auto-merge trusted container digests",
+      description: "Auto-merge high-cadence packages weekly",
+      matchDatasources: ["docker"],
+      automerge: true,
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: [
+        "ghcr.io/renovatebot/renovate",
+        "ghcr.io/mogenius/helm-charts/renovate-operator",
+      ],
+      schedule: ["before 6am on Sunday"],
+    },
+    {
+      desciption: "Auto-merge trusted container digests",
       matchDatasources: ["docker"],
       automerge: true,
       automergeType: "pr",
@@ -26,16 +37,6 @@
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch", "digest"],
       minimumReleaseAge: "3 days",
-      ignoreTests: true,
-    },
-    {
-      description: "Auto-merge renovate/renovate GitHub Action updates immediately",
-      matchManagers: ["docker"],
-      matchPackageNames: ["^renovate/renovate$"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["patch", "minor", "digest"],
-      minimumReleaseAge: "7 days",
       ignoreTests: true,
     },
     {
