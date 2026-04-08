@@ -12,3 +12,4 @@ resources:
   - ./omada-exporter/ks.yaml
   - ./pihole-exporter/ks.yaml
   - ./gaggiuino-exporter/ks.yaml
+  - ./victoria/ks.yaml
