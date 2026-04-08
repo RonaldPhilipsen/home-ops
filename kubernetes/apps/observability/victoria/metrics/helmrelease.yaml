@@ -81,7 +81,7 @@ spec:
         parentRefs:
           - name: agentgateway-internal
             namespace: network
-        hostnames: ["vmsingle.${CLUSTER_DOMAIN}"]
+        hostnames: ["vmsingle.rphilipsen.nl"]
 
     vmagent:
       enabled: true
