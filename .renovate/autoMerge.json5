@@ -30,7 +30,7 @@
     },
     {
       description: "Auto-merge renovate/renovate GitHub Action updates immediately",
-      matchManagers: ["docker"],
+      matchDatasources: ["docker"],
       matchPackageNames: ["renovatebot/renovate$"],
       automerge: true,
       automergeType: "branch",
