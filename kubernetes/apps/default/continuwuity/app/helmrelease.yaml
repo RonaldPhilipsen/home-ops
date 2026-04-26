@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: forgejo.ellis.link/continuwuation/continuwuity
-              tag: v0.5.7-maxperf@sha256:0307512bf6a38fc039d736a95027b08a4f40c47b19a4bf4d519383135c2f5b32
+              tag: v0.5.8-maxperf@sha256:526dd6e2aa8de82949392826cf903b5d1638677925f4c14dec0356d23e207052
             env:
               TZ: "Europe/Amsterdam"
               CONDUWUIT_SERVER_NAME: rphilipsen.nl
