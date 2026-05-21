@@ -9,7 +9,7 @@ resources:
   - ./namespace.yaml
   - ./netpol.yaml
   - ./grafana/ks.yaml
-  - ./kube-prometheus-stack/ks.yaml
+  - ./prometheus-operator-crds/ks.yaml
   - ./omada-exporter/ks.yaml
   - ./pihole-exporter/ks.yaml
   - ./gaggiuino-exporter/ks.yaml
