@@ -36,19 +36,19 @@ spec:
     endpointRoutes:
       enabled: true
     envoy:
-      rollOutPods: true
+      rollOutPods: false
       prometheus:
         serviceMonitor:
-          enabled: true
+          enabled: false
     gatewayAPI:
       enabled: true
     hubble:
       enabled: true
       relay:
-        enabled: false
-    ui:
-      enabled: true
-      rollOutPods: true
+        enabled: true
+      ui:
+        enabled: true
+        rollOutPods: true
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: "10.42.0.0/16"

@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: renovate
 resources:
   - ./namespace.yaml
+  - ./netpol.yaml
   - ./renovate-operator/ks.yaml
