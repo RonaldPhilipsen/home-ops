@@ -17,6 +17,8 @@ spec:
     remediation:
       retries: 3
   values:
+    defaultPodOptions:
+      automountServiceAccountToken: true
     controllers:
       dragonfly-operator:
         replicas: 1
@@ -96,7 +98,6 @@ spec:
             scrapeTimeout: 10s
     serviceAccount:
       dragonfly-operator: {}
-    automountServiceAccountToken: true
   postRenderers:
     - kustomize:
         patches:
