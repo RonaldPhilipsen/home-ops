@@ -17,6 +17,23 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 5
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: gateway.networking.k8s.io
+              version: v1
+              kind: HTTPRoute
+              name: authelia
+            patch: |
+              - op: add
+                path: /spec/rules/0/filters
+                value:
+                  - type: RequestHeaderModifier
+                    requestHeaderModifier:
+                      set:
+                        - name: X-Forwarded-Proto
+                          value: https
   values:
     controllers:
       authelia:
@@ -65,12 +82,6 @@ spec:
           - backendRefs:
               - name: authelia
                 port: 9091
-            filters:
-              - type: RequestHeaderModifier
-                requestHeaderModifier:
-                  set:
-                    - name: X-Forwarded-Proto
-                      value: https
     persistence:
       config:
         enabled: true

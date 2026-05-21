@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: garage
+  namespace: database
+spec:
+  configuration:
+    destinationPath: s3://pg-backup
+    endpointURL: https://s3.rphilipsen.nl
+    s3Credentials:
+      accessKeyId:
+        name: cloudnative-pg-secret
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: cloudnative-pg-secret
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: bzip2
+      maxParallel: 8
+    data:
+      compression: bzip2
+      immediateCheckpoint: false
+      jobs: 4
+  retentionPolicy: 17d

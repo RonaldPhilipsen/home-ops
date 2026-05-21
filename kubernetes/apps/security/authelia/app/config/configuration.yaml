@@ -153,6 +153,21 @@ identity_providers:
           - "groups"
         id_token_signed_response_alg: "RS256"
         token_endpoint_auth_method: "client_secret_post"
+      - client_id: "{{ .IMMICH_OAUTH_CLIENT_ID }}"
+        client_name: "Immich"
+        client_secret: "{{ .IMMICH_OAUTH_CLIENT_SECRET }}"
+        public: false
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        authorization_policy: "two_factor"
+        redirect_uris:
+          - "https://immich.rphilipsen.nl/auth/oidc/callback"
+        scopes:
+          - "openid"
+          - "profile"
+          - "groups"
+        id_token_signed_response_alg: "RS256"
+        token_endpoint_auth_method: "client_secret_post"
       # - client_id: "{{ .JELLYFIN_OAUTH_CLIENT_ID }}"
       #   client_name: Jellyfin
       #   client_secret: "{{ .JELLYFIN_OAUTH_CLIENT_SECRET }}"
