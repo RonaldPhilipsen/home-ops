@@ -1,0 +1,49 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: photos-nfs
+provisioner: nfs
+parameters:
+  archiveOnDelete: "false"
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photos-nfs
+  namespace: immich
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  storageClassName: photos-nfs
+  capacity:
+    storage: 15Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    namespace: immich
+    name: photos-nfs
+  nfs:
+    server: 172.16.20.7
+    path: /Photos
+  mountOptions:
+    - nfsvers=4.2
+    - nconnect=8
+    - noatime
+    - hard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photos-nfs
+  namespace: immich
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: photos-nfs
+  resources:
+    requests:
+      storage: 15Ti

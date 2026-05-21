@@ -1,0 +1,86 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-postgres
+  annotations:
+    # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
+spec:
+  instances: 3
+  # renovate: datasource=docker depName=ghcr.io/tensorchord/cloudnative-vectorchord
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18-1.1.1
+  affinity:
+    enablePodAntiAffinity: true #default value
+    topologyKey: kubernetes.io/hostname #default value
+    podAntiAffinityType: required #default value
+  primaryUpdateStrategy: unsupervised
+  storage:
+    size: 5Gi
+    storageClass: openebs-hostpath
+    resizeInUseVolumes: True
+  superuserSecret:
+    name: cloudnative-pg-secret
+  enableSuperuserAccess: true
+  env:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_SECRET_ACCESS_KEY
+    - name: AWS_REGION
+      valueFrom:
+        secretKeyRef:
+          name: cloudnative-pg-secret
+          key: AWS_REGION
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: 256MB
+    shared_preload_libraries:
+      - "vchord.so"
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters: &pluginparams
+        barmanObjectName: garage
+        serverName: immich-postgres
+  managed:
+    roles:
+      - name: immich
+        login: true
+        superuser: false
+        createdb: true
+        passwordSecret:
+          name: immich-db-credentials
+
+  #   recovery:
+  #     source: source
+  #     recoveryTarget:                         # If not present, latest
+  #       targetTime: "2025-03-05 00:00:00+00"  # RFC3339 format
+
+  externalClusters:
+    - name: source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters: *pluginparams
+
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      hugepages-2Mi: 1Gi
+      memory: 2Gi
+
+  monitoring:
+    enablePodMonitor: true
+
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
