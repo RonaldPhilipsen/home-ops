@@ -65,6 +65,12 @@ spec:
           - backendRefs:
               - name: authelia
                 port: 9091
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  set:
+                    - name: X-Forwarded-Proto
+                      value: https
     persistence:
       config:
         enabled: true
