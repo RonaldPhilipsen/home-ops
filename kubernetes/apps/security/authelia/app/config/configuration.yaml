@@ -29,6 +29,7 @@ storage:
     username: "{{ .POSTGRES_USER }}"
     password: "{{ .POSTGRES_PASSWORD }}"
 notifier:
+  disable_startup_check: true
   smtp:
     address: "smtp://{{ .SMTP_HOST }}:{{ .SMTP_PORT }}"
     timeout: "5s"
