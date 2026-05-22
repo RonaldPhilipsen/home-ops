@@ -8,7 +8,7 @@ spec:
   hostnames:
     - photos.rphilipsen.nl
   parentRefs:
-    - name: agentgateway-internal
+    - name: agentgateway-external
       namespace: network
       sectionName: https
   rules:
