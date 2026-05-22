@@ -168,7 +168,6 @@ identity_providers:
           - 'openid'
           - 'profile'
           - 'email'
-        claims_policy: 'immich_policy'
         response_types:
           - 'code'
         grant_types:
