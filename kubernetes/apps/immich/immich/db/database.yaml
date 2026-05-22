@@ -8,5 +8,7 @@ spec:
   cluster:
     name: immich-postgres
   extensions:
+    - name: vector
+    - name: cube
     - name: vchord
     - name: earthdistance
