@@ -28,5 +28,5 @@ spec:
       persistence:
         library:
           existingClaim: photos-nfs
-      configurationKind: Secret
-      existingConfiguration: immich-config
+      # configurationKind: Secret
+      # existingConfiguration: immich-config
