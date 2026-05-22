@@ -16,7 +16,7 @@ spec:
           main:
             image:
               tag: v2.7.5
-            envfrom:
+            envFrom:
               - secretRef:
                   name: immich-db-config
     valkey:
