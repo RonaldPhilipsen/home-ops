@@ -7,25 +7,25 @@ ffmpeg:
   accel: disabled
   accelDecode: false
   acceptedAudioCodecs:
-  - aac
-  - mp3
-  - opus
+    - aac
+    - mp3
+    - opus
   acceptedContainers:
-  - mov
-  - ogg
-  - webm
+    - mov
+    - ogg
+    - webm
   acceptedVideoCodecs:
-  - h264
+    - h264
   bframes: -1
   cqMode: auto
   crf: 23
   gopSize: 0
-  maxBitrate: '0'
+  maxBitrate: "0"
   preferredHwDevice: auto
   preset: ultrafast
   refs: 0
   targetAudioCodec: aac
-  targetResolution: '720'
+  targetResolution: "720"
   targetVideoCodec: h264
   temporalAQ: false
   threads: 0
@@ -106,7 +106,7 @@ machineLearning:
     minRecognitionScore: 0.8
     modelName: PP-OCRv5_mobile
   urls:
-  - http://immich-machine-learning:3003
+    - http://immich-machine-learning:3003
 map:
   darkStyle: https://tiles.immich.cloud/v1/style/dark.json
   enabled: true
@@ -121,20 +121,20 @@ nightlyTasks:
   databaseCleanup: true
   generateMemories: true
   missingThumbnails: true
-  startTime: '00:00'
+  startTime: "00:00"
   syncQuotaUsage: true
 notifications:
   smtp:
     enabled: false
-    from: ''
-    replyTo: ''
+    from: ""
+    replyTo: ""
     transport:
-      host: ''
+      host: ""
       ignoreCert: false
-      password: ''
+      password: ""
       port: 587
       secure: false
-      username: ''
+      username: ""
 oauth:
   autoLaunch: false
   autoRegister: true
@@ -143,9 +143,9 @@ oauth:
   clientSecret: "{{ .IMMICH_OAUTH_CLIENT_SECRET }}"
   defaultStorageQuota:
   enabled: false
-  issuerUrl: ''
+  issuerUrl: ""
   mobileOverrideEnabled: false
-  mobileRedirectUri: ''
+  mobileRedirectUri: ""
   profileSigningAlgorithm: none
   roleClaim: immich_role
   scope: openid email profile
@@ -159,8 +159,8 @@ passwordLogin:
 reverseGeocoding:
   enabled: true
 server:
-  externalDomain: 'photos.rphilipsen.nl'
-  loginPageMessage: ''
+  externalDomain: "photos.rphilipsen.nl"
+  loginPageMessage: ""
   publicUsers: true
 storageTemplate:
   enabled: false
@@ -168,11 +168,11 @@ storageTemplate:
   template: '{{ "{{" }}y{{ "}}" }}/{{ "{{" }}y{{ "}}" }}-{{ "{{" }}MM{{ "}}" }}-{{ "{{" }}dd{{ "}}" }}/{{ "{{" }}filename{{ "}}" }}'
 templates:
   email:
-    albumInviteTemplate: ''
-    albumUpdateTemplate: ''
-    welcomeTemplate: ''
+    albumInviteTemplate: ""
+    albumUpdateTemplate: ""
+    welcomeTemplate: ""
 theme:
-  customCss: ''
+  customCss: ""
 trash:
   days: 30
   enabled: true

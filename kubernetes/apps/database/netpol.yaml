@@ -27,3 +27,26 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: renovate
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-world-to-vernemq
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: vernemq
+  ingress:
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "1883"
+              protocol: TCP
+            - port: "8883"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8443"
+              protocol: TCP
