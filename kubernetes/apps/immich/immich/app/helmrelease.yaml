@@ -30,16 +30,3 @@ spec:
           existingClaim: photos-nfs
       configurationKind: Secret
       existingConfiguration: immich-config
-
-
-    route:
-      app:
-        hostnames: ["photos.rphilipsen.nl"]
-        parentRefs:
-          - name: agentgateway-external
-            namespace: network
-        rules:
-          - backendRefs:
-              - name: immich-server
-                port: 2283
-
