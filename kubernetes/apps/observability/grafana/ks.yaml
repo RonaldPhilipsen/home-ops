@@ -49,12 +49,3 @@ spec:
   targetNamespace: observability
   wait: true
   force: true
-  patches:
-    - patch: |
-        - op: add
-          path: /spec/instanceSelector
-          value:
-            matchLabels:
-              dashboards: grafana
-      target:
-        kind: GrafanaDashboard
