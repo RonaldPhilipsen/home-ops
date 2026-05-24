@@ -35,7 +35,7 @@ spec:
       retries: 3
   values:
     controller:
-      replicaCount: 2
+      replicaCount: 1
       pod:
         topologySpreadConstraints:
           - maxSkew: 1
