@@ -10,5 +10,6 @@ resources:
   - ./netpol.yaml
   - ./openebs/ks.yaml
   - ./snapshot-controller/ks.yaml
+  - ./rook-ceph/ks.yaml
   - ./volsync/ks.yaml
   - ./kopia/ks.yaml
