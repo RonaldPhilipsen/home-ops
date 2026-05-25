@@ -20,9 +20,6 @@ spec:
       retries: 0
   uninstall:
     keepHistory: false
-  dependsOn:
-    - name: intel-device-plugin-gpu
-      namespace: kube-system
   values:
     defaultPodOptions:
       enableServiceLinks: false
