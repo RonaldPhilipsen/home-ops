@@ -25,6 +25,7 @@ spec:
         prometheusEndpoint: http://vmsingle-vmetrics.observability.svc.cluster.local:8428
       mon:
         count: 1
+        allowMultiplePerNode: true
       mgr:
         modules:
           - name: pg_autoscaler
