@@ -7,8 +7,8 @@ metadata:
   namespace: &namespace media
 spec:
   dependsOn:
-    - name: longhorn
-      namespace: storage
+    - name: rook-ceph
+      namespace: rook-ceph
   components:
     - ../../../../components/volsync
   path: ./kubernetes/apps/media/jellyfin/app
