@@ -23,11 +23,12 @@ spec:
         urlPrefix: /
         ssl: false
         prometheusEndpoint: http://vmsingle-vmetrics.observability.svc.cluster.local:8428
+      mon:
+        count: 1
       mgr:
         modules:
           - name: pg_autoscaler
             enabled: true
-        allowMultiplePerNode: true
       network:
         connections:
           requireMsgr2: true
