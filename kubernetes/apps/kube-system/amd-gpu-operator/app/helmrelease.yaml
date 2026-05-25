@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: amd-gpu-operator
+        namespace: kube-system
   values:
     upgradePolicy:
       upgradeStrategy: OnDelete
