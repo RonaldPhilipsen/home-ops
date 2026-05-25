@@ -8,7 +8,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./netpol.yaml
-  - ./longhorn/ks.yaml
   - ./openebs/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./volsync/ks.yaml
