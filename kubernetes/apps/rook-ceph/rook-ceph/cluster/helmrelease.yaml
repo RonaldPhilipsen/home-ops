@@ -40,7 +40,7 @@ spec:
           limits:
             memory: 8Gi # Required for bootstrap
       storage:
-        devicePathFilter: /dev/disk/by-partuuid/a2026778-9cde-4a91-8205-ea58eddaa89a
+        devicePathFilter: /dev/disk/by-partuuid/d61c6f2c-eea2-4e40-930e-503470a27da5
         useAllDevices: false
         useAllNodes: true
     monitoring:
