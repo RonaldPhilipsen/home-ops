@@ -16,7 +16,7 @@ spec:
       vernemq:
         type: statefulset
         strategy: RollingUpdate
-        replicas: 3
+        replicas: 1
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret
         pod:
