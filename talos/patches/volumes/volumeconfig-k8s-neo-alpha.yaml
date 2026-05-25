@@ -1,6 +1,6 @@
 apiVersion: v1alpha1
 kind: RawVolumeConfig
-name: ceph-data
+name: rook-data
 
 provisioning:
   diskSelector:
