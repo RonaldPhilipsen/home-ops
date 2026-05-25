@@ -6,13 +6,13 @@ metadata:
   name: rook-ceph
 spec:
   interval: 1h
-  path: ./kubernetes/apps/storage/rook-ceph/app
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: rook-ceph
   wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -24,15 +24,15 @@ spec:
   dependsOn:
     - name: rook-ceph
     - name: volsync
-      namespace: storage
+      namespace: rook-ceph
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: rook-ceph-cluster
-      namespace: storage
+      namespace: rook-ceph
     - apiVersion: ceph.rook.io/v1
       kind: CephCluster
-      namespace: storage
+      namespace: rook-ceph
       name: rook-ceph
   healthCheckExprs:
     - apiVersion: ceph.rook.io/v1
@@ -40,10 +40,10 @@ spec:
       failed: status.ceph.health == 'HEALTH_ERR'
       current: status.ceph.health in ['HEALTH_OK', 'HEALTH_WARN']
   interval: 1h
-  path: ./kubernetes/apps/storage/rook-ceph/cluster
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: storage
+  targetNamespace: rook-ceph
