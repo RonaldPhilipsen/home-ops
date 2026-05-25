@@ -18,6 +18,20 @@ spec:
       disable_login_form: "false"
     auth.anonymous:
       enabled: "false"
+    auth.generic_oauth:
+      enabled: "true"
+      name: Authelia
+      allow_sign_up: "true"
+      scopes: openid profile email groups
+      auth_url: https://auth.rphilipsen.nl/api/oidc/authorization
+      token_url: https://auth.rphilipsen.nl/api/oidc/token
+      api_url: https://auth.rphilipsen.nl/api/oidc/userinfo
+      use_pkce: "true"
+      client_id: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_ID}
+      client_secret: $__env{GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET}
+      login_attribute_path: preferred_username
+      name_attribute_path: name
+      email_attribute_path: email
     log:
       mode: console
     metrics:
@@ -45,6 +59,16 @@ spec:
                     secretKeyRef:
                       name: grafana-admin-password-secret
                       key: GF_SECURITY_ADMIN_PASSWORD
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-admin-password-secret
+                      key: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-admin-password-secret
+                      key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
