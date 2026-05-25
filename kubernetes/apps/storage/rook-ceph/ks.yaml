@@ -24,7 +24,7 @@ spec:
   dependsOn:
     - name: rook-ceph
     - name: volsync
-      namespace: volsync-system
+      namespace: storage
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
