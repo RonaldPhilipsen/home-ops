@@ -21,7 +21,7 @@ metadata:
   name: grafana-instance
 spec:
   dependsOn:
-    - name: grafana
+    - name: grafana-operator
   interval: 1h
   path: ./kubernetes/apps/observability/grafana/instance
   prune: true
