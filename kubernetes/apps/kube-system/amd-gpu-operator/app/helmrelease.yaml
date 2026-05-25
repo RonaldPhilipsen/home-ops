@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: amd-gpu-operator
+  namespace: kube-system
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: gpu-operator-charts
+      version: v1.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: amd-gpu-operator
+  values:
+    upgradePolicy:
+      upgradeStrategy: OnDelete
+    serviceMonitor:
+      enabled: true
+      attachMetadata:
+        node: true
