@@ -6,7 +6,7 @@ provisioning:
   diskSelector:
     match: system_disk
     # minSize: 2TB
-  maxSize: 2TB
+  maxSize: 2TiB
 
 # # The encryption describes how the volume is encrypted.
 # encryption:
@@ -31,3 +31,20 @@ provisioning:
 #     options:
 #         - no_read_workqueue
 #         - no_write_workqueue
+---
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL
+provisioning:
+  maxSize: 1TiB
+  grow: false
+# ---
+# apiVersion: v1alpha1
+# kind: UserVolumeConfig
+# name: rook-data
+# provisioning:
+#   diskSelector:
+#     match: system_disk
+#   maxSize: 100Gib
+# mount:
+#   path: /var/lib/rook

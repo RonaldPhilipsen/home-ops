@@ -31,7 +31,6 @@ spec:
         - source-controller
         - kustomize-controller
         - helm-controller
-        - notification-controller
       sync:
         kind: GitRepository
         url: "https://github.com/RonaldPhilipsen/home-ops.git"
