@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - ./csi-driver-nfs.yaml
   - ./intel.yaml
-  - ./longhorn.yaml
   - ./nfs-provisioner.yaml
   - ./node-feature-discovery.yaml

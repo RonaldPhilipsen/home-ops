@@ -10,8 +10,8 @@ spec:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/media/tdarr/app
   dependsOn:
-    - name: longhorn
-      namespace: storage
+    - name: rook-ceph
+      namespace: rook-ceph
   components:
     - ../../../../components/volsync
   postBuild:

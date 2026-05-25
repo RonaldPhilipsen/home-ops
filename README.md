@@ -24,10 +24,9 @@ The purpose here is to learn Kubernetes, while practicing GitOps. I have two lon
 
 1. ~~migrate many of the services that I currently run on different raspberry pi's or servers around the house into a single, congruous k8s environment~~
 2. ~~Learn more about managing K8s clusters in prod~~
-3. Get some decent NVME SSD's to use as boot drives
+3. ~~Get some decent NVME SSD's to use as boot drives~~
 4. ~~Set up ceph instead of using NFS for PVC s~~
-5. ~~Set up longhorn instead of ceph~~
-6. Set up OIDC for more appliations.
+5. Set up OIDC for more appliations.
 
 ---
 

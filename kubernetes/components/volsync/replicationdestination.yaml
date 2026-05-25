@@ -15,8 +15,8 @@ spec:
     sourceIdentity:
       sourceName: ${APP}
     # storage parameters
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=longhorn-snapshot}"
-    storageClassName: "${VOLSYNC_STORAGECLASS:=longhorn-snapshot}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=csi-ceph-blockpool}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=ceph-block}"
     accessModes:
       - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
     # cache parameters
