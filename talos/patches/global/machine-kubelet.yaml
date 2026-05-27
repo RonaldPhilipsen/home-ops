@@ -2,6 +2,8 @@ machine:
   kubelet:
     extraConfig:
       serializeImagePulls: false
+    extraArgs:
+      max-pods: "200"
     nodeIP:
       validSubnets:
         - 172.16.20.0/24
