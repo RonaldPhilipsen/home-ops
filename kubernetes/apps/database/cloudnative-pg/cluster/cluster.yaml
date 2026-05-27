@@ -12,7 +12,7 @@ spec:
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4
   affinity:
-    enablePodAntiAffinity: true
+    enablePodAntiAffinity: false
     topologyKey: kubernetes.io/hostname
     podAntiAffinityType: preferred
   primaryUpdateStrategy: unsupervised

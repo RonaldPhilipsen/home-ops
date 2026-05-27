@@ -12,7 +12,7 @@ spec:
   # renovate: datasource=docker depName=ghcr.io/tensorchord/cloudnative-vectorchord
   imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18-1.1.1
   affinity:
-    enablePodAntiAffinity: true
+    enablePodAntiAffinity: false
     topologyKey: kubernetes.io/hostname
     podAntiAffinityType: preferred
   primaryUpdateStrategy: unsupervised
