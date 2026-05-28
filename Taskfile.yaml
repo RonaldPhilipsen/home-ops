@@ -20,8 +20,10 @@ env:
 
 includes:
   bootstrap: .taskfiles/bootstrap
+  ceph: .taskfiles/ceph
   talos: .taskfiles/talos
   template: .taskfiles/template
+  volsync: .taskfiles/volsync
 
 tasks:
   default: task --list
