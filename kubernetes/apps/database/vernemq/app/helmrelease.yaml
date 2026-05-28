@@ -14,23 +14,21 @@ spec:
   values:
     controllers:
       vernemq:
-        type: statefulset
         strategy: RollingUpdate
         replicas: 3
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret
-        pod:
-          affinity:
-            podAntiAffinity:
-              # requiredDuringSchedulingIgnoredDuringExecution:
-              preferredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchExpressions:
-                      - key: app.kubernetes.io/name
-                        operator: In
-                        values:
-                          - vernemq
-                  topologyKey: kubernetes.io/hostname
+        # pod:
+        #   affinity:
+        #     podAntiAffinity:
+        #       requiredDuringSchedulingIgnoredDuringExecution:
+        #         - labelSelector:
+        #             matchExpressions:
+        #               - key: app.kubernetes.io/name
+        #                 operator: In
+        #                 values:
+        #                   - vernemq
+        #           topologyKey: kubernetes.io/hostname
 
         containers:
           app:
