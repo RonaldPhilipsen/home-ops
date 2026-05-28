@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  trigger-src:
+    desc: Trigger all VolSync ReplicationSource resources across all namespaces
+    cmds:
+      - |
+        trigger="manual-$(date -u +%Y%m%dT%H%M%SZ)"
+        kubectl get replicationsources.volsync.backube -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' |
+          while read -r ns name; do
+            [ -z "$ns" ] && continue
+            echo "Triggering ReplicationSource ${ns}/${name} with token ${trigger}"
+            kubectl -n "$ns" patch replicationsource "$name" --type merge -p "{\"spec\":{\"trigger\":{\"manual\":\"${trigger}\"}}}"
+          done
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+
+  clean-cache:
+    desc: Delete VolSync cache PVCs across all namespaces
+    cmds:
+      - |
+        kubectl get pvc -A -l app.kubernetes.io/created-by=volsync -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' |
+          while read -r ns name; do
+            [ -z "$ns" ] && continue
+            case "$name" in
+              *cache*)
+                echo "Deleting cache PVC ${ns}/${name}"
+                kubectl -n "$ns" delete pvc "$name" --ignore-not-found
+                ;;
+            esac
+          done
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+
+  trigger-dst:
+    desc: Trigger all VolSync ReplicationDestination resources across all namespaces
+    cmds:
+      - |
+        trigger="manual-$(date -u +%Y%m%dT%H%M%SZ)"
+        kubectl get replicationdestinations.volsync.backube -A -o jsonpath='{range .items[*]}{.metadata.namespace}{" "}{.metadata.name}{"\n"}{end}' |
+          while read -r ns name; do
+            [ -z "$ns" ] && continue
+            echo "Triggering ReplicationDestination ${ns}/${name} with token ${trigger}"
+            kubectl -n "$ns" patch replicationdestination "$name" --type merge -p "{\"spec\":{\"trigger\":{\"manual\":\"${trigger}\"}}}"
+          done
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl

@@ -1,0 +1,238 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+tasks:
+  find-workloads:
+    desc: Discover workloads that mount Ceph-backed PVCs and write a CSV target list
+    vars:
+      TARGETS_FILE: '{{.TARGETS_FILE | default ""}}'
+    cmds:
+      - |
+        set -euo pipefail
+
+        if [ -z "{{.TARGETS_FILE}}" ]; then
+          echo "TARGETS_FILE is required."
+          exit 1
+        fi
+
+        tmp_pvcs="$(mktemp)"
+        trap 'rm -f "${tmp_pvcs}"' EXIT
+
+        echo "Discovering Ceph-backed PVCs"
+        kubectl get pvc -A -o json | jq -r '.items[] | select(.spec.storageClassName != null) | [.metadata.namespace, .metadata.name, .spec.storageClassName] | @tsv' |
+          while IFS=$'\t' read -r ns pvc sc; do
+            [ -z "${ns}" ] && continue
+            provisioner="$(kubectl get storageclass "${sc}" -o jsonpath='{.provisioner}' 2>/dev/null || true)"
+            case "${provisioner}" in
+              *ceph*|*rbd.csi.ceph.com*|*cephfs.csi.ceph.com*)
+                echo "${ns}/${pvc}" >> "${tmp_pvcs}"
+                ;;
+            esac
+          done
+
+        sort -u "${tmp_pvcs}" -o "${tmp_pvcs}" || true
+        if [ ! -s "${tmp_pvcs}" ]; then
+          echo "No Ceph-backed PVCs found."
+          exit 0
+        fi
+
+        echo "Finding workloads that mount Ceph-backed PVCs"
+        kubectl get deployment -A -o json | jq -r '.items[] | .kind as $kind | .metadata.namespace as $ns | .metadata.name as $name | (.spec.template.spec.volumes[]? | select(.persistentVolumeClaim != null) | .persistentVolumeClaim.claimName) as $pvc | [$ns, $kind, $name, $pvc] | @tsv' |
+          while IFS=$'\t' read -r ns kind name pvc; do
+            [ -z "${ns}" ] && continue
+            if ! rg -F -x -q "${ns}/${pvc}" "${tmp_pvcs}"; then
+              continue
+            fi
+
+            case "${kind}" in
+              Deployment)
+                echo "${ns},${kind},${name}" >> "{{.TARGETS_FILE}}"
+                ;;
+            esac
+          done
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - which jq
+      - which rg
+
+  apps-down:
+    desc: Scale down workloads that mount Ceph-backed PVCs and snapshot replica counts
+    vars:
+      ROOK_CLUSTER_NAMESPACE: '{{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}}'
+      SNAPSHOT_CONFIGMAP: '{{.SNAPSHOT_CONFIGMAP | default "ceph-maintenance-workloads"}}'
+    cmds:
+      - |
+        set -euo pipefail
+
+        tmp_targets="$(mktemp)"
+        tmp_snapshot="$(mktemp)"
+        trap 'rm -f "${tmp_targets}" "${tmp_snapshot}"' EXIT
+
+        task ceph:find-workloads TARGETS_FILE="${tmp_targets}"
+
+        sort -u "${tmp_targets}" -o "${tmp_targets}" || true
+        if [ ! -s "${tmp_targets}" ]; then
+          echo "No Deployment or StatefulSet mounts found for Ceph-backed PVCs."
+          kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" delete configmap "{{.SNAPSHOT_CONFIGMAP}}" --ignore-not-found
+          exit 0
+        fi
+
+        while IFS=',' read -r ns kind name; do
+          [ -z "${ns}" ] && continue
+          kind_lc="$(echo "${kind}" | tr '[:upper:]' '[:lower:]')"
+          replicas="$(kubectl -n "${ns}" get "${kind_lc}" "${name}" -o jsonpath='{.spec.replicas}' 2>/dev/null || true)"
+          [ -z "${replicas}" ] && replicas="1"
+          echo "${ns},${kind},${name},${replicas}" >> "${tmp_snapshot}"
+        done < "${tmp_targets}"
+
+        echo "Saving workload snapshot to configmap {{.ROOK_CLUSTER_NAMESPACE}}/{{.SNAPSHOT_CONFIGMAP}}"
+        kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" create configmap "{{.SNAPSHOT_CONFIGMAP}}" --from-file=workloads.csv="${tmp_snapshot}" -o yaml --dry-run=client | kubectl apply -f -
+
+        echo "Scaling workloads to 0"
+        while IFS=',' read -r ns kind name replicas; do
+          [ -z "${ns}" ] && continue
+          kind_lc="$(echo "${kind}" | tr '[:upper:]' '[:lower:]')"
+          echo "Scaling ${kind} ${ns}/${name} from ${replicas} to 0"
+          kubectl -n "${ns}" scale "${kind_lc}" "${name}" --replicas=0
+        done < "${tmp_snapshot}"
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - which jq
+      - which rg
+
+  apps-up:
+    desc: Restore workload replicas previously scaled down for Ceph maintenance
+    vars:
+      ROOK_CLUSTER_NAMESPACE: '{{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}}'
+      SNAPSHOT_CONFIGMAP: '{{.SNAPSHOT_CONFIGMAP | default "ceph-maintenance-workloads"}}'
+    cmds:
+      - |
+        set -euo pipefail
+
+        tmp_snapshot="$(mktemp)"
+        trap 'rm -f "${tmp_snapshot}"' EXIT
+
+        if ! kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" get configmap "{{.SNAPSHOT_CONFIGMAP}}" >/dev/null 2>&1; then
+          echo "No workload snapshot configmap found. Nothing to restore."
+          exit 0
+        fi
+
+        kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" get configmap "{{.SNAPSHOT_CONFIGMAP}}" -o json | jq -r '.data["workloads.csv"] // ""' > "${tmp_snapshot}"
+        if [ ! -s "${tmp_snapshot}" ]; then
+          echo "Workload snapshot configmap is empty. Nothing to restore."
+          kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" delete configmap "{{.SNAPSHOT_CONFIGMAP}}" --ignore-not-found
+          exit 0
+        fi
+
+        echo "Restoring workload replicas"
+        while IFS=',' read -r ns kind name replicas; do
+          [ -z "${ns}" ] && continue
+          kind_lc="$(echo "${kind}" | tr '[:upper:]' '[:lower:]')"
+          echo "Scaling ${kind} ${ns}/${name} to ${replicas}"
+          kubectl -n "${ns}" scale "${kind_lc}" "${name}" --replicas="${replicas}"
+
+          if [ "${kind}" = "Deployment" ]; then
+            kubectl -n "${ns}" rollout status "${kind_lc}" "${name}" --timeout=10m
+          fi
+        done < "${tmp_snapshot}"
+
+        kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" delete configmap "{{.SNAPSHOT_CONFIGMAP}}" --ignore-not-found
+        echo "Workload replica restoration complete."
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - which jq
+
+  down:
+    desc: Safely scale down Rook Ceph components for node maintenance
+    prompt: This will scale down rook-ceph workloads and stop Ceph I/O paths. Continue?
+    vars:
+      ROOK_OPERATOR_NAMESPACE: '{{.ROOK_OPERATOR_NAMESPACE | default "rook-ceph"}}'
+      ROOK_CLUSTER_NAMESPACE: '{{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}}'
+      SNAPSHOT_CONFIGMAP: '{{.SNAPSHOT_CONFIGMAP | default "ceph-maintenance-workloads"}}'
+    cmds:
+      - |
+        set -euo pipefail
+
+        echo "Using operator namespace: {{.ROOK_OPERATOR_NAMESPACE}}"
+        echo "Using cluster namespace: {{.ROOK_CLUSTER_NAMESPACE}}"
+
+        echo "Scaling down workloads that use Ceph-backed PVCs"
+        task ceph:apps-down ROOK_CLUSTER_NAMESPACE={{.ROOK_CLUSTER_NAMESPACE}} SNAPSHOT_CONFIGMAP={{.SNAPSHOT_CONFIGMAP}}
+
+        echo "Setting Ceph noout flag"
+        kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" exec deploy/rook-ceph-tools -- ceph osd set noout
+
+        echo "Scaling rook-ceph-operator to 0"
+        kubectl -n "{{.ROOK_OPERATOR_NAMESPACE}}" scale deployment rook-ceph-operator --replicas=0
+
+        for category in \
+          rook-ceph-rgw \
+          csi-cephfsplugin-provisioner \
+          csi-rbdplugin-provisioner \
+          rook-ceph-osd \
+          rook-ceph-mon \
+          rook-ceph-mgr \
+          rook-ceph-exporter \
+          rook-ceph-crashcollector; do
+          kubectl get deployment -n "{{.ROOK_CLUSTER_NAMESPACE}}" --no-headers 2>/dev/null | awk '/^'"${category}"'/{print $1}' | \
+            while read -r name; do
+              [ -z "${name}" ] && continue
+              echo "Scaling deployment ${name} to 0"
+              kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" scale deployment "${name}" --replicas=0
+              while [ "$(kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" get deployment "${name}" -o jsonpath='{.status.readyReplicas}' 2>/dev/null || true)" != "" ]; do
+                echo "Waiting for ${name} to have no ready replicas"
+                sleep 5
+              done
+            done
+        done
+
+        echo "Ceph shutdown procedure complete. Perform node maintenance now."
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - kubectl -n {{.ROOK_OPERATOR_NAMESPACE | default "rook-ceph"}} get deployment rook-ceph-operator
+      - kubectl -n {{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}} get deployment rook-ceph-tools
+
+  up:
+    desc: Start Rook Ceph components after node maintenance
+    vars:
+      ROOK_OPERATOR_NAMESPACE: '{{.ROOK_OPERATOR_NAMESPACE | default "rook-ceph"}}'
+      ROOK_CLUSTER_NAMESPACE: '{{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}}'
+      SNAPSHOT_CONFIGMAP: '{{.SNAPSHOT_CONFIGMAP | default "ceph-maintenance-workloads"}}'
+    cmds:
+      - |
+        set -euo pipefail
+
+        echo "Using operator namespace: {{.ROOK_OPERATOR_NAMESPACE}}"
+        echo "Using cluster namespace: {{.ROOK_CLUSTER_NAMESPACE}}"
+
+        for category in rook-ceph-mon rook-ceph-mgr rook-ceph-osd rook-ceph-exporter rook-ceph-crashcollector rook-ceph-rgw csi-cephfsplugin-provisioner csi-rbdplugin-provisioner; do
+          kubectl get deployment -n "{{.ROOK_CLUSTER_NAMESPACE}}" --no-headers 2>/dev/null | awk '/^'"${category}"'/{print $1}' | \
+            while read -r name; do
+              [ -z "${name}" ] && continue
+              echo "Scaling deployment ${name} to 1"
+              kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" scale deployment "${name}" --replicas=1
+              kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" rollout status deployment "${name}" --timeout=10m
+            done
+        done
+
+        echo "Scaling rook-ceph-operator to 1"
+        kubectl -n "{{.ROOK_OPERATOR_NAMESPACE}}" scale deployment rook-ceph-operator --replicas=1
+        kubectl -n "{{.ROOK_OPERATOR_NAMESPACE}}" rollout status deployment rook-ceph-operator --timeout=10m
+
+        echo "Unsetting Ceph noout flag"
+        kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" exec deploy/rook-ceph-tools -- ceph osd unset noout
+
+        echo "Restoring workloads that use Ceph-backed PVCs"
+        task ceph:apps-up ROOK_CLUSTER_NAMESPACE={{.ROOK_CLUSTER_NAMESPACE}} SNAPSHOT_CONFIGMAP={{.SNAPSHOT_CONFIGMAP}}
+
+        echo "Ceph startup procedure complete."
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which kubectl
+      - kubectl -n {{.ROOK_OPERATOR_NAMESPACE | default "rook-ceph"}} get deployment rook-ceph-operator
+      - kubectl -n {{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}} get deployment rook-ceph-tools
