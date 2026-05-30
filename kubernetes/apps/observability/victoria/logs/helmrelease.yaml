@@ -28,7 +28,7 @@ spec:
       route:
         enabled: true
         hostnames:
-          - "vlogs.${CLUSTER_DOMAIN}"
+          - "vlogs.rphilipsen.nl"
         parentRefs:
           - name: agentgateway-internal
             namespace: network
