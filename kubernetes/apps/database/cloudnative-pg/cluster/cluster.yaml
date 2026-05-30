@@ -93,7 +93,7 @@ spec:
     recovery:
       source: source
       recoveryTarget:                         # If not present, latest
-        targetTime: "2026-05-30 10:00:00+00"  # RFC3339 format
+        targetTime: "2026-05-29T23:59:59Z"  # Recover to end of yesterday UTC
 
   externalClusters:
     - name: source
