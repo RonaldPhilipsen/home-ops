@@ -202,7 +202,6 @@ tasks:
     vars:
       ROOK_OPERATOR_NAMESPACE: '{{.ROOK_OPERATOR_NAMESPACE | default "rook-ceph"}}'
       ROOK_CLUSTER_NAMESPACE: '{{.ROOK_CLUSTER_NAMESPACE | default "rook-ceph"}}'
-      SNAPSHOT_CONFIGMAP: '{{.SNAPSHOT_CONFIGMAP | default "ceph-maintenance-workloads"}}'
     cmds:
       - |
         set -euo pipefail
@@ -226,9 +225,6 @@ tasks:
 
         echo "Unsetting Ceph noout flag"
         kubectl -n "{{.ROOK_CLUSTER_NAMESPACE}}" exec deploy/rook-ceph-tools -- ceph osd unset noout
-
-        echo "Restoring workloads that use Ceph-backed PVCs"
-        task ceph:apps-up ROOK_CLUSTER_NAMESPACE={{.ROOK_CLUSTER_NAMESPACE}} SNAPSHOT_CONFIGMAP={{.SNAPSHOT_CONFIGMAP}}
 
         echo "Ceph startup procedure complete."
     preconditions:
