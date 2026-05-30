@@ -1,6 +1,7 @@
 machine:
-  sysctls:
-    vm.nr_hugepages: "4096"
+  # handled separately in machine-sysctls.yaml
+  # sysctls:
+  #   vm.nr_hugepages: "8192"
   nodeLabels:
     openebs.io/engine: mayastor
   kubelet:
