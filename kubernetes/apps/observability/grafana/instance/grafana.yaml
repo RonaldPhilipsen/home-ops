@@ -22,9 +22,11 @@ spec:
       enabled: "true"
       name: Authelia
       allow_sign_up: "true"
+      allow_assign_grafana_admin: "true"
+      skip_org_role_sync: "false"
       scopes: openid profile email groups
       groups_attribute_path: groups
-      role_attribute_path: contains(groups, 'grafana-admins') && 'Admin' || contains(groups, 'grafana_admins') && 'Admin' || contains(groups, 'grafana-editors') && 'Editor' || contains(groups, 'grafana_editors') && 'Editor' || 'Viewer'
+      role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor'
       auth_url: https://auth.rphilipsen.nl/api/oidc/authorization
       token_url: https://auth.rphilipsen.nl/api/oidc/token
       api_url: https://auth.rphilipsen.nl/api/oidc/userinfo
