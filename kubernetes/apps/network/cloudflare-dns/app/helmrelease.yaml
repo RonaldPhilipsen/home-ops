@@ -37,7 +37,7 @@ spec:
     sources:
       - "crd"
       - "gateway-httproute"
-    txtPrefix: k8s.
+    txtPrefix: "k8s-%{record_type}." # Required for managing root domains. See: https://github.com/kubernetes-sigs/external-dns/blob/82905488a8cc963393f623f9a8ba484a141e81dc/docs/registry/txt.md?plain=1#L8
     txtOwnerId: default
     domainFilters: ["rphilipsen.nl"]
     serviceMonitor:
