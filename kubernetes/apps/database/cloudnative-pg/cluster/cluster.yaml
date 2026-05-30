@@ -8,7 +8,7 @@ metadata:
     # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
-  instances: 3
+  instances: 2
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4
   affinity:
@@ -92,8 +92,8 @@ spec:
   bootstrap:
     recovery:
       source: source
-      recoveryTarget:                         # If not present, latest
-        targetTime: "2026-05-29T23:59:59Z"  # Recover to end of yesterday UTC
+      # recoveryTarget:                         # If not present, latest
+      #   targetTime: "2026-05-29T23:59:59Z"  # Recover to end of yesterday UTC
 
   externalClusters:
     - name: source
