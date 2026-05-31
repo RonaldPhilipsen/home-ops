@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: opentelemetry-operator
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: opentelemetry-operator
+  values:
+    manager:
+      collectorImage:
+        repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
+        tag: "0.153.0@sha256:93aad750175cbf1a973ae1c5886c3371f4d800f61be25cdd26870b8441ffe9fa"
+      autoInstrumentation:
+        autoInstrumentationImage:
+          dotnet:
+            repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-dotnet
+            tag: "1.15.0@sha256:32c4ae3e516227a7cdd668601178125a4894bbd3f3da604b4e67a933410a5568"
+          go:
+            repository: ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go
+            tag: "v0.24.0@sha256:664715c04cb854ffdbb920ea1289a86b0717f39e46b18e6584caa9e1f2e4d83f"
+          java:
+            repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java
+            tag: "2.27.0@sha256:6d263ee46a3faace8950aec57ad4fd03b70a84169908e5f26eb1e42d92a0a441"
+          nodejs:
+            repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-nodejs
+            tag: "0.75.0@sha256:be8dec6ee0fd8ba1b217f8a8bc9a13f907e72b9891f5b84f23e234ad586696fc"
+          python:
+            repository: ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python
+            tag: "0.62b1@sha256:0b0cefcfcf6ecac1d937488f7bf2c6b5143e0498a57326370fa6c7d437d6f5a1"
+        go:
+          enabled: true
