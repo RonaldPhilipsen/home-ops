@@ -10,6 +10,7 @@ spec:
       grafana.internal/instance: grafana
   datasource:
     type: prometheus
+    orgId: 1
     name: prometheus
     access: proxy
     isDefault: true
@@ -28,6 +29,7 @@ spec:
       grafana.internal/instance: grafana
   datasource:
     type: alertmanager
+    orgId: 1
     name: alertmanager
     access: proxy
     jsonData:
@@ -45,6 +47,7 @@ spec:
       grafana.internal/instance: grafana
   datasource:
     type: jaeger
+    orgId: 1
     uid: victoria-traces
     name: victoria-traces
     access: proxy
@@ -61,6 +64,7 @@ spec:
       grafana.internal/instance: grafana
   datasource:
     type: victoriametrics-logs-datasource
+    orgId: 1
     uid: victoria-logs
     name: victoria-logs
     access: proxy
