@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app victoria-traces
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-traces
+  interval: 1h
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  values:
+    fullnameOverride: *app
+    global:
+      image:
+        registry: quay.io
+    server:
+      retentionMaxDiskUsagePercent: 80
+      persistentVolume:
+        enabled: true
+        # existingClaim: *app
+        storageClassName: "ceph-block"
+        size: "20Gi"
+      route:
+        enabled: true
+        hostnames:
+          - "vtraces.rphilipsen.nl"
+        parentRefs:
+          - name: agentgateway-internal
+            namespace: network
+      serviceMonitor:
+        enabled: true
+      resources:
+        limits:
+          memory: 1Gi
+        requests:
+          cpu: 30m
+          memory: 512Mi

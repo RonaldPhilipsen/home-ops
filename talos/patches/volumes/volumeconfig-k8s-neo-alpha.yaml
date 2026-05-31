@@ -8,6 +8,7 @@ provisioning:
     # minSize: 2TB
   maxSize: 2TiB
 
+
 # # The encryption describes how the volume is encrypted.
 # encryption:
 #     provider: luks2 # Encryption provider to use for the encryption.
