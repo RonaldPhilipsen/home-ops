@@ -1,0 +1,83 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/opentelemetry.io/opentelemetrycollector_v1beta1.json
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: logs-agent
+spec:
+  mode: daemonset
+  resources:
+    requests:
+      cpu: 20m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - "ALL"
+    readOnlyRootFilesystem: true
+  podSecurityContext:
+    runAsUser: 0
+    runAsGroup: 0
+  volumeMounts:
+    - name: varlogpods
+      mountPath: /var/log/pods
+      readOnly: true
+    - name: varlogcontainers
+      mountPath: /var/log/containers
+      readOnly: true
+  volumes:
+    - name: varlogpods
+      hostPath:
+        path: /var/log/pods
+    - name: varlogcontainers
+      hostPath:
+        path: /var/log/containers
+  tolerations:
+    - operator: Exists
+  config:
+    receivers:
+      filelog:
+        include:
+          - /var/log/containers/*.log
+        include_file_path: true
+        include_file_name: false
+        start_at: end
+        operators:
+          - type: container
+    processors:
+      batch: {}
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      resource:
+        attributes:
+          - key: k8s.cluster.name
+            value: k8s-neo-alpha
+            action: upsert
+    exporters:
+      otlphttp/victoriametrics:
+        logs_endpoint: http://victoria-logs-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        retry_on_failure:
+          enabled: true
+          initial_interval: 1s
+          max_interval: 30s
+          max_elapsed_time: 5m
+        sending_queue:
+          enabled: true
+          num_consumers: 4
+          queue_size: 5000
+    service:
+      pipelines:
+        logs:
+          receivers:
+            - filelog
+          processors:
+            - memory_limiter
+            - resource
+            - batch
+          exporters:
+            - otlphttp/victoriametrics

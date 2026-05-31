@@ -1,0 +1,133 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/opentelemetry.io/opentelemetrycollector_v1beta1.json
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: gateway
+spec:
+  mode: statefulset
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  volumeMounts:
+    - mountPath: /var/lib/otelcol/storage
+      name: storage
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+        storageClassName: ceph-block
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - "ALL"
+    readOnlyRootFilesystem: true
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsGroup: 1000
+    runAsUser: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+  config:
+    extensions:
+      file_storage:
+        directory: /var/lib/otelcol/storage
+      health_check:
+        endpoint: 0.0.0.0:13133
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch: {}
+      logdedup:
+        interval: 60s
+        log_count_attribute: dedup_count
+        timezone: "Europe/Amsterdam"
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      resource:
+        attributes:
+          - key: k8s.cluster.name
+            value: k8s-neo-alpha
+            action: upsert
+      resourcedetection:
+        detectors:
+          - env
+          - system
+        timeout: 2s
+        override: false
+    exporters:
+      otlphttp/victoriametrics:
+        logs_endpoint: http://victoria-logs-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        metrics_endpoint: &metrics_endpoint http://vmsingle-vmetrics.observability.svc.cluster.local:8428/opentelemetry/v1/metrics
+        traces_endpoint: http://victoria-traces-server.observability.svc.cluster.local:10428/insert/opentelemetry/v1/traces
+        retry_on_failure:
+          enabled: true
+          initial_interval: 1s
+          max_interval: 30s
+          max_elapsed_time: 5m
+        sending_queue:
+          enabled: true
+          num_consumers: 4
+          queue_size: 10000
+          storage: file_storage
+    service:
+      extensions:
+        - health_check
+        - file_storage
+      pipelines:
+        logs:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - resourcedetection
+            - resource
+            - logdedup
+            - batch
+          exporters:
+            - otlphttp/victoriametrics
+        metrics:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - resourcedetection
+            - resource
+            - batch
+          exporters:
+            - otlphttp/victoriametrics
+        traces:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - resourcedetection
+            - resource
+            - batch
+          exporters:
+            - otlphttp/victoriametrics
+      telemetry:
+        metrics:
+          readers:
+            - periodic:
+                exporter:
+                  otlp:
+                    protocol: http/protobuf
+                    endpoint: *metrics_endpoint
