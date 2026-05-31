@@ -45,6 +45,23 @@ spec:
       grafana.internal/instance: grafana
   datasource:
     type: jaeger
+    uid: victoria-traces
     name: victoria-traces
     access: proxy
     url: http://victoria-traces-server.observability.svc.cluster.local:10428/select/jaeger
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: victoria-logs
+spec:
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasource:
+    type: victoriametrics-logs-datasource
+    uid: victoria-logs
+    name: victoria-logs
+    access: proxy
+    url: http://victoria-logs-server.observability.svc.cluster.local:9428
