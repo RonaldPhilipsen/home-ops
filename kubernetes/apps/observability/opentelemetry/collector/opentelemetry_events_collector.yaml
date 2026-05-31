@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/opentelemetry.io/opentelemetrycollector_v1beta1.json
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: events-agent
+spec:
+  mode: deployment
+  replicas: 1
+  serviceAccount: otel-events-agent
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - "ALL"
+    readOnlyRootFilesystem: true
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsGroup: 1000
+    runAsUser: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+  config:
+    receivers:
+      k8s_events:
+        auth_type: serviceAccount
+    processors:
+      batch: {}
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 15
+      resource:
+        attributes:
+          - key: k8s.cluster.name
+            value: k8s-neo-alpha
+            action: upsert
+    exporters:
+      otlphttp/victoriametrics:
+        logs_endpoint: http://victoria-logs-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        retry_on_failure:
+          enabled: true
+          initial_interval: 1s
+          max_interval: 30s
+          max_elapsed_time: 5m
+        sending_queue:
+          enabled: true
+          num_consumers: 2
+          queue_size: 2000
+    service:
+      pipelines:
+        logs:
+          receivers:
+            - k8s_events
+          processors:
+            - memory_limiter
+            - resource
+            - batch
+          exporters:
+            - otlphttp/victoriametrics
