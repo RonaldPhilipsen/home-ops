@@ -3,14 +3,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app restfox
+  name: &app sable
   namespace: default
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: restfox
-  maxHistory: 2
+    name: sable
 
   values:
     defaultPodOptions:
@@ -21,18 +20,17 @@ spec:
       hostNetwork: false
 
     controllers:
-      restfox:
+      sable:
         annotations:
           reloader.stakater.com/auto: "true"
         strategy: Recreate
         containers:
           main:
             image:
-              repository: flawiddsouza/restfox
-              tag: 0.40.0
+              repository: sableclient/sable
+              tag: 1.17.0
               pullPolicy: IfNotPresent
-            env:
-              CUSTOM_PORT_ON_HOST: "4004" # default, but here for future reference
+
             securityContext:
               privileged: false
 
@@ -43,7 +41,7 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: &port 4004
+                    port: &port 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -64,14 +62,14 @@ spec:
 
     service:
       app:
-        controller: restfox
+        controller: sable
         ports:
           http:
-            port: 4004
+            port: 8080
 
     route:
       app:
-        hostnames: ["restfox.rphilipsen.nl"]
+        hostnames: ["sable.rphilipsen.nl"]
         parentRefs:
           - name: agentgateway-internal
             namespace: network
