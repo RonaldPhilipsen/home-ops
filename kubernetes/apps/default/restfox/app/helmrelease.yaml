@@ -11,15 +11,6 @@ spec:
     kind: OCIRepository
     name: restfox
   maxHistory: 2
-  install:
-    remediation:
-      retries: 0
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 0
-  uninstall:
-    keepHistory: false
 
   values:
     defaultPodOptions:

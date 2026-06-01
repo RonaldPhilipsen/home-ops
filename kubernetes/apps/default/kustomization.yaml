@@ -11,4 +11,6 @@ resources:
   # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
+  # Matrix
   - ./continuwuity/ks.yaml
+  - ./sable/ks.yaml
