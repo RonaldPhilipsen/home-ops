@@ -9,14 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: external-dns
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     fullnameOverride: *app
     provider: pihole
@@ -45,19 +37,17 @@ spec:
       - --pihole-api-version=6
       - --metrics-address=:7979
       - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      - --crd-source-kind=DNSEndpoint
+      - --gateway-name=agentgateway-internal
     triggerLoopOnEvent: true
     policy: upsert-only
     sources:
       - "crd"
       - "gateway-httproute"
       - "service"
-    txtPrefix: "k8s-%{record_type}." # Required for managing root domains. See: https://github.com/kubernetes-sigs/external-dns/blob/82905488a8cc963393f623f9a8ba484a141e81dc/docs/registry/txt.md?plain=1#L8
-    txtOwnerId: default
-    logLevel: debug
+    logLevel: info
     logFormat: text
     domainFilters:
       - rphilipsen.nl
-    serviceMonitor:
-      enabled: true
     podAnnotations:
       secret.reloader.stakater.com/reload: external-dns-pihole-secret
