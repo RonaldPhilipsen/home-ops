@@ -27,7 +27,7 @@ spec:
         containers:
           main:
             image:
-              repository: sableclient/sable
+              repository: ghcr.io/sableclient/sable
               tag: 1.17.0
               pullPolicy: IfNotPresent
 
