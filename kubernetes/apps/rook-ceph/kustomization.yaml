@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: rook-ceph
 resources:
   - ./rook-ceph/ks.yaml
+  - ./ceph-csi-drivers/ks.yaml
   - namespace.yaml
