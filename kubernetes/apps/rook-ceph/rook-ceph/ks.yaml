@@ -23,8 +23,8 @@ metadata:
 spec:
   dependsOn:
     - name: rook-ceph
-    - name: volsync
-      namespace: storage
+    - name: ceph-csi-drivers
+      namespace: rook-ceph
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
