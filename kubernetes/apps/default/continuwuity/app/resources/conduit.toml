@@ -46,7 +46,7 @@ ldap_only = false
 disable_tls_verification = true
 uri = "ldap://lldap.security.svc.cluster.local:3890"
 base_dn = "dc=rphilipsen,dc=nl"
-bind_dn = "dn=continuwuity_bind"
+bind_dn = "uid=continuwuity_bind,ou=people,dc=rphilipsen,dc=nl"
 bind_password_file = "/secrets/ldap-bind-password"
 ldap_filter = "(cn={username})"
 uid_attribute = "cn"
