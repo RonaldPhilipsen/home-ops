@@ -42,7 +42,7 @@ spec:
               CONDUWUIT_WELL_KNOWN__SERVER: "matrix.rphilipsen.nl:443"
             envFrom:
               - secretRef:
-                  name: continuwuity-secret
+                  name: continuwuity
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
