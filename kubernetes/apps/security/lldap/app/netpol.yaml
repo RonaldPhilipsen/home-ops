@@ -1,0 +1,17 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: lldap-allow-continuwuity-ldap
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: lldap
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: default
+      toPorts:
+        - ports:
+            - port: "3890"
+              protocol: TCP
