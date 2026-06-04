@@ -15,6 +15,7 @@ spec:
   targetNamespace: *namespace
   components:
     - ../../../../components/volsync
+    - ../../../../components/volsync-cold
   postBuild:
     substitute:
       APP: *app
