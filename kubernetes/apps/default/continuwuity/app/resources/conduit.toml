@@ -1,10 +1,11 @@
 [global]
 server_name = "rphilipsen.nl"
-address = ["::"]
+address = ["0.0.0.0"]
 port = 8443
 
 log = "info"
 
+# DB settings
 database_path = "/data"
 database_backup_path = "/backups"
 database_backups_to_keep = 1
@@ -14,6 +15,8 @@ rocksdb_compression_level = 32767
 rocksdb_bottommost_compression_level = 32767
 rocksdb_bottommost_compression = true
 
+# Perf tuning
+cache_capacity_modifier = 2.0
 max_request_size = 20971520
 
 # DNS Optimisation
@@ -22,14 +25,32 @@ dns_timeout = 60
 query_over_tcp_only = true
 ip_lookup_strategy = 3
 
-allow_registration = false
+# User settings
+allow_encryption = true
+allow_federation = true
+allow_registration = true
 new_user_displayname_suffix = ""
+suspend_on_register = false
 
-query_trusted_key_servers_first = false
+# Harden
+allow_public_room_directory_over_federation = false
+lockdown_public_room_directory = true
+require_auth_for_profile_requests = true
+trusted_servers = ["codestorm.net", "starstruck.systems", "unredacted.org", "matrix.org]
+query_trusted_key_servers_first = true
 query_trusted_key_servers_first_on_join = false
-# forbidden_remote_server_names = ["matrix.org"]
-# forbidden_remote_room_directory_server_names = ["matrix.org"]
-# url_preview_domain_explicit_denylist = ["matrix.org"]
+
+[global.ldap]
+enable = true
+ldap_only = false
+disable_tls_verification = true
+uri = "ldap://lldap.security.svc.cluster.local:3890"
+base_dn = "dc=rphilipsen,dc=nl"
+bind_dn = "dn=continuwuity_bind"
+bind_password_file = "/secrets/ldap-bind-password"
+ldap_filter = "(cn={username})"
+uid_attribute = "cn"
+name_attribute = "displayname"
 
 # Additional config
 [global.well_known]
