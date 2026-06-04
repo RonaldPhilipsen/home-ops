@@ -149,3 +149,13 @@ spec:
         globalMounts:
           - path: /config/conduit.toml
             subPath: conduit.toml
+      secrets:
+        type: secret
+        name: continuwuity
+        defaultMode: 0400
+        advancedMounts:
+          continuwuity:
+            app:
+              - path: /secrets/ldap-bind-password
+                subPath: CONDUWUIT_LDAP__BIND_PASSWORD
+                readOnly: true
