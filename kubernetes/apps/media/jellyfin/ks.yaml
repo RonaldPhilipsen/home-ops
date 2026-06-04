@@ -10,7 +10,7 @@ spec:
     - name: rook-ceph
       namespace: rook-ceph
   components:
-    - ../../../../components/volsync
+    - ../../../../components/volsync/hot
   path: ./kubernetes/apps/media/jellyfin/app
   prune: true
   sourceRef:
