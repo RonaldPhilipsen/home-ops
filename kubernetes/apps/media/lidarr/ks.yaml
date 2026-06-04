@@ -14,7 +14,7 @@ spec:
       namespace: database
   targetNamespace: media
   components:
-    - ../../../../components/volsync
+    - ../../../../components/volsync/hot
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
