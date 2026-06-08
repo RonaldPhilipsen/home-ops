@@ -109,7 +109,7 @@ jobs:
     name: Flux Local Success
     needs: ["test", "diff"]
     runs-on: home-ops-runner
-    if: ${{ always() }}
+    if: ${{ always() && !cancelled() }}
     steps:
       - name: Any jobs failed?
         if: ${{ contains(needs.*.result, 'failure') }}
