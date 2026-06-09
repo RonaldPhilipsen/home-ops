@@ -34,16 +34,16 @@ spec:
     listenerTemplate:
       spec:
         containers:
-        - name: listener
-          securityContext:
-            privileged: false
-            allowPrivilegeEscalation: false
-            runAsUser: 1000
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-            capabilities:
-              drop: ["ALL"]
+          - name: listener
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              runAsUser: 1000
+              runAsNonRoot: true
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop: ["ALL"]
 
     template:
       metadata:
