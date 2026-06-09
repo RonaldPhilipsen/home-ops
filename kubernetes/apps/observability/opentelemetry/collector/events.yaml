@@ -3,15 +3,17 @@
 apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
-  name: logs-agent
+  name: events-agent
 spec:
-  mode: daemonset
+  mode: deployment
+  replicas: 1
+  serviceAccount: otel-events-agent
   resources:
     requests:
       cpu: 20m
-      memory: 128Mi
+      memory: 64Mi
     limits:
-      memory: 512Mi
+      memory: 256Mi
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -19,34 +21,17 @@ spec:
         - "ALL"
     readOnlyRootFilesystem: true
   podSecurityContext:
-    runAsUser: 0
-    runAsGroup: 0
-  volumeMounts:
-    - name: varlogpods
-      mountPath: /var/log/pods
-      readOnly: true
-    - name: varlogcontainers
-      mountPath: /var/log/containers
-      readOnly: true
-  volumes:
-    - name: varlogpods
-      hostPath:
-        path: /var/log/pods
-    - name: varlogcontainers
-      hostPath:
-        path: /var/log/containers
-  tolerations:
-    - operator: Exists
+    runAsNonRoot: true
+    runAsGroup: 1000
+    runAsUser: 1000
+    fsGroup: 1000
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile:
+      type: RuntimeDefault
   config:
     receivers:
-      filelog:
-        include:
-          - /var/log/containers/*.log
-        include_file_path: true
-        include_file_name: false
-        start_at: end
-        operators:
-          - type: container
+      k8s_events:
+        auth_type: serviceAccount
     processors:
       batch: {}
       memory_limiter:
@@ -70,13 +55,13 @@ spec:
           max_elapsed_time: 5m
         sending_queue:
           enabled: true
-          num_consumers: 4
-          queue_size: 5000
+          num_consumers: 2
+          queue_size: 2000
     service:
       pipelines:
         logs:
           receivers:
-            - filelog
+            - k8s_events
           processors:
             - memory_limiter
             - resource

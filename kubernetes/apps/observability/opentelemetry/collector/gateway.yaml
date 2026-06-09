@@ -38,6 +38,8 @@ spec:
     runAsUser: 1000
     fsGroup: 1000
     fsGroupChangePolicy: OnRootMismatch
+    seccompProfile:
+      type: RuntimeDefault
   config:
     extensions:
       file_storage:
