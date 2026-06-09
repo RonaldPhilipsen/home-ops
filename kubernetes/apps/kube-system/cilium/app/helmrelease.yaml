@@ -36,6 +36,7 @@ spec:
     endpointRoutes:
       enabled: true
     envoy:
+      enabled: false
       rollOutPods: false
       prometheus:
         serviceMonitor:
