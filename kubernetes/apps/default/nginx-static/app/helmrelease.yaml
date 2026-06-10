@@ -36,6 +36,7 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups: [160, 140, 241, 0, 10, 121]
+        seccompProfile: { type: RuntimeDefault }
 
     controllers:
       nginx-static:

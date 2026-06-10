@@ -30,6 +30,7 @@ spec:
         fsGroup: 1000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups: [160, 140, 241, 0, 10, 121, 44, 65537]
+        seccompProfile: { type: RuntimeDefault }
       hostNetwork: false
 
     controllers:

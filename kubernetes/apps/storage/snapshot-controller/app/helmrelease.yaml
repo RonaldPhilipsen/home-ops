@@ -1,17 +1,4 @@
----
-# yaml-language-server: $schema=https://kube-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: snapshot-controller
-spec:
-  interval: 5m
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  ref:
-    tag: 5.1.0
-  url: oci://ghcr.io/piraeusdatastore/helm-charts/snapshot-controller
+
 ---
 # yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -23,16 +10,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: snapshot-controller
-  maxHistory: 2
-  install:
-    crds: CreateReplace
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    crds: CreateReplace
-    remediation:
-      retries: 3
   values:
     controller:
       replicaCount: 1
@@ -44,5 +21,35 @@ spec:
             labelSelector:
               matchLabels:
                 app.kubernetes.io/name: *name
+    securityContext:
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
+      serviceMonitor:
+        create: true
+    webhook:
+      replicaCount: 1
+      pod:
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: *name
+      securityContext:
+        capabilities:
+          drop:
+          - ALL
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
       serviceMonitor:
         create: true
