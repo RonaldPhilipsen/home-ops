@@ -50,6 +50,11 @@ spec:
               pullPolicy: IfNotPresent
             ports:
               - containerPort: 8080
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
 
     service:
       app:
