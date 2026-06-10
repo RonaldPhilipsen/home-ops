@@ -19,6 +19,9 @@ spec:
             envFrom:
               - secretRef:
                   name: immich-db-config
+            securityContext:
+              runAsNonRoot: true
+              seccompProfile: { type: RuntimeDefault }
     valkey:
       enabled: true
 
@@ -30,3 +33,11 @@ spec:
           existingClaim: photos-nfs
       # configurationKind: Secret
       # existingConfiguration: immich-config
+    machine-learning:
+      controllers:
+        main:
+          containers:
+            main:
+              securityContext:
+                runAsNonRoot: true
+                seccompProfile: { type: RuntimeDefault }
