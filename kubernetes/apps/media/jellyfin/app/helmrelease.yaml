@@ -55,7 +55,7 @@ spec:
 
             securityContext:
               privileged: true # required for hardware acceleration
-              allowPrivilegeEscalation: false
+              # allowPrivilegeEscalation: false
               capabilities:
                 drop: ["ALL"]
 
