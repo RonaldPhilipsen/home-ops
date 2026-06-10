@@ -17,6 +17,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         runAsNonRoot: false
+        seccompProfile: { type: RuntimeDefault }
       hostNetwork: false
 
     controllers:

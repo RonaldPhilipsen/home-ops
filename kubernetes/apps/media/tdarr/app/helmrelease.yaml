@@ -21,6 +21,7 @@ spec:
           - 125 # render
           - 105 # render
           - 2000
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       tdarr:
         containers:

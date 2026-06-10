@@ -17,6 +17,7 @@ spec:
         runAsGroup: 999
         runAsNonRoot: true
         runAsUser: 999
+        seccompProfile: { type: RuntimeDefault }
     controllers:
       onepassword-connect:
         strategy: RollingUpdate
