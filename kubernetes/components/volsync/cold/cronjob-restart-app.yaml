@@ -39,3 +39,7 @@ spec:
               securityContext:
                 runAsNonRoot: true
                 seccompProfile: { type: RuntimeDefault }
+                privileged: false
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
