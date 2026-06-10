@@ -54,7 +54,10 @@ spec:
               JELLYFIN_PublishedServerUrl: &url "jellyfin.rphilipsen.nl"
 
             securityContext:
-              privileged: true
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
 
             probes:
               liveness: &probe
