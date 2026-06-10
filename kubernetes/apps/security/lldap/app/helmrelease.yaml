@@ -44,6 +44,11 @@ spec:
                 enabled: true
               readiness:
                 enabled: true
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
             envFrom:
               - secretRef:
                   name: lldap-secret
