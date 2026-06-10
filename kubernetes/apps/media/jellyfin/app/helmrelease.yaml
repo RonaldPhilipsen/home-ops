@@ -54,7 +54,7 @@ spec:
               JELLYFIN_PublishedServerUrl: &url "jellyfin.rphilipsen.nl"
 
             securityContext:
-              privileged: true
+              privileged: true # required for hardware acceleration
               allowPrivilegeEscalation: false
               capabilities:
                 drop: ["ALL"]
