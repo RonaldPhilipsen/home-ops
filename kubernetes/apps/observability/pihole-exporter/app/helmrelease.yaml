@@ -35,6 +35,11 @@ spec:
                 cpu: 15m
               limits:
                 memory: 60M
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
     service:
       app:
         controller: *app
