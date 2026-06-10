@@ -24,6 +24,12 @@ spec:
         # existingClaim: *app
         storageClassName: "ceph-block"
         size: "20Gi"
+      podSecurityContext:
+        enabled: true
+        fsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile: { type: RuntimeDefault }
       route:
         enabled: true
         hostnames:
