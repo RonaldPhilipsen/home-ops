@@ -36,3 +36,6 @@ spec:
               volumeMounts:
                 - name: scripts
                   mountPath: /scripts
+              securityContext:
+                runAsNonRoot: true
+                seccompProfile: { type: RuntimeDefault }
