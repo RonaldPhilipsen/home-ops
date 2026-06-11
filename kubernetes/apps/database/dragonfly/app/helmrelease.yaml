@@ -41,6 +41,8 @@ spec:
             args:
               - --health-probe-bind-address=:8081
               - --metrics-bind-address=:8080
+            env:
+              WATCH_NAMESPACE: "database"
             probes:
               liveness:
                 enabled: true
