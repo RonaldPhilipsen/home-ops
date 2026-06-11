@@ -1,0 +1,15 @@
+"resources": [
+  {
+    "designatorType": "Attributes",
+    "attributes": {
+      "namespace": "rook-ceph"
+    }
+  },
+    {
+    "designatorType": "Attributes",
+    "attributes": {
+      "namespace": "kube-system"
+    }
+  }
+]
+
