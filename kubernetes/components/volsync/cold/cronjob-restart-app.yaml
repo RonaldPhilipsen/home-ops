@@ -14,6 +14,11 @@ spec:
         spec:
           serviceAccountName: volsync-restart-${APP}
           restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            seccompProfile: { type: RuntimeDefault }
           volumes:
             - name: scripts
               configMap:
@@ -33,12 +38,19 @@ spec:
                   value: "${CLAIM:=${APP}}"
               command:
                 - /scripts/cold-snapshot.sh
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: 250m
+                  memory: 256Mi
               volumeMounts:
                 - name: scripts
                   mountPath: /scripts
               securityContext:
                 runAsNonRoot: true
-                seccompProfile: { type: RuntimeDefault }
+                readOnlyRootFilesystem: true
                 privileged: false
                 allowPrivilegeEscalation: false
                 capabilities:
