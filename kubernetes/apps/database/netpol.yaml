@@ -21,12 +21,48 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: media
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: security
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+            - port: "6379"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: renovate
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP
+  egress:
+    - toEntities:
+        - host
+        - remote-node
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: database
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
 
 ---
 apiVersion: cilium.io/v2

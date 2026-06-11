@@ -15,13 +15,37 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
+  egress:
+    - toEntities:
+        - host
+        - remote-node
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    - toEntities:
+        - cluster
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
   name: allow-otlp-cluster-ingress
 spec:
-  endpointSelector: {}
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: gateway-collector
   ingress:
     - fromEndpoints:
         - {}
