@@ -1,4 +1,3 @@
-
 ---
 # yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -24,7 +23,7 @@ spec:
     securityContext:
       capabilities:
         drop:
-        - ALL
+          - ALL
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
@@ -45,7 +44,7 @@ spec:
       securityContext:
         capabilities:
           drop:
-          - ALL
+            - ALL
         readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
