@@ -92,6 +92,10 @@ spec:
         existingClaim: *app
       data:
         existingClaim: media-nfs
+      incomplete:
+        type: emptyDir
+        globalMounts:
+          - path: /config/incomplete
       tmp:
         type: emptyDir
         globalMounts:
