@@ -31,7 +31,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app immich-db
-  namespace: &namespace immich
+  namespace: &namespace database
 spec:
   dependsOn:
     - name: onepassword-connect
@@ -39,7 +39,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  targetNamespace: immich
+  targetNamespace: database
   path: ./kubernetes/apps/immich/immich/db
   prune: true
   sourceRef:
