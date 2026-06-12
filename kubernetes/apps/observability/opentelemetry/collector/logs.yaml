@@ -13,7 +13,7 @@ spec:
     limits:
       memory: 512Mi
   securityContext:
-    allowPrivilegeEscalation: false
+    allowPrivilegeEscalation: true
     privileged: true
     capabilities:
       add:
