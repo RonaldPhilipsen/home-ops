@@ -48,7 +48,7 @@ spec:
     receivers:
       filelog:
         include:
-          - /var/log/containers/*.log
+          - /var/log/pods/*/*/*.log
         include_file_path: true
         include_file_name: false
         start_at: end
