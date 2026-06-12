@@ -25,6 +25,9 @@ spec:
         - kube-apiserver
     - toEndpoints:
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: flux-system
+    - toEndpoints:
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
       toPorts:
         - ports:
