@@ -56,6 +56,5 @@ spec:
         - 172.16.20.7/32
       toPorts:
         - ports:
-          - port: "3900"
-            protocol: TCP
-
+            - port: "3900"
+              protocol: TCP
