@@ -25,6 +25,6 @@ spec:
           key: WEBHOOK_TOKEN
     telemetry:
       enabled: true
-      endpoint: "https://gateway-collector.observability.svc.cluster.local:4317"
+      endpoint: "http://gateway-collector.observability.svc.cluster.local:4317"
       forwardToJobs: true
-      jobEndpoint: "https://gateway-collector.observability.svc.cluster.local:4318"
+      jobEndpoint: "http://gateway-collector.observability.svc.cluster.local:4318"
