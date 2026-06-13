@@ -4,20 +4,20 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app jellyfin
-  namespace: &namespace media
+  namespace: &namespace jellyfin
 spec:
   dependsOn:
     - name: rook-ceph
       namespace: rook-ceph
   components:
     - ../../../../components/volsync/hot
-  path: ./kubernetes/apps/media/jellyfin/app
+  path: ./kubernetes/apps/jellyfin/jellyfin/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: jellyfin
   wait: true
   interval: 30m
   retryInterval: 1m

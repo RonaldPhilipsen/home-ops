@@ -2,7 +2,11 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: jellyfin
+components:
+  - ../../components/flux-alerts
 resources:
-  - ./helmrelease.yaml
-  - ./ocirepository.yaml
-  - ../../media-nfs.yaml
+  - ./namespace.yaml
+  - ./netpol.yaml
+  - ./jellyfin/ks.yaml
+
