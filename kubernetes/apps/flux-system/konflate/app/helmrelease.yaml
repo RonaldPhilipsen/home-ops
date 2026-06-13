@@ -17,8 +17,7 @@ spec:
     httpRoute:
       enabled: true
       annotations:
-        gatus.home-operations.com/endpoint: |-
-          conditions: ["[STATUS] == 200"]
+        reloader.stakater.com/auto: "true"
       parentRefs:
         - name: agentgateway-external
           namespace: network
