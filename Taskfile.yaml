@@ -34,3 +34,12 @@ tasks:
     preconditions:
       - test -f {{.KUBECONFIG}}
       - which flux
+  reconcile-secret:
+    desc: Force externalsecret to pull in changes from your secret store
+    cmd: kubectl annotate $SECRET -n $NAMESPACE force-sync=$(date +%s) --overwrite
+    requires:
+      vars:
+      - SECRET
+      - NAMESPACE
+    preconditions:
+      - test -f {{.KUBECONFIG}}
