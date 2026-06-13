@@ -88,5 +88,9 @@ spec:
         existingClaim: *app
       data:
         existingClaim: media-nfs
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
     PodAnnotations:
       secret.reloader.stakater.com/reload: radarr-secret
