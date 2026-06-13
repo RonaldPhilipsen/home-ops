@@ -23,3 +23,8 @@ spec:
         secretRef:
           name: renovate-webhook
           key: WEBHOOK_TOKEN
+    telemetry:
+      enabled: true
+      endpoint: "https://gateway-collector.observability.cluster.local:4317"
+      forwardToJobs: true
+      jobEndpoint: "https://gateway-collector.observability.cluster.local:4318"

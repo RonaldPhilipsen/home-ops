@@ -15,6 +15,9 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: renovate
   egress:
     - toEntities:
         - host
