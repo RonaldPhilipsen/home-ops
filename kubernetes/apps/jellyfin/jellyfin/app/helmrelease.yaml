@@ -116,7 +116,7 @@ spec:
         existingClaim: *app
 
       data:
-        existingClaim: media-nfs
+        existingClaim: jellyfin-nfs
 
       transcode:
         type: emptyDir
