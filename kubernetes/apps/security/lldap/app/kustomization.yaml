@@ -6,5 +6,4 @@ namespace: security
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./netpol.yaml
   - ./ocirepository.yaml
