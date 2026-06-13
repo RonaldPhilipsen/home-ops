@@ -8,3 +8,8 @@ resources:
   - ./httproute.yaml
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+patches:
+  - path: patch-role.yaml
+    target:
+      kind: Role
+      name: renovate-operator
