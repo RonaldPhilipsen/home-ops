@@ -39,7 +39,7 @@ tasks:
     cmd: kubectl annotate $SECRET -n $NAMESPACE force-sync=$(date +%s) --overwrite
     requires:
       vars:
-      - SECRET
-      - NAMESPACE
+        - SECRET
+        - NAMESPACE
     preconditions:
       - test -f {{.KUBECONFIG}}

@@ -9,6 +9,12 @@ spec:
     - fromEntities:
         - host
         - remote-node
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: default
@@ -45,4 +51,6 @@ spec:
             - port: "443"
               protocol: TCP
             - port: "8448"
+              protocol: TCP
+            - port: "3902" # Garage
               protocol: TCP
