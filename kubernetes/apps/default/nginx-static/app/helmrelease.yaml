@@ -67,9 +67,6 @@ spec:
       rphilipsen:
         hostnames: ["rphilipsen.nl", "www.rphilipsen.nl"]
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
-            sectionName: https
           - name: agentgateway-external
             namespace: network
             sectionName: https
