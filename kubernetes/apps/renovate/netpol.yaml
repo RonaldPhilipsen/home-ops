@@ -38,6 +38,14 @@ spec:
         - ports:
             - port: "6379"
               protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
+            - port: "4318"
     - toEntities:
         - world
       toPorts:
