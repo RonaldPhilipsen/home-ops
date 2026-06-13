@@ -25,6 +25,8 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
       toPorts:
         - ports:
             - port: "53"
