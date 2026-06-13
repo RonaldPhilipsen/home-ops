@@ -12,6 +12,9 @@ spec:
   values:
     config:
       repo: github://RonaldPhilipsen/home-ops
+      prComments: true
+      statusChecks: true
+      publicUrl: "konflate.rphilipsen.nl"
     secret:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
