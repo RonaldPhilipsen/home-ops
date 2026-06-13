@@ -22,8 +22,6 @@ spec:
       parentRefs:
         - name: agentgateway-external
           namespace: network
-        - name: agentgateway-internal
-          namespace: network
       hostnames:
         - "{{ .Release.Name }}.rphilipsen.nl"
     monitoring:
