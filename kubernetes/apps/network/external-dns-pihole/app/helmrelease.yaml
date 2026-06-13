@@ -36,12 +36,9 @@ spec:
     extraArgs:
       - --pihole-api-version=6
       - --metrics-address=:7979
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
     triggerLoopOnEvent: true
     # policy: upsert-only
     sources:
-      - "crd"
       - "gateway-httproute"
       - "service"
     logLevel: info
