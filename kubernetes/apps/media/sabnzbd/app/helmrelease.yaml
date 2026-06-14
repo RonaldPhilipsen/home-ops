@@ -21,6 +21,8 @@ spec:
             runAsGroup: 2000
             runAsNonRoot: true
             runAsUser: 2000
+            seccompProfile:
+              type: RuntimeDefault
         containers:
           app:
             image:
