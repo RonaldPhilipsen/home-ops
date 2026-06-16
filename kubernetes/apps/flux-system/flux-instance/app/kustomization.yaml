@@ -7,4 +7,5 @@ resources:
   - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
+  - ./otelprovider.yaml
   - ./github/
