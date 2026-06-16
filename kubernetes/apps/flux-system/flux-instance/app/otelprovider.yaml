@@ -1,7 +1,7 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
 metadata:
-  name: jaeger
+  name: opentelemetry
   namespace: flux-system
 spec:
   type: otel
