@@ -9,4 +9,3 @@ resources:
   - ./namespace.yaml
   - ./netpol.yaml
   - ./jellyfin/ks.yaml
-
