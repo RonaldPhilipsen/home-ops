@@ -128,6 +128,11 @@ spec:
         globalMounts:
           - path: /cache
 
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+
       dri:
         hostPath: /dev/dri
         type: hostPath
