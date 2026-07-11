@@ -9,6 +9,10 @@ spec:
     kind: OCIRepository
     name: ceph-csi-drivers
   interval: 1h
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   values:
     drivers:
       cephfs:
