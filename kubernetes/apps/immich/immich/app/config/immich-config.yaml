@@ -21,12 +21,12 @@ ffmpeg:
   cqMode: auto
   crf: 23
   gopSize: 0
-  maxBitrate: 0
+  maxBitrate: "0"
   preferredHwDevice: auto
   preset: ultrafast
   refs: 0
   targetAudioCodec: aac
-  targetResolution: 720
+  targetResolution: "720"
   targetVideoCodec: h264
   temporalAQ: false
   threads: 0
@@ -145,7 +145,7 @@ notifications:
   smtp:
     enabled: false
     from:
-    replyTo:
+    replyTo: ""
     transport:
       host:
       ignoreCert: false
