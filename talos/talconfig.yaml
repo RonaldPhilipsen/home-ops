@@ -57,4 +57,3 @@ controlPlane:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
     - "@./patches/controller/machine-features.yaml"
-    - "@./patches/volumes/volumeconfig-k8s-neo-alpha.yaml"

@@ -11,6 +11,6 @@ resources:
 configMapGenerator:
   - name: immich-config-tpl
     files:
-      - configuration.yaml=./config/immich-config.yaml
+      - immich-config.yaml=./config/immich-config.yaml
     options:
       disableNameSuffixHash: true
