@@ -6,9 +6,6 @@ metadata:
   name: &app jellyfin
   namespace: &namespace jellyfin
 spec:
-  dependsOn:
-    - name: rook-ceph
-      namespace: rook-ceph
   components:
     - ../../../../components/volsync/hot
   path: ./kubernetes/apps/jellyfin/jellyfin/app
