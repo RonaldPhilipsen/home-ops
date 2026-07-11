@@ -25,7 +25,7 @@ spec:
         resources:
           requests:
             storage: 5Gi
-        storageClassName: ceph-block
+        storageClassName: openebs-hostpath
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:

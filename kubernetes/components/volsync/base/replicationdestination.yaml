@@ -15,8 +15,8 @@ spec:
     sourceIdentity:
       sourceName: ${APP}
     # storage parameters
-    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=csi-ceph-blockpool}"
-    storageClassName: "${VOLSYNC_STORAGECLASS:=ceph-block}"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=openebs-hostpath}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-hostpath}"
     accessModes:
       - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
     # cache parameters
