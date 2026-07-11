@@ -22,7 +22,7 @@ spec:
       persistentVolume:
         enabled: true
         # existingClaim: *app
-        storageClassName: "ceph-block"
+        storageClassName: "openebs-hostpath"
         size: "20Gi"
       podSecurityContext:
         enabled: true
