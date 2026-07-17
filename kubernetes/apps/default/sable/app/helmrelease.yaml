@@ -30,7 +30,7 @@ spec:
           main:
             image:
               repository: ghcr.io/sableclient/sable
-              tag: 1.19.4
+              tag: 1.20.0
               pullPolicy: IfNotPresent
 
             securityContext:
