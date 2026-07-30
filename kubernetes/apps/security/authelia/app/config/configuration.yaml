@@ -147,6 +147,7 @@ identity_providers:
         authorization_policy: "two_factor"
         redirect_uris:
           - "https://hass.rphilipsen.nl/auth/oidc/callback"
+          - "https://172.16.10.24/auth/oidc/callback"
         scopes:
           - "openid"
           - "profile"
