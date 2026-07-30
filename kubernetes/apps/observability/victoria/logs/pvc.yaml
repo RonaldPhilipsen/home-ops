@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app.kubernetes.io/component: monitoring
+    app.kubernetes.io/instance: vmetrics
+    app.kubernetes.io/name: vmsingle
+  name: vmsingle-vmetrics
+  namespace: observability
+spec:
+  storageClassName: "openebs-hostpath"
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  volumeMode: Filesystem
+
