@@ -10,7 +10,7 @@
     ":dependencyDashboard",
     ":semanticCommits",
     ":timezone(Europe/Amsterdam)",
-    "github>home-operations/renovate-presets#3.0.0",
+    "github>home-operations/renovate-presets#4.0.0",
   ],
   dependencyDashboardTitle: "Renovate Dashboard 🤖",
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
