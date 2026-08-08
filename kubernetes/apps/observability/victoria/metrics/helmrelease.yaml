@@ -68,7 +68,14 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 50Gi
+              storage: 100Gi
+        podSecurityContext:
+          enabled: true
+          fsGroup: 2000
+          runAsNonRoot: true
+          runAsUser: 1000
+          fsGroupChangePolicy: OnRootMismatch
+          seccompProfile: { type: RuntimeDefault }
         useDefaultResources: false
         useStrictSecurity: true
         resources:
