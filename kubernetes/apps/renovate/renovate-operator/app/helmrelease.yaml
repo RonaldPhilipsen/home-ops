@@ -14,15 +14,31 @@ spec:
     name: *app
   values:
     fullnameOverride: *app
+
+    config:
+      forwardCacheToJobs: true
+      forwardS3CacheToJobs: true
     rbac:
       ownNamespaceOnly: true
     webhook:
       enabled: true
-      authentication:
+
+    valkey:
+      enabled: true
+      auth:
+        enabled: false
+      dataStorage:
         enabled: true
-        secretRef:
-          name: renovate-webhook
-          key: WEBHOOK_TOKEN
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+    s3:
+      bucket: "renovate"
+      endpoint: "http://172.16.20.7:3900/"
+      forcePathStyle: true
+
+
     telemetry:
       enabled: true
       endpoint: "http://gateway-collector.observability.svc.cluster.local:4317"
