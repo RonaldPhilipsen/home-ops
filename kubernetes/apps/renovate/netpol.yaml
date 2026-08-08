@@ -33,7 +33,7 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: database
+            k8s:io.kubernetes.pod.namespace: renovate
       toPorts:
         - ports:
             - port: "6379"
