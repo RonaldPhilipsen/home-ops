@@ -144,15 +144,6 @@ nightlyTasks:
 notifications:
   smtp:
     enabled: false
-    from:
-    replyTo: ""
-    transport:
-      host:
-      ignoreCert: false
-      password:
-      port: 587
-      secure: false
-      username:
 
 oauth:
   autoLaunch: true
