@@ -15,7 +15,7 @@ spec:
         containers:
           main:
             image:
-              tag: v2.7.5
+              tag: v3.1.0
             envFrom:
               - secretRef:
                   name: immich-db-config
