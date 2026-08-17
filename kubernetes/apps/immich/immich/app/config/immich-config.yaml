@@ -150,7 +150,7 @@ notifications:
       host: "{{ .SMTP_HOST }}"
       ignoreCert: false
       password: "{{ .SMTP_PASSWORD }}"
-      port: "{{ .SMTP_PORT }}"
+      port: {{ .SMTP_PORT }}
       secure: true
       username: "{{ .SMTP_USERNAME }}"
 
