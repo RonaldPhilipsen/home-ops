@@ -143,7 +143,16 @@ nightlyTasks:
 
 notifications:
   smtp:
-    enabled: false
+    enabled: true
+    from: Immich@rphilipsen.nl
+    replyTo: "Webmaster@rphilipsen.nl"
+    transport:
+      host: "{{ .SMTP_HOST }}"
+      ignoreCert: false
+      password: "{{ .SMTP_PASSWORD }}"
+      port: "{{ .SMTP_PORT }}"
+      secure: true
+      username: "{{ .SMTP_USERNAME }}"
 
 oauth:
   autoLaunch: true
