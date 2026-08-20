@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app esphome
+spec:
+  interval: 30m
+  timeout: 10m
+  chartRef:
+    kind: OCIRepository
+    name: esphome
+  uninstall:
+    keepHistory: false
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: Always
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      esphome:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/esphome/esphome
+              tag: 2026.8.0@sha256:5ca1a7e39926cdf3cd48239ec5c9f5b429c9ac84390bd940c26c296d3cecc72e
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+            resources:
+              requests:
+                cpu: 1m
+                memory: 10Mi
+              limits:
+                memory: 4Gi
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port  6052
+
+    route:
+      rphilipsen:
+        hostnames: ["esphome.rphilipsen.nl"]
+        parentRefs:
+          - name: agentgateway-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+        config:
+          existingClaim: *app
+          globalMounts:
+            - path: /config
+        cache:
+          type: emptyDir
+          globalMounts:
+            - path: /cache
+        secrets:
+          type: secret
+          name: esphome-secret
+          globalMounts:
+            - path: /config/secrets.yaml
+              subPath: secrets.yaml
+        tmp:
+          type: emptyDir
+          globalMounts:
+            - path: /tmp
