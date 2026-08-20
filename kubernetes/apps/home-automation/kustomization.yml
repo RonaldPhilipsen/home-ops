@@ -7,3 +7,4 @@ components:
   - ../../components/flux-alerts
 resources:
   - ./esphome/ks.yaml
+  - ./namespace.yaml
