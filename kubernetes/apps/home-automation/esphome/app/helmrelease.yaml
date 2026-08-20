@@ -84,7 +84,7 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
-              - name: peer-link
+              - name: *app
                 port: *link
 
     persistence:
