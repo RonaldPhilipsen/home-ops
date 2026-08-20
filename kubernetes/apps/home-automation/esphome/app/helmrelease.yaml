@@ -72,7 +72,7 @@ spec:
           http:
             port: &port  6052
           pairing:
-            port: 6055
+            port: &link 6055
     route:
       rphilipsen:
         hostnames: ["esphome.rphilipsen.nl"]
@@ -84,6 +84,8 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+              - name: peer-link
+                port: *link
 
     persistence:
         config:
