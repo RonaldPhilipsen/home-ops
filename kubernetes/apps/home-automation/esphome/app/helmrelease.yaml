@@ -90,6 +90,10 @@ spec:
           existingClaim: *app
           globalMounts:
             - path: /config
+        platformio:
+          type: emptyDir
+          globalMounts:
+            - path: /.platformio
         cache:
           type: emptyDir
           globalMounts:
