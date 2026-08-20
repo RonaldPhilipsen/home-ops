@@ -61,7 +61,14 @@ spec:
         ports:
           http:
             port: &port  6052
-
+      peer-link:
+        type: LoadBalancer
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "esphome-build.rphilipsen.nl"
+          lbipam.cilium.io/ips: 172.16.20.103
+        ports:
+          http:
+            port: &port  6052
     route:
       rphilipsen:
         hostnames: ["esphome.rphilipsen.nl"]
