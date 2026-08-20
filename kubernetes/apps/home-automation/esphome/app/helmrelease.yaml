@@ -83,12 +83,6 @@ spec:
           type: emptyDir
           globalMounts:
             - path: /cache
-        secrets:
-          type: secret
-          name: esphome-secret
-          globalMounts:
-            - path: /config/secrets.yaml
-              subPath: secrets.yaml
         tmp:
           type: emptyDir
           globalMounts:
