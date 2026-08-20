@@ -33,6 +33,9 @@ spec:
             image:
               repository: ghcr.io/esphome/esphome
               tag: 2026.8.0@sha256:5ca1a7e39926cdf3cd48239ec5c9f5b429c9ac84390bd940c26c296d3cecc72e
+            env:
+              CCACHE_DIR: /cache/.ccache
+              PLATFORMIO_CACHING_DIR: /cache/.platformio-cache
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
