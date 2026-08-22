@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: monitoring
     app.kubernetes.io/instance: vmetrics
     app.kubernetes.io/name: vmsingle
-  name: vmsingle-vmetrics
+  name: vmsingle-vlogs
   namespace: observability
 spec:
   storageClassName: "openebs-hostpath"
