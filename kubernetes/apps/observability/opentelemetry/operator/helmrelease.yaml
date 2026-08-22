@@ -10,6 +10,11 @@ spec:
     kind: OCIRepository
     name: opentelemetry-operator
   values:
+    admissionWebhooks:
+      certManager:
+        issuerRef:
+          kind: Issuer
+          name: opentelemetry-operator-webhook-ca-issuer
     manager:
       collectorImage:
         repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
