@@ -67,7 +67,7 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 100Gi
+              storage: 110Gi
         securityContext:
           runAsNonRoot: true
           runAsUser: 2000
@@ -79,6 +79,7 @@ spec:
         persistentVolume:
           enabled: true
           storageClassName: openebs-hostpath
+          size: 110Gi
       route:
         enabled: true
         parentRefs:
