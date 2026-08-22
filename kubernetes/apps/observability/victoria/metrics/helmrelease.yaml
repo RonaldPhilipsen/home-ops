@@ -68,12 +68,12 @@ spec:
           resources:
             requests:
               storage: 110Gi
-        podSecurityContext:
+        securityContext:
           runAsNonRoot: true
           runAsUser: 2000
           runAsGroup: 2000
           fsGroup: 2000
-          fsGroupChangePolicy: OnRootMismatch
+          fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
         # persistentVolume:
