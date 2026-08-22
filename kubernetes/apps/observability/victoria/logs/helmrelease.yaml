@@ -18,7 +18,8 @@ spec:
       retentionMaxDiskUsagePercent: 80
       persistentVolume:
         enabled: true
-        existingClaim: vmsingle-vmetrics
+        storageClassName: openebs-hostpath
+        size: 20Gi
       podSecurityContext:
         enabled: true
         fsGroup: 2000
