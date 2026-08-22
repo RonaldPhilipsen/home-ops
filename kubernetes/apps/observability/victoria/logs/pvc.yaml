@@ -13,6 +13,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 110Gi
+      storage: 50Gi
   volumeMode: Filesystem
 
