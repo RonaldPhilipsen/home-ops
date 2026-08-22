@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: opentelemetry-operator-webhook-ca
+spec:
+  isCA: true
+  commonName: opentelemetry-operator-webhook-ca
+  secretName: opentelemetry-operator-webhook-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: opentelemetry-operator-webhook-selfsigned
+    kind: ClusterIssuer
