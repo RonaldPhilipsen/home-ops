@@ -68,14 +68,18 @@ spec:
           resources:
             requests:
               storage: 110Gi
-        securityContext:
+        podSecurityContext:
           runAsNonRoot: true
           runAsUser: 2000
           runAsGroup: 2000
           fsGroup: 2000
-          fsGroupChangePolicy: Always
+          fsGroupChangePolicy: OnRootMismatch
           seccompProfile:
             type: RuntimeDefault
+        # persistentVolume:
+        #   enabled: true
+        #   storageClassName: openebs-hostpath
+        #   size: 110Gi
       route:
         enabled: true
         parentRefs:
