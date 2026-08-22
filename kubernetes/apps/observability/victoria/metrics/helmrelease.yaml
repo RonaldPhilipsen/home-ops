@@ -79,7 +79,6 @@ spec:
         persistentVolume:
           enabled: true
           storageClassName: openebs-hostpath
-          size: 110Gi
       route:
         enabled: true
         parentRefs:
