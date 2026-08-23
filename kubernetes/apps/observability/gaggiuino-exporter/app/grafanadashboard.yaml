@@ -9,7 +9,7 @@ spec:
     matchLabels:
       dashboards: "grafana"
   json: >
-    {"apiVersion": "v2", "spec":
+    {"apiVersion": "dashboard.grafana.app/v2", "spec":
     {
       "annotations": [
         {
