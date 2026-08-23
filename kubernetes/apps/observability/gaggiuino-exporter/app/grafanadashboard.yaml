@@ -9,6 +9,7 @@ spec:
     matchLabels:
       dashboards: "grafana"
   json: >
+    {"apiVersion": "v2", "spec":
     {
       "annotations": [
         {
@@ -970,4 +971,5 @@ spec:
       },
       "title": "Cloudnative coffee",
       "variables": []
+    }
     }
