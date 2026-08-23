@@ -39,6 +39,12 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    - toCIDRSet:
+        - cidr: 172.16.10.32/32
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
 
 ---
 apiVersion: cilium.io/v2
