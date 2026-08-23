@@ -16,7 +16,7 @@ spec:
     fullnameOverride: *app
 
     authorization:
-      enabled: false 
+      enabled: false
     config:
       forwardCacheToJobs: true
       forwardS3CacheToJobs: true
@@ -39,7 +39,6 @@ spec:
       bucket: "renovate"
       endpoint: "http://172.16.20.7:3900/"
       forcePathStyle: true
-
 
     telemetry:
       enabled: true
