@@ -66,7 +66,6 @@ spec:
               }
             },
             "description": "0 = up, 1 = down",
-            "id": 1,
             "links": [],
             "title": "Machine Reachability (Binary Outage Map)",
             "vizConfig": {
@@ -187,7 +186,6 @@ spec:
               }
             },
             "description": "",
-            "id": 2,
             "links": [],
             "title": "Boiler Temperature vs Target",
             "vizConfig": {
@@ -309,7 +307,6 @@ spec:
               }
             },
             "description": "",
-            "id": 3,
             "links": [],
             "title": "Temperature error",
             "vizConfig": {
@@ -433,7 +430,6 @@ spec:
               }
             },
             "description": "",
-            "id": 4,
             "links": [],
             "title": "Brew pressure",
             "vizConfig": {
@@ -563,7 +559,6 @@ spec:
               }
             },
             "description": "",
-            "id": 5,
             "links": [],
             "title": "Shot Weight ",
             "vizConfig": {
@@ -683,7 +678,6 @@ spec:
               }
             },
             "description": "",
-            "id": 6,
             "links": [],
             "title": "Water level",
             "vizConfig": {
@@ -784,7 +778,6 @@ spec:
               }
             },
             "description": "",
-            "id": 7,
             "links": [],
             "title": "uptime",
             "vizConfig": {
