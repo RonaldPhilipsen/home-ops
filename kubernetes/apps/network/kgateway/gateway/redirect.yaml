@@ -8,9 +8,6 @@ metadata:
     external-dns.alpha.kubernetes.io/controller: none
 spec:
   parentRefs:
-    - name: agentgateway-internal
-      namespace: network
-      sectionName: http
     - name: agentgateway-external
       namespace: network
       sectionName: http
