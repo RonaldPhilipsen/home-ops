@@ -44,6 +44,12 @@ spec:
         - ports:
             - port: "9091"
               protocol: TCP
+    - toFQDNs:
+        - matchName: auth.rphilipsen.nl
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: database
