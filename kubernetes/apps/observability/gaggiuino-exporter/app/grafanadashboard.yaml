@@ -170,7 +170,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.target_temperature\"}",
+                          "expr": "{\"gaggiuino.target.temperature\"}",
                           "instant": false,
                           "legendFormat": "__auto",
                           "range": true
@@ -292,7 +292,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "abs({\"gaggiuino.temperature\"} - {\"gaggiuino.target_temperature\"})",
+                          "expr": "abs({\"gaggiuino.temperature\"} - {\"gaggiuino.target.temperature\"})",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -415,7 +415,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.pressure_bar\"}",
+                          "expr": "{\"gaggiuino.pressure.bar\"}",
                           "legendFormat": "__auto",
                           "range": true
                         },
