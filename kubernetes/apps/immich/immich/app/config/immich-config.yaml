@@ -162,7 +162,7 @@ oauth:
   clientSecret: "{{ .IMMICH_OAUTH_CLIENT_SECRET }}"
   defaultStorageQuota: null
   enabled: true
-  issuerUrl: https://auth.rphilipsen.nl/
+  issuerUrl: https://auth.rphilipsen.nl
   mobileOverrideEnabled: false
   mobileRedirectUri: https://photos.rphilipsen.nl/api/oauth/mobile-redirect
   profileSigningAlgorithm: none

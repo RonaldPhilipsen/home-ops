@@ -39,6 +39,13 @@ spec:
             k8s:io.kubernetes.pod.namespace: immich
     - toEndpoints:
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: database
       toPorts:
         - ports:

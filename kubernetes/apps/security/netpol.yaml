@@ -17,6 +17,13 @@ spec:
             k8s:io.kubernetes.pod.namespace: network
     - fromEndpoints:
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: immich
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
             k8s:io.kubernetes.pod.namespace: observability
     - fromEndpoints:
         - matchLabels:
