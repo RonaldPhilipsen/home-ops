@@ -52,5 +52,9 @@ spec:
               protocol: TCP
             - port: "8448"
               protocol: TCP
-            - port: "3902" # Garage
+    - toCIDR:
+        - 172.16.20.7/32 # Garage
+      toPorts:
+        - ports:
+            - port: "3902"
               protocol: TCP
