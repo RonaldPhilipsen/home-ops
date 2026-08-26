@@ -51,7 +51,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "1 - "gaggiuino_up",
+                          "expr": "1 - gaggiuino_up",
                           "legendFormat": "outage",
                           "range": true
                         },
