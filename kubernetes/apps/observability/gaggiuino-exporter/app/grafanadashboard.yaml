@@ -51,7 +51,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "1 - {\"gaggiuino.up\"}",
+                          "expr": "1 - "gaggiuino_up",
                           "legendFormat": "outage",
                           "range": true
                         },
@@ -149,7 +149,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.temperature\"}",
+                          "expr": "gaggiuino_temperature",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -170,7 +170,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.target.temperature\"}",
+                          "expr": "gaggiuino_target_temperature",
                           "instant": false,
                           "legendFormat": "__auto",
                           "range": true
@@ -292,7 +292,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "abs({\"gaggiuino.temperature\"} - {\"gaggiuino.target.temperature\"})",
+                          "expr": "abs(gaggiuino_temperature - gaggiuino_target_temperature)",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -415,7 +415,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.pressure.bar\"}",
+                          "expr": "gaggiuino_pressure_bar",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -544,7 +544,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.shot.weight\"}",
+                          "expr": "gaggiuino_shot_weight",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -663,7 +663,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.water.level\"}",
+                          "expr": "gaggiuino_water_level",
                           "legendFormat": "__auto",
                           "range": true
                         },
@@ -763,7 +763,7 @@ spec:
                         "kind": "DataQuery",
                         "spec": {
                           "editorMode": "code",
-                          "expr": "{\"gaggiuino.uptime.seconds\"}",
+                          "expr": "gaggiuino_uptime_seconds",
                           "legendFormat": "__auto",
                           "range": true
                         },
