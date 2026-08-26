@@ -24,14 +24,14 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
-              tag: v1.2.0
+              tag: v1.2.1
             env:
               GAGGIUINO_BASE_URL: http://172.16.10.32:80
               OTLP_ENABLED: "true"
               OTLP_ENDPOINT: "http://vmsingle-vmetrics.observability.svc.cluster.local:8428/opentelemetry/v1/metrics"
               OTLP_INTERVAL: "1s"
               OTLP_TIMEOUT: "0.5s"
-
+              DEBUG: "true"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
