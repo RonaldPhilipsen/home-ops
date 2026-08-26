@@ -12,7 +12,7 @@ tasks:
           while read -r ns name; do
             [ -z "$ns" ] && continue
             echo "Triggering ReplicationSource ${ns}/${name} with token ${trigger}"
-            kubectl -n "$ns" patch replicationsource "$name" --type merge -p "{\"spec\":{\"trigger\":{\"manual\":\"${trigger}\"}}}"
+            kubectl -n "$ns" patch replicationsource "$name" --type merge -p ""spec\":"trigger\":"manual\":\"${trigger}}}"
           done
     preconditions:
       - test -f {{.KUBECONFIG}}
@@ -45,7 +45,7 @@ tasks:
           while read -r ns name; do
             [ -z "$ns" ] && continue
             echo "Triggering ReplicationDestination ${ns}/${name} with token ${trigger}"
-            kubectl -n "$ns" patch replicationdestination "$name" --type merge -p "{\"spec\":{\"trigger\":{\"manual\":\"${trigger}\"}}}"
+            kubectl -n "$ns" patch replicationdestination "$name" --type merge -p ""spec\":"trigger\":"manual\":\"${trigger}}}"
           done
     preconditions:
       - test -f {{.KUBECONFIG}}
