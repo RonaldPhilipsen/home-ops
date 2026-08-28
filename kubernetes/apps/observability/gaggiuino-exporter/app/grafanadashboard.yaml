@@ -799,8 +799,16 @@ spec:
                         "mode": "absolute",
                         "steps": [
                           {
-                            "color": "green",
+                            "color": "red",
                             "value": 0
+                          },
+                          {
+                            "color": "yellow",
+                            "value": 1
+                          },
+                          {
+                            "color": "green",
+                            "value": 300
                           }
                         ]
                       }
