@@ -37,6 +37,7 @@ spec:
           "panel-1": {
             "kind": "Panel",
             "spec": {
+              "id": 0,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -53,7 +54,7 @@ spec:
                           "kind": "DataQuery",
                           "spec": {
                             "editorMode": "code",
-                            "expr": "1 - gaggiuino_up",
+                            "expr": "gaggiuino_up",
                             "legendFormat": "outage",
                             "range": true
                           },
@@ -67,7 +68,7 @@ spec:
                   "transformations": []
                 }
               },
-              "description": "0 = up, 1 = down",
+              "description": "0 = offline, 1 = online",
               "links": [],
               "title": "Machine Reachability (Binary Outage Map)",
               "vizConfig": {
@@ -77,7 +78,7 @@ spec:
                   "fieldConfig": {
                     "defaults": {
                       "color": {
-                        "mode": "continuous-GrYlRd"
+                        "mode": "thresholds"
                       },
                       "custom": {
                         "axisPlacement": "auto",
@@ -95,11 +96,11 @@ spec:
                         "mode": "absolute",
                         "steps": [
                           {
-                            "color": "green",
+                            "color": "red",
                             "value": 0
                           },
                           {
-                            "color": "red",
+                            "color": "green",
                             "value": 1
                           }
                         ]
@@ -135,6 +136,7 @@ spec:
           "panel-2": {
             "kind": "Panel",
             "spec": {
+              "id": 1,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -278,6 +280,7 @@ spec:
           "panel-3": {
             "kind": "Panel",
             "spec": {
+              "id": 3,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -401,6 +404,7 @@ spec:
           "panel-4": {
             "kind": "Panel",
             "spec": {
+              "id": 4,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -530,6 +534,7 @@ spec:
           "panel-5": {
             "kind": "Panel",
             "spec": {
+              "id": 5,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -649,6 +654,7 @@ spec:
           "panel-6": {
             "kind": "Panel",
             "spec": {
+              "id": 6,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
@@ -749,6 +755,7 @@ spec:
           "panel-7": {
             "kind": "Panel",
             "spec": {
+              "id": 7,
               "data": {
                 "kind": "QueryGroup",
                 "spec": {
