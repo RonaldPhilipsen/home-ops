@@ -47,6 +47,7 @@ spec:
                 memory: 10Mi
               limits:
                 memory: 4Gi
+                cpu: 2
             probes:
               liveness:
                 enabled: true
