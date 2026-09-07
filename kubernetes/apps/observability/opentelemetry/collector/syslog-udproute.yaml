@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/udproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: UDPRoute
+metadata:
+  name: syslog
+spec:
+  parentRefs:
+    - name: agentgateway-internal
+      namespace: network
+      sectionName: syslog
+  rules:
+    - backendRefs:
+        - name: gateway-collector
+          port: 5514
