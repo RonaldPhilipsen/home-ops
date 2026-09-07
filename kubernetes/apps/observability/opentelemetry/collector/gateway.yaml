@@ -53,6 +53,11 @@ spec:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
+      syslog:
+        udp:
+          listen_address: 0.0.0.0:5514
+        protocol: rfc5424
+        location: Europe/Amsterdam
     processors:
       batch: {}
       logdedup:
