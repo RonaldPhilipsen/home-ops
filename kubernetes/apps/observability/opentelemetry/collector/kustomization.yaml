@@ -7,3 +7,4 @@ resources:
   - ./logs.yaml
   - ./events.yaml
   - ./rbac.yaml
+  - ./syslog-udproute.yaml
