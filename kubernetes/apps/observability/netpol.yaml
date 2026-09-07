@@ -54,7 +54,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: gateway-collector
+      app.kubernetes.io/name: opentelemetry-collector
   ingress:
     - fromEndpoints:
         - {}
