@@ -18,9 +18,7 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: observability
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: jellyfin
+
   egress:
     - toEntities:
         - host
@@ -46,7 +44,9 @@ spec:
               protocol: TCP
     - toEntities:
         - world
-
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: jellyfin
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
