@@ -61,7 +61,7 @@ spec:
       syslog:
         udp:
           listen_address: 0.0.0.0:5514
-        protocol: rfc5424
+        protocol: rfc3164
         location: Europe/Amsterdam
     processors:
       batch: {}

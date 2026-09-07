@@ -64,3 +64,5 @@ spec:
               protocol: TCP
             - port: "4318"
               protocol: TCP
+            - port: "5514"
+              protocol: UDP
