@@ -72,3 +72,20 @@ spec:
         - ports:
             - port: "5514"
               protocol: UDP
+
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-gaggiuino-monitoring-icmp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: gaggiuino-exporter
+  ingress:
+    - fromCIDR:
+        - 172.16.20.1/32
+      icmps:
+        - fields:
+            - family: IPv4
+              type: EchoRequest
