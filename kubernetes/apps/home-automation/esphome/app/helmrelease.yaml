@@ -46,7 +46,7 @@ spec:
                 cpu: 1m
                 memory: 10Mi
               limits:
-                memory: 4Gi
+                memory: 6Gi
                 cpu: 2
             probes:
               liveness:
