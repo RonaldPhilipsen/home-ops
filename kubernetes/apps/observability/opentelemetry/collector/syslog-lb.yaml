@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.10.3-standalone/service-v1.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: syslog-lb
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: syslog.rphilipsen.nl
+    lbipam.cilium.io/ips: 172.16.20.104
+spec:
+  type: LoadBalancer
+  ports:
+    - name: syslog-udp
+      port: 5514
+      protocol: UDP
+      targetPort: 5514
+  selector:
+    app.kubernetes.io/component: opentelemetry-collector
+    app.kubernetes.io/instance: observability.gateway
+    app.kubernetes.io/managed-by: opentelemetry-operator
+    app.kubernetes.io/part-of: opentelemetry

@@ -7,6 +7,11 @@ metadata:
 spec:
   mode: statefulset
   replicas: 1
+  ports:
+    - name: syslog-udp
+      port: 5514
+      protocol: UDP
+      targetPort: 5514
   resources:
     requests:
       cpu: 100m
