@@ -104,6 +104,7 @@ spec:
         logs:
           receivers:
             - otlp
+            - syslog
           processors:
             - memory_limiter
             - resourcedetection
