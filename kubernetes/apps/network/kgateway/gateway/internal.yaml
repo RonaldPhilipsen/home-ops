@@ -41,11 +41,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rphilipsen-nl-tls
-    - name: syslog
-      protocol: UDP
-      port: 5514
-      allowedRoutes:
-        kinds:
-          - kind: UDPRoute
-        namespaces:
-          from: All
