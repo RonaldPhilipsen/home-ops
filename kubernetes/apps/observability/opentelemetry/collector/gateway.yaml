@@ -58,11 +58,21 @@ spec:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
-      syslog:
+      syslog/omada:
         udp:
           listen_address: 0.0.0.0:5514
-        protocol: rfc3164
+        protocol: none
         location: Europe/Amsterdam
+        operators:
+        - type: syslog_parser
+          parse_priority: true
+          onError: drop  # Drops malformed packets entirely if needed
+        - type: regex_parser
+          regex: '^(?P<timestamp>\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2})\s(?P<hostname>[^\s]+)\s(?P<module>[^:]+):\s(?P<message>.*)$'
+          parse_from: body
+        - type: move
+          from: attributes.timestamp
+          to: body.timestamp
     processors:
       batch: {}
       logdedup:
