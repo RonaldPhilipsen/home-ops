@@ -7,11 +7,6 @@ metadata:
 spec:
   mode: statefulset
   replicas: 1
-  ports:
-    - name: syslog-udp
-      port: 5514
-      protocol: UDP
-      targetPort: 5514
   resources:
     requests:
       cpu: 100m
@@ -58,79 +53,6 @@ spec:
             endpoint: 0.0.0.0:4317
           http:
             endpoint: 0.0.0.0:4318
-      syslog/omada:
-        udp:
-          listen_address: 0.0.0.0:5514
-          # AP firewall dumps cram several "[epoch] AP MAC=..." records into one UDP packet
-          # line_end_pattern must be explicitly cleared: it defaults to a never-matching regex, which conflicts with line_start_pattern
-          multiline:
-            line_start_pattern: '\[\d+\.\d+\]'
-            line_end_pattern: ""
-        protocol: none
-        location: Europe/Amsterdam
-        operators:
-        - type: syslog_parser
-          protocol: none
-          on_error: send
-        - type: router
-          routes:
-          - output: parse_ap_traffic
-            expr: 'body matches "AP MAC="'
-          - output: parse_gateway_dhcp
-            expr: 'body matches "dhcp_server"'
-          default: noop
-        - id: parse_ap_traffic
-          type: regex_parser
-          parse_from: body
-          on_error: send
-          # Unanchored: matches "AP MAC=" wherever it occurs, regardless of what precedes it
-          regex: '(?:\[(?P<epoch>[\d.]+)\]\s+)?AP\s+MAC=(?P<ap_mac>\S+)\s*(?P<kv>.*)$'
-        # Normalize multi-word keys to single tokens so key_value_parser can pick up any subset, in any order
-        - id: ap_kv_rename_src_mac
-          type: regex_replace
-          field: attributes.kv
-          regex: 'MAC\s+SRC='
-          replace_with: 'src_mac='
-        - id: ap_kv_rename_src_ip
-          type: regex_replace
-          field: attributes.kv
-          regex: 'IP\s+SRC='
-          replace_with: 'src_ip='
-        - id: ap_kv_rename_dst_ip
-          type: regex_replace
-          field: attributes.kv
-          regex: 'IP\s+DST='
-          replace_with: 'dst_ip='
-        - id: ap_kv_rename_proto
-          type: regex_replace
-          field: attributes.kv
-          regex: 'IP\s+proto='
-          replace_with: 'proto='
-        - id: ap_kv_rename_src_port
-          type: regex_replace
-          field: attributes.kv
-          regex: '\bSPT='
-          replace_with: 'src_port='
-        - id: ap_kv_rename_dst_port
-          type: regex_replace
-          field: attributes.kv
-          regex: '\bDPT='
-          replace_with: 'dst_port='
-        - id: parse_ap_kv
-          type: key_value_parser
-          parse_from: attributes.kv
-          on_error: send
-        - id: remove_ap_kv
-          type: remove
-          field: attributes.kv
-          output: noop
-        - id: parse_gateway_dhcp
-          type: regex_parser
-          parse_from: body
-          on_error: send
-          regex: '^(?:<\d+>[A-Za-z]{3}\s+\d+\s+\d{2}:\d{2}:\d{2}\s+\S+:\s+)?(?P<timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(?P<hostname>[\w.-]+)(?:<\d+>)?:\s+(?P<message>.*)$'
-        - id: noop
-          type: noop
     processors:
       batch: {}
       logdedup:
@@ -177,7 +99,6 @@ spec:
         logs:
           receivers:
             - otlp
-            - syslog/omada
           processors:
             - memory_limiter
             - resourcedetection

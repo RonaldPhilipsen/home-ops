@@ -16,6 +16,6 @@ spec:
       targetPort: 5514
   selector:
     app.kubernetes.io/component: opentelemetry-collector
-    app.kubernetes.io/instance: observability.gateway
+    app.kubernetes.io/instance: observability.syslog
     app.kubernetes.io/managed-by: opentelemetry-operator
     app.kubernetes.io/part-of: opentelemetry
