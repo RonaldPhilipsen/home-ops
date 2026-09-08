@@ -42,8 +42,8 @@ spec:
         containers:
           main:
             image:
-              repository: jellyfin/jellyfin
-              tag: 10.11.11
+              repository:  ghcr.io/jellyfin/jellyfin
+              tag: 12.0.20260908-012347@sha256:74f4d87d9cf262c52d62be6be265c0355c6a7e21d0477ab6c654a49a4f8b1fd4
               pullPolicy: IfNotPresent
 
             env:
