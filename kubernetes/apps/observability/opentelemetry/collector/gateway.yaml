@@ -175,7 +175,7 @@ spec:
         logs:
           receivers:
             - otlp
-            - syslog
+            - syslog/omada
           processors:
             - memory_limiter
             - resourcedetection
