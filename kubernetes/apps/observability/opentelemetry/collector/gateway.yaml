@@ -62,8 +62,10 @@ spec:
         udp:
           listen_address: 0.0.0.0:5514
           # AP firewall dumps cram several "[epoch] AP MAC=..." records into one UDP packet
+          # line_end_pattern must be explicitly cleared: it defaults to a never-matching regex, which conflicts with line_start_pattern
           multiline:
             line_start_pattern: '\[\d+\.\d+\]'
+            line_end_pattern: ""
         protocol: none
         location: Europe/Amsterdam
         operators:
