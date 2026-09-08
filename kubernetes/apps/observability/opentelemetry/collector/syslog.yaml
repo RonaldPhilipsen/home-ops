@@ -55,11 +55,12 @@ spec:
       syslog/omada:
         udp:
           listen_address: 0.0.0.0:5514
-          # AP firewall dumps cram several "[epoch] AP MAC=..." records into one UDP packet
-          # line_end_pattern must be explicitly cleared: it defaults to a never-matching regex, which conflicts with line_start_pattern
+          # AP firewall dumps cram several "[epoch] AP MAC=..." records into one packet, separated by \r\n
+          # line_start_pattern doesn't work here: it splits between *matches*, so the leading
+          # syslog envelope (before the first "[epoch]") gets emitted as its own truncated entry
           multiline:
-            line_start_pattern: '\[\d+\.\d+\]'
-            line_end_pattern: ""
+            line_end_pattern: '\r\n'
+            omit_pattern: true
         protocol: none
         location: Europe/Amsterdam
         operators:
