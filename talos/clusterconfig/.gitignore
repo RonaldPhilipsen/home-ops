@@ -1,2 +1,3 @@
 talosconfig
-kubernetes-k8s-neo-alpha.yaml
+k8s-neo-alpha.yaml
+k8s-neo-beta.yaml
