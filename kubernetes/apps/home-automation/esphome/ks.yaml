@@ -14,7 +14,7 @@ spec:
   path: ./kubernetes/apps/home-automation/esphome/app
   prune: true
   components:
-    - ../../../../components/volsync/hot
+    - ../../../../components/kopiur/hot
 
   sourceRef:
     kind: GitRepository
@@ -24,4 +24,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
+      KOPIUR_CAPACITY: 2Gi
+      NAMESPACE: *namespace

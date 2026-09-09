@@ -18,7 +18,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 5Gi
       NAMESPACE: *namespace
   path: ./kubernetes/apps/actions-runner-system/actions-runner-controller/app
   prune: true
