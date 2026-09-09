@@ -12,7 +12,6 @@ TALOS_DIR = "{{config_root}}/talos"
 [tools]
 "python" = "3.14.7"
 "pipx:makejinja" = "2.8.3"
-"aqua:budimanjojo/talhelper" = "3.1.17"
 "aqua:cilium/cilium-cli" = "0.20.0"
 "aqua:cli/cli" = "2.100.0"
 "aqua:cloudflare/cloudflared" = "2026.9.0"

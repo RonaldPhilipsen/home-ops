@@ -18,5 +18,4 @@ talosconfig
 .task/
 .venv/
 templates
-.DS_Store
 Thumbs.db

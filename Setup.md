@@ -72,21 +72,15 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 ### Stage 4: Cluster configuration
 
-1. Generate the config files from the sample files:
+1. Update [talos/talstomize.yaml](talos/talstomize.yaml) and the files in [talos/patches](talos/patches) with your cluster endpoint, node details, disk selectors, network settings, and desired Talos and Kubernetes versions.
+
+2. Render the Talos machine configurations and client configuration:
 
     ```sh
-    task init
+    talstomize build talos --output talos/clusterconfig
     ```
 
-2. Fill out `cluster.yaml` and `nodes.yaml` configuration files using the comments in those file as a guide.
-
-3. Template out the kubernetes and talos configuration files, if any issues come up be sure to read the error and adjust your config files accordingly.
-
-    ```sh
-    task configure
-    ```
-
-4. Push your changes to git:
+3. Review the generated files in `talos/clusterconfig`, then push your configuration changes to git:
 
     📍 _**Verify** all the `./kubernetes/**/*.sops.*` files are **encrypted** with SOPS_
 
@@ -104,27 +98,39 @@ There are **5 stages** outlined below for completing this project, make sure you
 > [!WARNING]
 > It might take a while for the cluster to be setup (10+ minutes is normal). During which time you will see a variety of error messages like: "couldn't get current server API group list," "error: no matching resources found", etc. 'Ready' will remain "False" as no CNI is deployed yet. **This is a normal.** If this step gets interrupted, e.g. by pressing <kbd>Ctrl</kbd> + <kbd>C</kbd>, you likely will need to [reset the cluster](#-reset) before trying again
 
-1. Install Talos:
+1. Apply the generated configuration to the nodes. Use `--insecure` only for the initial install while nodes are in maintenance mode:
 
     ```sh
-    task bootstrap:talos
+    talstomize apply --file talos/talstomize.yaml -- --insecure
     ```
 
-2. Push your changes to git:
+2. Bootstrap etcd on exactly one control-plane node, replacing `<control-plane-ip>` with its IP address:
+
+    ```sh
+    talosctl bootstrap --nodes <control-plane-ip>
+    ```
+
+3. Download the Kubernetes client configuration:
+
+    ```sh
+    talosctl kubeconfig kubeconfig --force --merge=false --nodes <control-plane-ip>
+    ```
+
+4. Push your changes to git:
 
     ```sh
     git add -A
-    git commit -m "chore: add talhelper encrypted secret :lock:"
+    git commit -m "chore: add talos encrypted secret :lock:"
     git push
     ```
 
-3. Install cilium, coredns, spegel, flux and sync the cluster to the repository state:
+5. Install the bootstrap resources and Helm releases, then start Flux reconciliation:
 
     ```sh
-    task bootstrap:apps
+    bash scripts/bootstrap-apps.sh
     ```
 
-4. Watch the rollout of your cluster happen:
+6. Watch the rollout of your cluster happen:
 
     ```sh
     kubectl get pods --all-namespaces --watch
@@ -142,7 +148,7 @@ There are **5 stages** outlined below for completing this project, make sure you
 
 2. Check the status of Flux and if the Flux resources are up-to-date and in a ready state:
 
-    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `flux reconcile kustomization flux-system --with-source` to force Flux to sync your Git repository state_
 
     ```sh
     flux check
@@ -213,7 +219,7 @@ By default Flux will periodically check your git repository for changes. In-orde
 There might be a situation where you want to destroy your Kubernetes cluster. The following command will reset your nodes back to maintenance mode.
 
 ```sh
-task talos:reset
+talosctl reset --nodes <node-ip> --reboot --graceful=false
 ```
 
 ## 🛠️ Talos and Kubernetes Maintenance
@@ -221,31 +227,28 @@ task talos:reset
 ### ⚙️ Updating Talos node configuration
 
 > [!TIP]
-> Ensure you have updated `talconfig.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
+> Ensure you have updated `talstomize.yaml` and any patches with your updated configuration. In some cases you **not only need to apply the configuration but also upgrade talos** to apply new configuration.
 
 ```sh
 # (Re)generate the Talos config
-task talos:generate-config
-# Apply the config to the node
-task talos:apply-node IP=? MODE=?
-# e.g. task talos:apply-node IP=10.10.10.10 MODE=auto
+talstomize build talos --output talos/clusterconfig
+# Apply the config to all nodes, or add --node <node-name> for one node
+talstomize apply --file talos/talstomize.yaml
 ```
 
 ### ⬆️ Updating Talos and Kubernetes versions
 
 > [!TIP]
-> Ensure the `talosVersion` and `kubernetesVersion` in `talenv.yaml` are up-to-date with the version you wish to upgrade to.
+> Ensure the `talosVersion` and `kubernetesVersion` in `talstomize.yaml` are up-to-date with the version you wish to upgrade to. Render and apply the Talos configuration before upgrading nodes.
 
 ```sh
-# Upgrade node to a newer Talos version
-task talos:upgrade-node IP=?
-# e.g. task talos:upgrade-node IP=10.10.10.10
+# Upgrade one node to the installer image rendered by Talstomize
+talosctl upgrade --nodes <node-ip> --image "$(yq --raw-output '.machine.install.image' talos/clusterconfig/<node-name>.yaml)" --timeout 10m
 ```
 
 ```sh
 # Upgrade cluster to a newer Kubernetes version
-task talos:upgrade-k8s
-# e.g. task talos:upgrade-k8s
+talosctl upgrade-k8s --to <kubernetes-version>
 ```
 
 ## 🤖 Renovate
@@ -262,7 +265,7 @@ Below is a general guide on trying to debug an issue with an resource or applica
 
 1. Check if the Flux resources are up-to-date and in a ready state:
 
-    📍 _Run `task reconcile` to force Flux to sync your Git repository state_
+    📍 _Run `flux reconcile kustomization flux-system --with-source` to force Flux to sync your Git repository state_
 
     ```sh
     flux get sources git -A
@@ -295,39 +298,6 @@ Below is a general guide on trying to debug an issue with an resource or applica
     ```
 
 Resolving problems that you have could take some tweaking of your YAML manifests in order to get things working, other times it could be a external factor like permissions on a NFS server. If you are unable to figure out your problem see the support sections below.
-
-## 🧹 Tidy up
-
-Once your cluster is fully configured and you no longer need to run `task configure`, it's a good idea to clean up the repository by removing the [templates](./templates) directory and any files related to the templating process. This will help eliminate unnecessary clutter from the upstream template repository and resolve any "duplicate registry" warnings from Renovate.
-
-1.  Tidy up your repository:
-
-    ```sh
-    task template:tidy
-    ```
-
-2.  Push your changes to git:
-
-        ```sh
-        git add -A
-        git commit -m "chore: tidy up :broom:"
-        git push
-        ```
-
-    <details>
-
-<summary>Click to expand the details</summary>
-
-<br>
-
-- **Rate**: $50/hour (no longer than 2 hours / day).
-- **What’s Included**: Assistance with deployment, debugging, or answering questions related to this project.
-- **What to Expect**:
-    1. Sessions will focus on specific questions or issues you are facing.
-    2. I will provide guidance, explanations, and actionable steps to help resolve your concerns.
-    3. Support is limited to this project and does not extend to unrelated tools or custom feature development.
-
-</details>
 
 ## ❔ What's next
 
