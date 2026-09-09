@@ -7,7 +7,7 @@ metadata:
   namespace: &namespace jellyfin
 spec:
   components:
-    - ../../../../components/volsync/hot
+    - ../../../../components/kopiur/hot
   path: ./kubernetes/apps/jellyfin/jellyfin/app
   prune: true
   sourceRef:
@@ -22,4 +22,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 15Gi
+      KOPIUR_CAPACITY: 15Gi
+      NAMESPACE: *namespace

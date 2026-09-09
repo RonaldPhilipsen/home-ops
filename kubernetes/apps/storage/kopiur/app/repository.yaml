@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kopiur.home-operations.com/repository_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: kopiur
+spec:
+  backend:
+    filesystem:
+      path: /repository
+      volume:
+        nfs:
+          server: 172.16.20.7
+          path: /exports/Volsync/kopia
+  encryption:
+    passwordSecretRef:
+      name: kopiur-repository-secret
+      namespace: storage
+      key: KOPIA_PASSWORD
+  allowedNamespaces:
+    list:
+      - actions-runner-system
+      - default
+      - home-automation
+      - jellyfin
+      - media
+      - security
+      - storage
+  moverDefaults:
+    podSecurityContext:
+      runAsUser: 2000
+      runAsGroup: 2000
+      fsGroup: 2000
+  maintenance:
+    enabled: true
+    namespace: storage
+    schedule:
+      quick:
+        cron: "0 */6 * * *"
+        jitter: 30m
+      full:
+        cron: "30 3,15 * * *"
+        jitter: 1h

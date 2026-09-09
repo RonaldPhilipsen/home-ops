@@ -14,11 +14,12 @@ spec:
     namespace: flux-system
   targetNamespace: *namespace
   components:
-    - ../../../../components/volsync/cold
+    - ../../../../components/kopiur/cold
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 8Gi
+      KOPIUR_CAPACITY: 8Gi
+      NAMESPACE: *namespace
   wait: true
   interval: 30m
   retryInterval: 1m
