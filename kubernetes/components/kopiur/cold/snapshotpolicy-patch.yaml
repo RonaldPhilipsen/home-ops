@@ -1,0 +1,52 @@
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: "${APP}"
+  namespace: "${NAMESPACE}"
+spec:
+  hooks:
+    beforeSnapshot:
+      - runJob:
+          timeout: 15m
+          jobSpec:
+            backoffLimit: 0
+            ttlSecondsAfterFinished: 3600
+            template:
+              spec:
+                serviceAccountName: "${APP}-cold-snapshot"
+                restartPolicy: Never
+                containers:
+                  - name: scale-down
+                    image: ghcr.io/fhoekstra/kubectl-shell:v1.36.1-1
+                    command:
+                      - /bin/sh
+                      - -c
+                    args:
+                      - >-
+                        set -eu;
+                        kubectl scale statefulset ${APP} --namespace ${NAMESPACE} --replicas=0;
+                        kubectl wait --for=delete pods
+                        --selector=app.kubernetes.io/controller=${APP}
+                        --namespace ${NAMESPACE} --timeout=300s || true
+    afterSnapshot:
+      - runJob:
+          timeout: 10m
+          jobSpec:
+            backoffLimit: 0
+            ttlSecondsAfterFinished: 3600
+            template:
+              spec:
+                serviceAccountName: "${APP}-cold-snapshot"
+                restartPolicy: Never
+                containers:
+                  - name: scale-up
+                    image: ghcr.io/fhoekstra/kubectl-shell:v1.36.1-1
+                    command:
+                      - /bin/sh
+                      - -c
+                    args:
+                      - >-
+                        set -eu;
+                        kubectl scale statefulset ${APP} --namespace ${NAMESPACE} --replicas=1;
+                        kubectl rollout status statefulset/${APP}
+                        --namespace ${NAMESPACE} --timeout=300s
