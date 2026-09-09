@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/kubernetes-v1.29.0.json
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "${APP}"
+  namespace: "${NAMESPACE}"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "${KOPIUR_CAPACITY:=5Gi}"
+  storageClassName: openebs-hostpath

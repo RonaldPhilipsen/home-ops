@@ -1,0 +1,8 @@
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotSchedule
+metadata:
+  name: "${APP}"
+  namespace: "${NAMESPACE}"
+spec:
+  schedule:
+    cron: "20 3 * * *"

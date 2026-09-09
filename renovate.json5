@@ -17,7 +17,6 @@
   ignorePaths: [
     "**/*.sops.*",
     "**/resources/**",
-    "kubernetes/components/volsync/**",
   ],
   flux: {
     managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],

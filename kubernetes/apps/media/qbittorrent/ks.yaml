@@ -10,7 +10,7 @@ spec:
       namespace: external-secrets
 
   components:
-    - ../../../../components/volsync/hot
+    - ../../../../components/kopiur/hot
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
@@ -28,5 +28,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 5Gi
       NAMESPACE: media
