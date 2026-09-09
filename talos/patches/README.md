@@ -1,12 +1,12 @@
 # Talos Patching
 
-This directory contains Kustomization patches that are added to the talhelper configuration file.
+This directory contains Kustomization patches that are layered into the talstomize configuration.
 
 <https://www.talos.dev/v1.7/talos-guides/configuration/patching/>
 
 ## Patch Directories
 
-Under this `patches` directory, there are several sub-directories that can contain patches that are added to the talhelper configuration file.
+Under this `patches` directory, there are several sub-directories that can contain patches that are layered into the talstomize configuration.
 Each directory is optional and therefore might not created by default.
 
 - `global/`: patches that are applied to both the controller and worker configurations

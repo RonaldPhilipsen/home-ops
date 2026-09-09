@@ -1,0 +1,94 @@
+apiVersion: config.talstomize.dev/v1alpha1
+kind: Talstomize
+
+clusterName: kubernetes
+controlPlaneEndpoint: https://172.16.20.20:6443
+kubernetesVersion: "v1.36.2"
+secrets: ./talsecret.sops.yaml
+additionalSubjectAltNames:
+  - "127.0.0.1"
+  - "172.16.20.20"
+  - "k8s.rphilipsen.nl"
+
+nodes:
+  "k8s-neo-alpha":
+    ip: "172.16.20.6"
+    kind: controlplane
+    installer:
+      talosVersion: v1.14.0
+      schematic:
+        customization:
+          systemExtensions:
+            officialExtensions:
+              - siderolabs/amd-ucode
+              - siderolabs/amdgpu
+              - siderolabs/iscsi-tools
+              - siderolabs/realtek-firmware
+              - siderolabs/thunderbolt
+          bootloader: sd-boot
+    patches:
+      - machine:
+          kubelet:
+            image: ghcr.io/siderolabs/kubelet:v1.36.2
+            defaultRuntimeSeccompProfileEnabled: true
+            disableManifestsDirectory: true
+          install:
+            diskSelector:
+              serial: "S64HNN0Y423517"
+            wipe: false
+            grubUseUKICmdline: true
+          network:
+            interfaces:
+              - deviceSelector:
+                  hardwareAddr: "58:47:ca:7e:bc:c7"
+                dhcp: false
+                addresses:
+                  - "172.16.20.6/24"
+                routes:
+                  - network: "0.0.0.0/0"
+                    gateway: "172.16.20.1"
+                mtu: 1500
+                vip:
+                  ip: "172.16.20.20"
+
+patches:
+  - machine:
+      features:
+        kubePrism:
+          enabled: true
+          port: 7445
+        hostDNS:
+          enabled: true
+          forwardKubeDNSToHost: true
+      nodeLabels:
+        node.kubernetes.io/exclude-from-external-load-balancers: ""
+  - cluster:
+      network:
+        cni:
+          name: none
+        dnsDomain: cluster.local
+        podSubnets:
+          - 10.42.0.0/16
+        serviceSubnets:
+          - 10.43.0.0/16
+  - apiVersion: v1alpha1
+    kind: KubeNetworkConfig
+    dnsDomain: cluster.local
+    podSubnets:
+      - 10.42.0.0/16
+    serviceSubnets:
+      - 10.43.0.0/16
+  - ./patches/global/machine-features.yaml
+  - ./patches/global/machine-files.yaml
+  - ./patches/global/machine-kubelet.yaml
+  - ./patches/global/machine-network.yaml
+  - ./patches/global/machine-openebs.yaml
+  - ./patches/global/machine-sysctls.yaml
+  - ./patches/global/machine-time.yaml
+
+controlplanePatches:
+  - ./patches/controller/admission-controller-patch.yaml
+  - ./patches/controller/cluster.yaml
+  - ./patches/controller/machine-features.yaml
+
+workerPatches:
