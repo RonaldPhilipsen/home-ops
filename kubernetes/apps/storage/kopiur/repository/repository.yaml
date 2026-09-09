@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kopiur.home-operations.com/repository_v1alpha1.json
 apiVersion: kopiur.home-operations.com/v1alpha1
 kind: ClusterRepository
 metadata:
