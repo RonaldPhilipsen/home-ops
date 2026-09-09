@@ -51,6 +51,43 @@ nodes:
                 vip:
                   ip: "172.16.20.20"
 
+  "k8s-neo-beta":
+    ip: "172.16.20.5"
+    kind: worker
+    installer:
+      talosVersion: v1.14.0
+      schematic:
+        customization:
+          systemExtensions:
+            officialExtensions:
+              - siderolabs/intel-ucode
+              - siderolabs/iscsi-tools
+              - siderolabs/realtek-firmware
+              - siderolabs/thunderbolt
+          bootloader: sd-boot
+    patches:
+      - machine:
+          kubelet:
+            image: ghcr.io/siderolabs/kubelet:v1.36.2
+            defaultRuntimeSeccompProfileEnabled: true
+            disableManifestsDirectory: true
+          install:
+            diskSelector:
+              serial: "I258060859"
+            wipe: false
+            grubUseUKICmdline: true
+          network:
+            interfaces:
+              - deviceSelector:
+                  hardwareAddr: "00:90:27:f3:00:d0"
+                dhcp: false
+                addresses:
+                  - "172.16.20.5/24"
+                routes:
+                  - network: "0.0.0.0/0"
+                    gateway: "172.16.20.1"
+                mtu: 1500
+
 patches:
   - machine:
       features:
@@ -63,6 +100,8 @@ patches:
       nodeLabels:
         node.kubernetes.io/exclude-from-external-load-balancers: ""
   - cluster:
+      controlPlane:
+        endpoint: https://172.16.20.20:6443
       network:
         cni:
           name: none
@@ -78,7 +117,6 @@ patches:
       - 10.42.0.0/16
     serviceSubnets:
       - 10.43.0.0/16
-  - ./patches/global/machine-features.yaml
   - ./patches/global/machine-files.yaml
   - ./patches/global/machine-kubelet.yaml
   - ./patches/global/machine-network.yaml

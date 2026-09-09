@@ -1,8 +1,8 @@
-machine:
-  files:
-    - op: create
-      path: /etc/cri/conf.d/20-customization.part
-      content: |
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: /etc/cri/conf.d/20-customization.part
+mode: 0o644
+contents: |
         [plugins."io.containerd.cri.v1.images"]
           discard_unpacked_layers = false
         [plugins."io.containerd.cri.v1.runtime"]

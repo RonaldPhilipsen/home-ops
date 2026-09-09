@@ -19,3 +19,5 @@ talosconfig
 .venv/
 templates
 Thumbs.db
+talos/clusterconfig/k8s-neo-beta.yaml
+talos/clusterconfig/k8s-neo-alpha.yaml
