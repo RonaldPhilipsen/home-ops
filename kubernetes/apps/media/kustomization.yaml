@@ -6,7 +6,7 @@ namespace: media
 components:
   - ../../components/flux-alerts
 resources:
-  # - ./namespace.yaml
+  - ./namespace.yaml
   - ./netpol.yaml
   - ./sabnzbd/ks.yaml
   - ./seerr/ks.yaml
