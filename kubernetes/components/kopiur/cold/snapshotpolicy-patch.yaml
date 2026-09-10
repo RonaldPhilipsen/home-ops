@@ -24,7 +24,7 @@ spec:
                     args:
                       - >-
                         set -eu;
-                        kubectl scale statefulset ${APP} --namespace ${NAMESPACE} --replicas=0;
+                        kubectl scale ${KOPIUR_WORKLOAD_KIND:=deployment} ${APP} --namespace ${NAMESPACE} --replicas=0;
                         kubectl wait --for=delete pods
                         --selector=app.kubernetes.io/controller=${APP}
                         --namespace ${NAMESPACE} --timeout=300s || true
@@ -47,6 +47,6 @@ spec:
                     args:
                       - >-
                         set -eu;
-                        kubectl scale statefulset ${APP} --namespace ${NAMESPACE} --replicas=1;
-                        kubectl rollout status statefulset/${APP}
+                        kubectl scale ${KOPIUR_WORKLOAD_KIND:=deployment} ${APP} --namespace ${NAMESPACE} --replicas=1;
+                        kubectl rollout status ${KOPIUR_WORKLOAD_KIND:=deployment}/${APP}
                         --namespace ${NAMESPACE} --timeout=300s
