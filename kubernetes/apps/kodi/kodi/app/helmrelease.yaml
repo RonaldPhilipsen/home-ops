@@ -42,9 +42,9 @@ spec:
               runAsGroup: 100
               fsGroup: 100
               fsGroupChangePolicy: "OnRootMismatch"
-              supplementalGroups:
-                - 17 # audio
-                - 987 # seat
+              # supplementalGroups:
+              #   - 17 # audio
+              #   - 987 # seat
     service:
       main:
         ports:
