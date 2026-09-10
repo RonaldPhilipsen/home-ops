@@ -8,7 +8,7 @@ metadata:
   name: vmsingle-vlogs
   namespace: observability
 spec:
-  storageClassName: "openebs-hostpath"
+  storageClassName: "local-hostpath"
   accessModes:
     - ReadWriteOnce
   resources:

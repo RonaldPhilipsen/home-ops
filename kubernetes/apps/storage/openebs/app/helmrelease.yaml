@@ -50,7 +50,7 @@ spec:
               - SYS_PTRACE
       hostpathClass:
         enabled: true
-        name: openebs-hostpath
+        name: local-hostpath
         isDefaultClass: true
         basePath: /var/openebs/local
     loki:

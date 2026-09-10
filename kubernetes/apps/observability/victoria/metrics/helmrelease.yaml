@@ -78,7 +78,7 @@ spec:
             type: RuntimeDefault
         # persistentVolume:
         #   enabled: true
-        #   storageClassName: openebs-hostpath
+        #   storageClassName: local-hostpath
         #   size: 110Gi
       route:
         enabled: true
