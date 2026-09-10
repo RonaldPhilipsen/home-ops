@@ -29,7 +29,7 @@ nodes:
     patches:
       - machine:
           kubelet:
-            image: ghcr.io/siderolabs/kubelet:v1.36.2
+            image: ghcr.io/siderolabs/kubelet:v1.37.0
             defaultRuntimeSeccompProfileEnabled: true
             disableManifestsDirectory: true
           install:
@@ -68,7 +68,7 @@ nodes:
     patches:
       - machine:
           kubelet:
-            image: ghcr.io/siderolabs/kubelet:v1.36.2
+            image: ghcr.io/siderolabs/kubelet:v1.37.0
             defaultRuntimeSeccompProfileEnabled: true
             disableManifestsDirectory: true
           install:
