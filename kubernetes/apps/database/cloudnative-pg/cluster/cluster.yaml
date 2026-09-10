@@ -92,8 +92,6 @@ spec:
   bootstrap:
     recovery:
       source: source
-      recoveryTarget:                         # If not present, latest
-        targetTime: "2026-09-09T23:59:59Z"  # Recover to end of yesterday UTC
 
   externalClusters:
     - name: source
