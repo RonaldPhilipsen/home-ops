@@ -66,7 +66,10 @@ spec:
 
       driverRegistrar:
         enabled: true
-        image: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.10.1
+        image:
+          registry: registry.k8s.io
+          repository: sig-storage/csi-node-driver-registrar
+          tag: v2.10.1
 
       extraVolumes:
         - name: local-hostpath
