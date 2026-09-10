@@ -19,21 +19,32 @@ spec:
         strategy: RollingUpdate
         rollingUpdate:
           maxUnavailable: 1
-    image:
-      repository: ghcr.io/m00nwtchr/kodi
-      tag: rolling
-    env:
-      - name: WAYLAND_DISPLAY
-        value: wayland-1
-      - name: PIPEWIRE_REMOTE
-        value: pipewire-0
-      - name: HOME
-        value: /data
-    args:
-      - --standalone
-      - --fullscreen
-      - --audio-backend=pipewire
-      - --logging=console
+        containers:
+          main:
+            enabled: true
+            image:
+              repository: ghcr.io/m00nwtchr/kodi
+              tag: rolling
+            env:
+              - name: WAYLAND_DISPLAY
+                value: wayland-1
+              - name: PIPEWIRE_REMOTE
+                value: pipewire-0
+              - name: HOME
+                value: /data
+            args:
+              - --standalone
+              - --fullscreen
+              - --audio-backend=pipewire
+              - --logging=console
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 100
+              fsGroup: 100
+              fsGroupChangePolicy: "OnRootMismatch"
+              supplementalGroups:
+                - 17 # audio
+                - 987 # seat
     service:
       main:
         ports:
@@ -74,4 +85,6 @@ spec:
       supplementalGroups:
         - 17 # audio
         - 987 # seat
+    nodeSelector:
+      org.democratic-csi.topology/node: k8s-neo-beta
 
