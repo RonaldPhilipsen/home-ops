@@ -1,9 +1,8 @@
 apiVersion: v1alpha1
-kind: EtcFileConfig
-name: /etc/cri/conf.d/20-customization.part
-mode: 0o644
-contents: |
-        [plugins."io.containerd.cri.v1.images"]
-          discard_unpacked_layers = false
-        [plugins."io.containerd.cri.v1.runtime"]
-          device_ownership_from_security_context = true
+kind: CRICustomizationConfig
+name: containerd-customization
+content: |
+  [plugins."io.containerd.cri.v1.images"]
+    discard_unpacked_layers = false
+  [plugins."io.containerd.cri.v1.runtime"]
+    device_ownership_from_security_context = true
