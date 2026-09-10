@@ -11,7 +11,7 @@ spec:
     name: kodi
   values:
     controllers:
-      main:
+      kodi:
         type: statefulset
         replicas: 1
         annotations:
@@ -20,7 +20,41 @@ spec:
         rollingUpdate:
           maxUnavailable: 1
         containers:
-          main:
+          pipewire:
+            enabled: true
+            image:
+              repository: ghcr.io/m00nwtchr/pipewire
+              tag: rolling
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 100
+              allowPrivilegeEscalation: false
+              privileged: false
+
+          weston:
+            enabled: true
+            image:
+              repository: ghcr.io/m00nwtchr/weston
+              tag: rolling
+            env:
+              - name: WAYLAND_DISPLAY
+                value: wayland-1
+              - name: WESTON_SHELL
+                value: desktop-shell.so
+            args:
+              - --socket=$(WAYLAND_DISPLAY)
+              - --continue-without-input
+            resources:
+              limits:
+                nvidia.com/gpu-all: "1"
+              requests:
+                nvidia.com/gpu-all: "1"
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 100
+              allowPrivilegeEscalation: false
+              privileged: false
+          kodi:
             enabled: true
             image:
               repository: ghcr.io/m00nwtchr/kodi
@@ -37,6 +71,22 @@ spec:
               - --fullscreen
               - --audio-backend=pipewire
               - --logging=console
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 100
+              allowPrivilegeEscalation: false
+              privileged: false
+    volumeMounts:
+      - name: runtime
+        mountPath: /tmp/run
+      - name: snd
+        mountPath: /dev/snd
+      - name: cache
+        mountPath: /cache
+      - name: kodi-home
+        mountPath: /data
+      - name: seatd
+        mountPath: /run/seatd.sock
     service:
       main:
         ports:
@@ -53,6 +103,9 @@ spec:
         enabled: true
         type: emptyDir
       runtime:
+        enabled: true
+        type: emptyDir
+      kodi-home:
         enabled: true
         type: emptyDir
       snd:
