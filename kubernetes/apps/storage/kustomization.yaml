@@ -10,4 +10,4 @@ resources:
   - ./netpol.yaml
   - ./snapshot-controller/ks.yaml
   - ./kopiur/ks.yaml
-  - ./democratic-csi/app/ks.yaml
+  - ./democratic-csi/ks.yaml
