@@ -92,6 +92,8 @@ spec:
   bootstrap:
     recovery:
       source: source
+      # recoveryTarget:
+      #   targetTime: "2026-09-06 00:00:00.00000+00"
 
   externalClusters:
     - name: source
