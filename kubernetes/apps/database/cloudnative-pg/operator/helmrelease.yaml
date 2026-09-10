@@ -9,9 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: cloudnative-pg
-  dependsOn:
-    - name: openebs
-      namespace: storage
+
   values:
     crds:
       create: true
