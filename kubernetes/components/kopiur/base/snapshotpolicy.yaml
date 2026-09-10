@@ -15,10 +15,8 @@ spec:
     - pvc:
         name: "${APP}"
       sourcePathOverride: /data
-  copyMethod: Snapshot
-  volumeSnapshotClassName: openebs-hostpath
-  staging:
-    storageClassName: openebs-hostpath
+  # openebs-hostpath (openebs.io/local) has no CSI snapshot support.
+  copyMethod: Direct
   compression:
     compressor: zstd-fastest
   upload:
