@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/media/kodi/app
+  path: ./kubernetes/apps/kodi/kodi/app
   prune: true
   sourceRef:
     kind: GitRepository
