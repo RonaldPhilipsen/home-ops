@@ -8,6 +8,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./netpol.yaml
-  - ./openebs/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./kopiur/ks.yaml
+  - ./democratic-csi/app/ks.yaml

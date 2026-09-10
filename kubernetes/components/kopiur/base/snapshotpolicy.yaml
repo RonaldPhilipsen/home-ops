@@ -15,7 +15,7 @@ spec:
     - pvc:
         name: "${APP}"
       sourcePathOverride: /data
-  # openebs-hostpath (openebs.io/local) has no CSI snapshot support.
+  # local-hostpath (openebs.io/local) has no CSI snapshot support.
   copyMethod: Direct
   compression:
     compressor: zstd-fastest

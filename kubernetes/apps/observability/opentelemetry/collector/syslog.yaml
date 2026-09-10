@@ -30,7 +30,7 @@ spec:
         resources:
           requests:
             storage: 2Gi
-        storageClassName: openebs-hostpath
+        storageClassName: local-hostpath
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
