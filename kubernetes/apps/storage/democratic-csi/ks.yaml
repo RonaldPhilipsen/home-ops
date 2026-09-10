@@ -6,9 +6,11 @@ metadata:
   namespace: flux-system
 spec:
   path: "kubernetes/apps/storage/democratic-csi/app"
+  prune: true
   sourceRef:
     kind: GitRepository
-    name: k8s-gitops-kubernetes
-  interval: 10m
-  prune: true
-  wait: true
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  interval: 30m
+  timeout: 5m
