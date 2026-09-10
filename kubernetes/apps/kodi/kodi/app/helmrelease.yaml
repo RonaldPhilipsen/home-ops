@@ -37,14 +37,6 @@ spec:
               - --fullscreen
               - --audio-backend=pipewire
               - --logging=console
-            securityContext:
-              runAsUser: 1000
-              runAsGroup: 100
-              fsGroup: 100
-              fsGroupChangePolicy: "OnRootMismatch"
-              # supplementalGroups:
-              #   - 17 # audio
-              #   - 987 # seat
     service:
       main:
         ports:
