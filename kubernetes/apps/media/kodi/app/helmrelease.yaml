@@ -1,0 +1,78 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kodi
+  namespace: kodi
+spec:
+  interval: 10m
+  chartRef:
+    kind: OCIRepository
+    name: kodi
+  values:
+    controllers:
+      main:
+        type: statefulset
+        replicas: 1
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+    image:
+      repository: ghcr.io/m00nwtchr/kodi
+      tag: rolling
+    env:
+      - name: WAYLAND_DISPLAY
+        value: wayland-1
+      - name: PIPEWIRE_REMOTE
+        value: pipewire-0
+      - name: HOME
+        value: /data
+    args:
+      - --standalone
+      - --fullscreen
+      - --audio-backend=pipewire
+      - --logging=console
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
+    ingress:
+      main:
+        enabled: false
+    persistence:
+      config:
+        enabled: true
+        type: emptyDir
+      cache:
+        enabled: true
+        type: emptyDir
+      runtime:
+        enabled: true
+        type: emptyDir
+      snd:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/snd
+      seatd:
+        enabled: true
+        type: hostPath
+        hostPath: /run/seatd.sock
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 100
+      fsGroup: 100
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups:
+        - 17 # audio
+        - 987 # seat
+    podSecurityContext:
+      fsGroup: 100
+      fsGroupChangePolicy: "OnRootMismatch"
+      supplementalGroups:
+        - 17 # audio
+        - 987 # seat
+
