@@ -9,6 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: openebs
+    namespace: storage
   install:
     disableHooks: true
     remediation:
