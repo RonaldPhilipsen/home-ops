@@ -28,10 +28,6 @@ nodes:
           bootloader: sd-boot
     patches:
       - machine:
-          kubelet:
-            image: ghcr.io/siderolabs/kubelet:v1.37.0
-            defaultRuntimeSeccompProfileEnabled: true
-            disableManifestsDirectory: true
           install:
             diskSelector:
               serial: "S64HNN0Y423517"
@@ -67,10 +63,6 @@ nodes:
           bootloader: sd-boot
     patches:
       - machine:
-          kubelet:
-            image: ghcr.io/siderolabs/kubelet:v1.37.0
-            defaultRuntimeSeccompProfileEnabled: true
-            disableManifestsDirectory: true
           install:
             diskSelector:
               serial: "I258060859"
@@ -89,43 +81,13 @@ nodes:
                 mtu: 1500
 
 patches:
-  - machine:
-      features:
-        kubePrism:
-          enabled: true
-          port: 7445
-        hostDNS:
-          enabled: true
-          forwardKubeDNSToHost: true
-      nodeLabels:
-        node.kubernetes.io/exclude-from-external-load-balancers: ""
-  - cluster:
-      controlPlane:
-        endpoint: https://172.16.20.20:6443
-      network:
-        cni:
-          name: none
-        dnsDomain: cluster.local
-        podSubnets:
-          - 10.42.0.0/16
-        serviceSubnets:
-          - 10.43.0.0/16
-  - apiVersion: v1alpha1
-    kind: KubeNetworkConfig
-    dnsDomain: cluster.local
-    podSubnets:
-      - 10.42.0.0/16
-    serviceSubnets:
-      - 10.43.0.0/16
   - ./patches/global/machine-files.yaml
   - ./patches/global/machine-kubelet.yaml
   - ./patches/global/machine-network.yaml
-  - ./patches/global/machine-openebs.yaml
   - ./patches/global/machine-sysctls.yaml
   - ./patches/global/machine-time.yaml
 
 controlplanePatches:
-  - ./patches/controller/admission-controller-patch.yaml
   - ./patches/controller/cluster.yaml
   - ./patches/controller/machine-features.yaml
 

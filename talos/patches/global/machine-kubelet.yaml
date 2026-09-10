@@ -1,9 +1,17 @@
-machine:
-  kubelet:
-    extraConfig:
-      serializeImagePulls: false
-    extraArgs:
-      max-pods: "200"
-    nodeIP:
-      validSubnets:
-        - 172.16.20.0/24
+---
+apiVersion: v1alpha1
+kind: KubeletConfig
+image: ghcr.io/siderolabs/kubelet:v1.36.2
+config:
+  serializeImagePulls: false
+extraArgs:
+  max-pods: "200"
+
+defaultRuntimeSeccompProfileEnabled: true
+
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 172.16.20.0/24
