@@ -14,7 +14,6 @@ spec:
   sources:
     - pvc:
         name: "${APP}"
-        mountPath: /data
   copyMethod: Direct
   compression:
     compressor: zstd-fastest
