@@ -70,7 +70,6 @@ spec:
               privileged: false
               allowPrivilegeEscalation: false
               runAsUser: 1000
-              fsGroup: 1000
               runAsNonRoot: true
               seccompProfile:
                 type: RuntimeDefault
@@ -91,6 +90,3 @@ spec:
           - name: cache-volume
             persistentVolumeClaim:
               claimName: actions-runner-controller-cache
-          - name: work
-            persistentVolumeClaim:
-              claimName: home-ops-runner-work
