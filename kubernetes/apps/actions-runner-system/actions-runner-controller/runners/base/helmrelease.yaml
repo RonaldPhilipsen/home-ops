@@ -18,14 +18,15 @@ spec:
     minRunners: 0
     maxRunners: 10
 
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: local-hostpath
-        resources:
-          requests:
-            storage: 5Gi
+    # Commenting out work volume claim to avoid EphemeralVolume issue with local-hostpath
+    # containerMode:
+    #   type: kubernetes
+    #   kubernetesModeWorkVolumeClaim:
+    #     accessModes: ["ReadWriteOnce"]
+    #     storageClassName: local-hostpath
+    #     resources:
+    #       requests:
+    #         storage: 5Gi
 
     controllerServiceAccount:
       name: actions-runner-controller
@@ -39,6 +40,8 @@ spec:
               privileged: false
               allowPrivilegeEscalation: false
               runAsUser: 1000
+              fsGroup: 1000
+              fsGroupChangePolicy: Always
               runAsNonRoot: true
               seccompProfile:
                 type: RuntimeDefault
@@ -67,6 +70,7 @@ spec:
               privileged: false
               allowPrivilegeEscalation: false
               runAsUser: 1000
+              fsGroup: 1000
               runAsNonRoot: true
               seccompProfile:
                 type: RuntimeDefault
@@ -78,6 +82,8 @@ spec:
                 readOnly: true
               - mountPath: /home/runner/cache
                 name: cache-volume
+              - mountPath: /home/runner/_work
+                name: work
         volumes:
           - name: talos
             secret:
@@ -85,3 +91,6 @@ spec:
           - name: cache-volume
             persistentVolumeClaim:
               claimName: actions-runner-controller-cache
+          - name: work
+            persistentVolumeClaim:
+              claimName: home-ops-runner-work
