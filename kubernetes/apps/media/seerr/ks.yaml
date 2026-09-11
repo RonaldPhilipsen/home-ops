@@ -31,3 +31,5 @@ spec:
       APP: *app
       KOPIUR_CAPACITY: 15Gi
       NAMESPACE: media
+      APP_UID: "1000"
+      APP_GID: "1000"

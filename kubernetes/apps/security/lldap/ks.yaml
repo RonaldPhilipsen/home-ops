@@ -37,3 +37,5 @@ spec:
       APP: *app
       KOPIUR_CAPACITY: 5Gi
       NAMESPACE: security
+      APP_UID: "1000"
+      APP_GID: "1000"
