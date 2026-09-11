@@ -79,8 +79,6 @@ spec:
                 readOnly: true
               - mountPath: /home/runner/cache
                 name: cache-volume
-              - mountPath: /home/runner/_work
-                name: work
         volumes:
           - name: talos
             secret:
