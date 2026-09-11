@@ -18,15 +18,14 @@ spec:
     minRunners: 0
     maxRunners: 10
 
-    # Commenting out work volume claim to avoid EphemeralVolume issue with local-hostpath
-    # containerMode:
-    #   type: kubernetes
-    #   kubernetesModeWorkVolumeClaim:
-    #     accessModes: ["ReadWriteOnce"]
-    #     storageClassName: local-hostpath
-    #     resources:
-    #       requests:
-    #         storage: 5Gi
+    containerMode:
+      type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: local-hostpath
+        resources:
+          requests:
+            storage: 5Gi
 
     controllerServiceAccount:
       name: actions-runner-controller

@@ -20,13 +20,3 @@
   path: /spec/values/containerMode
   value:
     type: kubernetes
-    kubernetesModeWorkVolumeClaim:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: local-hostpath
-      resources:
-        requests:
-          storage: 5Gi
-- op: add
-  path: /spec/values/containerMode
-  value:
-    type: kubernetes
