@@ -16,7 +16,3 @@
 - op: replace
   path: /spec/values/template/spec/volumes/0/secret/secretName
   value: home-ops-runner
-- op: add
-  path: /spec/values/containerMode
-  value:
-    type: kubernetes
