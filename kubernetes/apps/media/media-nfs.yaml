@@ -14,6 +14,7 @@ metadata:
   namespace: media
   annotations:
     helm.sh/resource-policy: keep
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   storageClassName: media-nfs
   capacity:
@@ -40,6 +41,7 @@ metadata:
   namespace: media
   annotations:
     helm.sh/resource-policy: keep
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   accessModes:
     - ReadWriteMany
