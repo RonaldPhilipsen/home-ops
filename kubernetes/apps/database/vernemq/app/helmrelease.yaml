@@ -101,7 +101,7 @@ spec:
       app:
         type: LoadBalancer
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: "mqtt.rphilipsen.nl"
+          external-dns.kubernetes.io/hostname: "mqtt.rphilipsen.nl"
           lbipam.cilium.io/ips: 172.16.20.102
         ports:
           mqtt:

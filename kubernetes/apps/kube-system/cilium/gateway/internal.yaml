@@ -5,7 +5,7 @@ kind: Gateway
 metadata:
   name: internal
   annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname internal.rphilipsen.nl
+    external-dns.kubernetes.io/target: &hostname internal.rphilipsen.nl
   labels:
     gateway: internal
 spec:
@@ -17,7 +17,7 @@ spec:
     #   value: 2a02:a446:fe34:20:172:16:20:31
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: *hostname
+      external-dns.kubernetes.io/hostname: *hostname
   listeners:
     - name: http
       protocol: HTTP
