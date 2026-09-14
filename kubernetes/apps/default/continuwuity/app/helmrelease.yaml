@@ -69,7 +69,7 @@ spec:
     route:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
         parentRefs:
           - name: agentgateway-external
             namespace: network
@@ -78,7 +78,7 @@ spec:
           - &host matrix.rphilipsen.nl
       federation:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
         parentRefs:
           - name: agentgateway-external
             namespace: network
@@ -98,7 +98,7 @@ spec:
                 port: *port
       well-known:
         annotations:
-          external-dns.alpha.kubernetes.io/external: "true"
+          external-dns.kubernetes.io/external: "true"
         parentRefs:
           - name: agentgateway-external
             namespace: network
