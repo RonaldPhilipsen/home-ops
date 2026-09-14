@@ -34,7 +34,6 @@ spec:
             name: *secret
             key: EXTERNAL_DNS_PIHOLE_API_VERSION
     extraArgs:
-      - --pihole-api-version=6
       - --metrics-address=:7979
     triggerLoopOnEvent: true
     policy: upsert-only
