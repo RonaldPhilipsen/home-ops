@@ -21,7 +21,8 @@ spec:
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - "ReadWriteOnce"
         storageClassName: local-hostpath
         resources:
           requests:
