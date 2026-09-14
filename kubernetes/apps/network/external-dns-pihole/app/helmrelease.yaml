@@ -37,7 +37,7 @@ spec:
       - --pihole-api-version=6
       - --metrics-address=:7979
     triggerLoopOnEvent: true
-    # policy: upsert-only
+    policy: upsert-only
     sources:
       - "gateway-httproute"
       - "service"

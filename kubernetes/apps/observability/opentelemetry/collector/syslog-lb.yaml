@@ -5,7 +5,7 @@ kind: Service
 metadata:
   name: syslog-lb
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: syslog.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: syslog.rphilipsen.nl
     lbipam.cilium.io/ips: 172.16.20.104
 spec:
   type: LoadBalancer
