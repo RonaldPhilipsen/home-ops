@@ -7,7 +7,7 @@ metadata:
 spec:
   instanceSelector:
     matchLabels:
-      instance: grafana
+      grafana.internal/instance: grafana
   template:
     apiVersion: dashboard.grafana.app/v2beta1
     kind: Dashboard
