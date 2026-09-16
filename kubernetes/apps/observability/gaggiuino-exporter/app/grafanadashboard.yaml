@@ -5,7 +5,7 @@ metadata:
   name: cloudnative-coffee
 spec:
   resyncPeriod: 30s
-  suspend: true
+  suspend: false
   instanceSelector:
     matchLabels:
       dashboards: "grafana"
