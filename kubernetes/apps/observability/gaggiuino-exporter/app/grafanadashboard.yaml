@@ -12,13 +12,11 @@ spec:
     apiVersion: dashboard.grafana.app/v2beta1
     kind: Dashboard
     metadata:
-     name: cloudnative-coffee
+      name: cloudnative-coffee
+      namespace: observability
     spec:
       resyncPeriod: 30s
       suspend: false
-      # instanceSelector:
-      #   matchLabels:
-      #     dashboards: "grafana"
       json: >
         {
           "apiVersion": "dashboard.grafana.app/v2",
