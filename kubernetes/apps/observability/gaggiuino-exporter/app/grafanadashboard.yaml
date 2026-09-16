@@ -16,9 +16,9 @@ spec:
     spec:
       resyncPeriod: 30s
       suspend: false
-      instanceSelector:
-        matchLabels:
-          dashboards: "grafana"
+      # instanceSelector:
+      #   matchLabels:
+      #     dashboards: "grafana"
       json: >
         {
           "apiVersion": "dashboard.grafana.app/v2",
