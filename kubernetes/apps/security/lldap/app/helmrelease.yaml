@@ -54,8 +54,8 @@ spec:
               - secretRef:
                   name: lldap-secret
             env:
-              UID: "1000"
-              GID: "1000"
+              UID: "2000"
+              GID: "2000"
     service:
       main:
         controller: lldap
