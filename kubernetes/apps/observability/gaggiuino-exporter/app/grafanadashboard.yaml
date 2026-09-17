@@ -3,6 +3,9 @@ kind: GrafanaDashboard
 metadata:
   name: cloudnative-coffee
 spec:
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
   json: |
     {
       "__inputs": [],
@@ -73,82 +76,6 @@ spec:
       "links": [],
       "liveNow": false,
       "panels": [
-        {
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "max": 100,
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "dark-red",
-                    "value": 0
-                  },
-                  {
-                    "color": "#EAB839",
-                    "value": 40
-                  },
-                  {
-                    "color": "green",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 0
-          },
-          "id": 6,
-          "options": {
-            "barShape": "flat",
-            "barWidthFactor": 0.5,
-            "effects": {
-              "barGlow": false,
-              "centerGlow": false,
-              "gradient": true
-            },
-            "endpointMarker": "point",
-            "minVizHeight": 75,
-            "minVizWidth": 75,
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": [
-                "lastNotNull"
-              ],
-              "fields": "",
-              "values": false
-            },
-            "segmentCount": 1,
-            "segmentSpacing": 0.3,
-            "shape": "gauge",
-            "showThresholdLabels": false,
-            "showThresholdMarkers": false,
-            "sizing": "auto",
-            "sparkline": true,
-            "textMode": "auto"
-          },
-          "pluginVersion": "13.1.3",
-          "targets": [
-            {
-              "editorMode": "code",
-              "expr": "gaggiuino_water_level",
-              "legendFormat": "__auto",
-              "range": true,
-              "refId": "A"
-            }
-          ],
-          "title": "Water level",
-          "type": "gauge"
-        },
         {
           "fieldConfig": {
             "defaults": {
