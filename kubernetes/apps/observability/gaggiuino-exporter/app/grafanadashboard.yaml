@@ -12,12 +12,6 @@ spec:
       "__elements": {},
       "__requires": [
         {
-          "type": "panel",
-          "id": "gauge",
-          "name": "Gauge",
-          "version": ""
-        },
-        {
           "type": "grafana",
           "id": "grafana",
           "name": "Grafana",
@@ -102,7 +96,7 @@ spec:
           "gridPos": {
             "h": 8,
             "w": 8,
-            "x": 8,
+            "x": 0,
             "y": 0
           },
           "id": 7,
@@ -173,8 +167,8 @@ spec:
           },
           "gridPos": {
             "h": 8,
-            "w": 8,
-            "x": 16,
+            "w": 16,
+            "x": 8,
             "y": 0
           },
           "id": 1,
@@ -653,6 +647,6 @@ spec:
       "timezone": "browser",
       "title": "Cloudnative coffee",
       "uid": "rontx8z",
-      "version": 2,
+      "version": 3,
       "weekStart": ""
     }
