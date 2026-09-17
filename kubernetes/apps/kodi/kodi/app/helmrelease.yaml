@@ -82,6 +82,8 @@ spec:
         mountPath: /data
       - name: seatd
         mountPath: /run/seatd.sock
+      - name: system_bus
+        mountPath: /run/dbus/system_bus_socket
     service:
       main:
         ports:
@@ -111,6 +113,10 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /run/seatd.sock
+      system_bus:
+        enabled: true
+        type: hostPath
+        hostPath: /run/dbus/system_bus_socket
     securityContext:
       runAsUser: 1000
       runAsGroup: 100
