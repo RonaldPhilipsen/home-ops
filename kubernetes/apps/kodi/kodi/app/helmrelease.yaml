@@ -82,7 +82,7 @@ spec:
         mountPath: /data
       - name: seatd
         mountPath: /run/seatd.sock
-      - name: system_bus
+      - name: system-bus
         mountPath: /run/dbus/system_bus_socket
     service:
       main:
@@ -113,7 +113,7 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /run/seatd.sock
-      system_bus:
+      system-bus:
         enabled: true
         type: hostPath
         hostPath: /run/dbus/system_bus_socket
