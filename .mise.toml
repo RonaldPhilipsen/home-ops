@@ -10,7 +10,7 @@ SCRIPTS_DIR = "{{config_root}}/scripts"
 TALOS_DIR = "{{config_root}}/talos"
 
 [tools]
-"python" = "3.14.7"
+"python" = "3.14.8"
 "aqua:cilium/cilium-cli" = "0.20.1"
 "aqua:cli/cli" = "2.102.0"
 "aqua:cloudflare/cloudflared" = "2026.9.3"
