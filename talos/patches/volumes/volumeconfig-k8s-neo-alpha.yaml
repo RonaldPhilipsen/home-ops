@@ -1,12 +1,12 @@
-apiVersion: v1alpha1
-kind: RawVolumeConfig
-name: rook-data
+# apiVersion: v1alpha1
+# kind: RawVolumeConfig
+# name: rook-data
 
-provisioning:
-  diskSelector:
-    match: system_disk
-    # minSize: 2TB
-  maxSize: 2TiB
+# provisioning:
+#   diskSelector:
+#     match: system_disk
+#     # minSize: 2TB
+#   maxSize: 2TiB
 
 
 # # The encryption describes how the volume is encrypted.
@@ -49,3 +49,12 @@ provisioning:
 #   maxSize: 100Gib
 # mount:
 #   path: /var/lib/rook
+# ---
+# apiVersion: v1alpha1
+# kind: UserVolumeConfig
+# name: longhorn # name is used to identify the volume /var/mnt/<name>
+# provisioning:
+#   diskSelector:
+#     match: disk.transport == "nvme"
+#   grow: false
+#   maxSize: 500GB
