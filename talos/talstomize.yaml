@@ -15,7 +15,7 @@ nodes:
     ip: "172.16.20.6"
     kind: controlplane
     installer:
-      talosVersion: v1.14.0
+      talosVersion: v1.14.1
       schematic:
         customization:
           systemExtensions:
@@ -25,8 +25,10 @@ nodes:
               - siderolabs/iscsi-tools
               - siderolabs/realtek-firmware
               - siderolabs/thunderbolt
+              - siderolabs/util-linux-tools
           bootloader: sd-boot
     patches:
+      - ./patches/volumes/volumeconfig-k8s-neo-alpha.yaml
       - machine:
           install:
             diskSelector:
@@ -51,7 +53,7 @@ nodes:
     ip: "172.16.20.5"
     kind: worker
     installer:
-      talosVersion: v1.14.0
+      talosVersion: v1.14.1
       schematic:
         customization:
           extraKernelArgs:
@@ -62,12 +64,16 @@ nodes:
               - siderolabs/iscsi-tools
               - siderolabs/realtek-firmware
               - siderolabs/thunderbolt
+              - siderolabs/util-linux-tools
           bootloader: sd-boot
     patches:
+      - ./patches/volumes/volumeconfig-k8s-neo-beta.yaml
       - machine:
           install:
             diskSelector:
               serial: "I258060859"
+            extensions:
+              - image: ghcr.io/jgarr/seatd:v0.9.3
             wipe: false
             grubUseUKICmdline: true
           network:
@@ -81,7 +87,6 @@ nodes:
                   - network: "0.0.0.0/0"
                     gateway: "172.16.20.1"
                 mtu: 1500
-
 patches:
   - ./patches/global/machine-files.yaml
   - ./patches/global/machine-kubelet.yaml

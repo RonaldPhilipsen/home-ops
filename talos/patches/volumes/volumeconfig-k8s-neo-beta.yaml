@@ -6,7 +6,7 @@
 #   diskSelector:
 #     match: system_disk
 #     # minSize: 2TB
-#   maxSize: 2TiB
+#   maxSize: 512GiB
 
 
 # # The encryption describes how the volume is encrypted.
@@ -32,13 +32,13 @@
 #     options:
 #         - no_read_workqueue
 #         - no_write_workqueue
----
-apiVersion: v1alpha1
-kind: VolumeConfig
-name: EPHEMERAL
-provisioning:
-  maxSize: 1TiB
-  grow: false
+# ---
+# apiVersion: v1alpha1
+# kind: VolumeConfig
+# name: EPHEMERAL
+# provisioning:
+#   maxSize: 252GiB
+#   grow: false
 # ---
 # apiVersion: v1alpha1
 # kind: UserVolumeConfig
@@ -57,4 +57,4 @@ provisioning:
 #   diskSelector:
 #     match: disk.transport == "nvme"
 #   grow: false
-#   maxSize: 500GB
+#   maxSize: 250GB
