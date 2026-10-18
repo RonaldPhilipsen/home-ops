@@ -13,7 +13,7 @@ spec:
     fullnameOverride: *app
     image:
       repository: ghcr.io/ronaldphilipsen/external-dns-omada
-      tag: v0.24.0-rc.4
+      tag: v0.24.0-rc.5
     provider: omada
     env:
       - name: EXTERNAL_DNS_OMADA_SERVER
@@ -50,6 +50,12 @@ spec:
       # services stay invisible from the Guest network.
       - name: EXTERNAL_DNS_OMADA_NETWORKS
         value: "Default,IOT,K8s"
+      # The Omada controller cannot store the TXT records the txt registry
+      # uses for ownership, so no plan update or delete would ever be
+      # applied. Run without an ownership registry instead; the upsert-only
+      # policy keeps manual entries safe.
+      - name: EXTERNAL_DNS_REGISTRY
+        value: "noop"
     extraArgs:
       - --metrics-address=:7979
     triggerLoopOnEvent: true
