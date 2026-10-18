@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: omada
+spec:
+  endpoints:
+    - dnsName: "omada.rphilipsen.nl"
+      recordType: A
+      targets: ["192.168.0.2"]

@@ -13,7 +13,7 @@ spec:
     fullnameOverride: *app
     image:
       repository: ghcr.io/ronaldphilipsen/external-dns-omada
-      tag: v0.24.0-rc.2
+      tag: v0.24.0-rc.3
     provider: omada
     env:
       - name: EXTERNAL_DNS_OMADA_SERVER
@@ -46,6 +46,10 @@ spec:
           secretKeyRef:
             name: *secret
             key: EXTERNAL_DNS_OMADA_TLS_SKIP_VERIFY
+      # Attach managed entries to these LAN networks only, so local
+      # services stay invisible from the Guest network.
+      - name: EXTERNAL_DNS_OMADA_NETWORKS
+        value: "Default,IOT,K8s"
     extraArgs:
       - --metrics-address=:7979
     triggerLoopOnEvent: true
@@ -53,6 +57,7 @@ spec:
     sources:
       - "gateway-httproute"
       - "service"
+      - "crd"
     logLevel: info
     logFormat: text
     domainFilters:
