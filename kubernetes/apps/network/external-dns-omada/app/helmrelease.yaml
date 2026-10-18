@@ -11,47 +11,58 @@ spec:
     name: external-dns
   values:
     fullnameOverride: *app
-    image:
-      repository: ghcr.io/ronaldphilipsen/external-dns-omada
-      tag: v0.24.0-rc.5
-    provider: omada
-    env:
-      - name: EXTERNAL_DNS_OMADA_SERVER
-        valueFrom:
-          secretKeyRef:
-            name: &secret external-dns-omada-secret
-            key: EXTERNAL_DNS_OMADA_SERVER
-      - name: EXTERNAL_DNS_OMADA_ID
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: EXTERNAL_DNS_OMADA_ID
-      - name: EXTERNAL_DNS_OMADA_CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: EXTERNAL_DNS_OMADA_CLIENT_ID
-      - name: EXTERNAL_DNS_OMADA_CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: EXTERNAL_DNS_OMADA_CLIENT_SECRET
-      - name: EXTERNAL_DNS_OMADA_SITE_NAME
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: EXTERNAL_DNS_OMADA_SITE_NAME
-      - name: EXTERNAL_DNS_OMADA_TLS_SKIP_VERIFY
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: EXTERNAL_DNS_OMADA_TLS_SKIP_VERIFY
-      # Attach managed entries to these LAN networks only, so local
-      # services stay invisible from the Guest network.
-      - name: EXTERNAL_DNS_OMADA_NETWORKS
-        value: "Default,IOT,K8s"
+    # Stock external-dns image (chart 1.23.0 -> v0.23.0); the Omada provider
+    # is provided by the webhook sidecar below, so no forked image is needed.
+    provider:
+      name: webhook
+      webhook:
+        image:
+          repository: ghcr.io/ronaldphilipsen/external-dns-omada
+          # First published image tag; bump when a new release is published.
+          tag: v0.1.0-rc0
+        env:
+          - name: OMADA_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: &secret external-dns-omada-secret
+                key: OMADA_SERVER
+          - name: OMADA_ID
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OMADA_ID
+          - name: OMADA_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OMADA_CLIENT_ID
+          - name: OMADA_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OMADA_CLIENT_SECRET
+          - name: OMADA_SITE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OMADA_SITE_NAME
+          - name: OMADA_TLS_SKIP_VERIFY
+            valueFrom:
+              secretKeyRef:
+                name: *secret
+                key: OMADA_TLS_SKIP_VERIFY
+          # Attach managed entries to these LAN networks only, so local
+          # services stay invisible from the Guest network.
+          - name: OMADA_NETWORKS
+            value: "Default,IOT,K8s"
+          # Kept in sync with domainFilters below; it is also negotiated
+          # back to external-dns during webhook startup.
+          - name: DOMAIN_FILTER
+            value: "rphilipsen.nl"
     extraArgs:
-      - --metrics-address=:7979
+      # Default already; stated explicitly because it binds the two
+      # containers together.
+      - --webhook-provider-url=http://localhost:8888
     triggerLoopOnEvent: true
     policy: upsert-only
     # The Omada controller cannot store the TXT records the txt registry
@@ -68,4 +79,6 @@ spec:
     domainFilters:
       - rphilipsen.nl
     podAnnotations:
+      # Restarts the pod (both containers) when the Omada credentials
+      # change.
       secret.reloader.stakater.com/reload: external-dns-omada-secret
