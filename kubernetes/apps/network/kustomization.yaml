@@ -9,5 +9,6 @@ resources:
   - ./namespace.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./cloudflare-dns/ks.yaml
+  - ./external-dns-omada/ks.yaml
   - ./external-dns-pihole/ks.yaml
   - ./kgateway/ks.yaml
