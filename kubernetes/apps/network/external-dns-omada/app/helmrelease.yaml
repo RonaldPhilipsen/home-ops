@@ -13,7 +13,7 @@ spec:
     fullnameOverride: *app
     image:
       repository: ghcr.io/ronaldphilipsen/external-dns-omada
-      tag: v0.24.0-rc.3
+      tag: v0.24.0-rc.4
     provider: omada
     env:
       - name: EXTERNAL_DNS_OMADA_SERVER
