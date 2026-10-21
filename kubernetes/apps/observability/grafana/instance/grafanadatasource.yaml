@@ -46,12 +46,15 @@ spec:
     matchLabels:
       grafana.internal/instance: grafana
   datasource:
-    type: jaeger
+    # tempo type (not jaeger): VictoriaTraces serves the Tempo query API
+    # under /select/tempo, which the Tempo datasource needs for TraceQL and
+    # the trace-search panels on the omada dashboard.
+    type: tempo
     orgId: 1
     uid: victoria-traces
     name: victoria-traces
     access: proxy
-    url: http://victoria-traces-server.observability.svc.cluster.local:10428/select/jaeger
+    url: http://victoria-traces-server.observability.svc.cluster.local:10428/select/tempo
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
