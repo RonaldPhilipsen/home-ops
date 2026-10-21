@@ -27,8 +27,8 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: vllm
-          # renovate: datasource=docker depName=vllm/vllm-openai
-          image: vllm/vllm-openai:v0.32.0
+          # renovate: datasource=docker depName=vllm/vllm-openai-cpu
+          image: vllm/vllm-openai-cpu:v0.32.0
           args:
             - serve
             - Qwen/Qwen3-Reranker-0.6B
@@ -38,6 +38,8 @@ spec:
             - 0.0.0.0
             - --port
             - "8000"
+            - --dtype
+            - bfloat16
           env:
             - name: HF_HOME
               value: /models
