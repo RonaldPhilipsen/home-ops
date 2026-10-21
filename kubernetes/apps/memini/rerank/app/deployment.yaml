@@ -32,8 +32,8 @@ spec:
           args:
             - serve
             - Qwen/Qwen3-Reranker-0.6B
-            - --task
-            - score
+            - --runner
+            - pooling
             - --host
             - 0.0.0.0
             - --port
