@@ -31,6 +31,7 @@ spec:
           image: vllm/vllm-openai-cpu:v0.32.0
           args:
             - serve
+            - --model
             - BAAI/bge-m3
             - --runner
             - pooling
