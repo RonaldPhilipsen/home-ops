@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v4.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: memini
+  namespace: memini
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: memini
+  values:
+    defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-neo-alpha
+    controllers:
+      main:
+        type: deployment
+        containers:
+          main:
+            image:
+              tag: 0.7.36
+            env:
+              MEMINI_BACKEND: postgres
+              MEMINI_EMBED_BASE_URL: http://memini-embed.memini.svc:8000/v1
+              MEMINI_EMBED_MODEL: ggml-org/bge-m3-Q8_0-GGUF
+              MEMINI_EMBED_DIMS: "1024"
+              MEMINI_RERANK: http://memini-rerank.memini.svc:8000/v1
+              MEMINI_RERANK_MODEL: Qwen/Qwen3-Reranker-0.6B
+              MEMINI_RERANK_POOL: "50"
+              MEMINI_POSTGRES_DSN:
+                valueFrom:
+                  secretKeyRef:
+                    name: memini
+                    key: dsn
+              MEMINI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: memini
+                    key: api_key
+    persistence:
+      data:
+        enabled: false

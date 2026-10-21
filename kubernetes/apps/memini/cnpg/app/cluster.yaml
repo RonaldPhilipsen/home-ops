@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: memini
+  annotations:
+    # required for seamless bootstrap: https://github.com/cloudnative-pg/cloudnative-pg/issues/5778#issuecomment-2783417464
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
+spec:
+  instances: 1
+  # renovate: datasource=docker depName=ghcr.io/tensorchord/vchord-postgres
+  imageName: ghcr.io/tensorchord/vchord-postgres:pg18-v1.1.1
+  primaryUpdateStrategy: unsupervised
+  nodeSelector:
+    kubernetes.io/hostname: k8s-neo-alpha
+  storage:
+    size: 5Gi
+    storageClass: local-hostpath
+    resizeInUseVolumes: True
+  superuserSecret:
+    name: memini-cnpg-superuser
+  bootstrap:
+    initdb:
+      postRunSQL:
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+  managed:
+    roles:
+      - name: memini
+        login: true
+        superuser: false
+        createdb: false
+        passwordSecret:
+          name: memini-db-credentials
+  monitoring:
+    enablePodMonitor: true
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
