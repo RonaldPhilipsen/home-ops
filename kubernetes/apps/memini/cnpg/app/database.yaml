@@ -7,6 +7,6 @@ spec:
   name: memini
   owner: memini
   cluster:
-    name: memini
+    name: pg-memini
   extensions:
     - name: vchord
