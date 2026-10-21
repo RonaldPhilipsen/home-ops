@@ -9,4 +9,5 @@ spec:
   cluster:
     name: pg-memini
   extensions:
+    - name: vector
     - name: vchord

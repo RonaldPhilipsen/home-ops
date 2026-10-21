@@ -16,8 +16,12 @@ spec:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
     - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: observability
+         - matchLabels:
+             k8s:io.kubernetes.pod.namespace: observability
+     # CNPG operator (status/metrics/SQL channel on the instance)
+     - fromEndpoints:
+         - matchLabels:
+             k8s:io.kubernetes.pod.namespace: database
 
   egress:
     - toEntities:
