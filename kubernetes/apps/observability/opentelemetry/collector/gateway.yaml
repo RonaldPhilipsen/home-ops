@@ -74,6 +74,14 @@ spec:
           - system
         timeout: 2s
         override: false
+    connectors:
+      # Derives RED metrics (traces.span.metrics.calls / .duration / .faults,
+      # dimensioned by service.name, span.name, span.kind, status.code) from
+      # every span the gateway receives. collector.instance.id is the
+      # single-writer guard label; with one replica it only bloats series.
+      spanmetrics:
+        exclude_dimensions:
+          - collector.instance.id
     exporters:
       otlphttp/victoriametrics:
         logs_endpoint: http://victoria-logs-server.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
@@ -110,6 +118,7 @@ spec:
         metrics:
           receivers:
             - otlp
+            - spanmetrics
           processors:
             - memory_limiter
             - resourcedetection
@@ -127,6 +136,7 @@ spec:
             - batch
           exporters:
             - otlphttp/victoriametrics
+            - spanmetrics
       telemetry:
         metrics:
           readers:

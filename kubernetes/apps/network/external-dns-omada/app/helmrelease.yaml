@@ -18,8 +18,8 @@ spec:
       webhook:
         image:
           repository: ghcr.io/ronaldphilipsen/external-dns-omada
-          # First published image tag; bump when a new release is published.
-          tag: v0.1.0-rc0
+          # Bump when a new release is published.
+          tag: v0.1.1
         env:
           - name: OMADA_SERVER
             valueFrom:
@@ -59,6 +59,14 @@ spec:
           # back to external-dns during webhook startup.
           - name: DOMAIN_FILTER
             value: "rphilipsen.nl"
+          # Export OTLP traces and metrics to the gateway collector; the
+          # collector's spanmetrics connector derives RED metrics from the
+          # spans, and VictoriaMetrics/VictoriaTraces/VictoriaLogs serve
+          # them to the omada-otel Grafana dashboard.
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://gateway-collector.observability.svc.cluster.local:4318"
+          - name: OTEL_SERVICE_NAME
+            value: "external-dns-omada"
     extraArgs:
       # Default already; stated explicitly because it binds the two
       # containers together.
