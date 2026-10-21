@@ -9,4 +9,4 @@ spec:
   cluster:
     name: memini
   extensions:
-    - vchord
+    - name: vchord

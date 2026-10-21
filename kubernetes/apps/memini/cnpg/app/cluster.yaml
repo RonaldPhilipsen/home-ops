@@ -9,20 +9,36 @@ metadata:
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 1
-  # renovate: datasource=docker depName=ghcr.io/tensorchord/vchord-postgres
-  imageName: ghcr.io/tensorchord/vchord-postgres:pg18-v1.1.1
+# renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie
   primaryUpdateStrategy: unsupervised
-  nodeSelector:
-    kubernetes.io/hostname: k8s-neo-alpha
+  affinity:
+    enablePodAntiAffinity: false
+    nodeSelector:
+      kubernetes.io/hostname: k8s-neo-alpha
   storage:
     size: 5Gi
     storageClass: local-hostpath
     resizeInUseVolumes: True
   superuserSecret:
     name: memini-cnpg-superuser
+  postgresql:
+    # vchord (VectorChord) must be preloaded; files come from the image
+    # volume extension below
+    shared_preload_libraries:
+      - vchord.so
+    extensions:
+      - name: vchord
+        image:
+          # renovate: datasource=docker depName=ghcr.io/tensorchord/vchord-scratch
+          reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+        dynamic_library_path:
+          - /usr/lib/postgresql/18/lib
+        extension_control_path:
+          - /usr/share/postgresql/18/
   bootstrap:
     initdb:
-      postRunSQL:
+      postInitSQL:
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
   managed:
     roles:
