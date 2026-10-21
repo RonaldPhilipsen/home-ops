@@ -59,6 +59,8 @@ spec:
           volumeMounts:
             - name: models
               mountPath: /models
+            - name: tmp
+              mountPath: /tmp
           livenessProbe:
             httpGet:
               path: /health
@@ -77,4 +79,6 @@ spec:
             failureThreshold: 20
       volumes:
         - name: models
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}
