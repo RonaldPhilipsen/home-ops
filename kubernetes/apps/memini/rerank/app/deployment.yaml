@@ -31,7 +31,6 @@ spec:
           image: vllm/vllm-openai-cpu:v0.32.0
           args:
             - serve
-            - --model
             - Qwen/Qwen3-Reranker-0.6B
             - --runner
             - pooling
