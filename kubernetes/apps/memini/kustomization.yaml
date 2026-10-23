@@ -8,7 +8,7 @@ components:
 resources:
   - ./namespace.yaml
   - ./netpol.yaml
-  # - ./cnpg/ks.yaml
-  # - ./embed/ks.yaml
-  # - ./rerank/ks.yaml
-  # - ./memini/ks.yaml
+  - ./cnpg/ks.yaml
+  - ./embed/ks.yaml
+  - ./rerank/ks.yaml
+  - ./memini/ks.yaml

@@ -3,32 +3,56 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: memini
+  name: &name memini
   namespace: memini
 spec:
-  interval: 1h
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: memini
+  upgrade:
+    force: true
   values:
+    global:
+      fullnameOverride: *name
     defaultPodOptions:
       nodeSelector:
         kubernetes.io/hostname: k8s-neo-alpha
     controllers:
       main:
         type: deployment
+        replicas: 1
+        pod:
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
         containers:
           main:
             image:
-              tag: 0.7.36
+              # chart default points at the developer's private registry
+              repository: ghcr.io/eleboucher/memini
+              tag: "0.7.37"
+              digest: ""
+            resources:
+              requests:
+                cpu: 25m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
             env:
               MEMINI_BACKEND: postgres
+              MEMINI_LOG_FORMAT: json
+              MEMINI_DEMOTE_AFTER: 1440h
+              MEMINI_TOMBSTONE_TTL: 720h
               MEMINI_EMBED_BASE_URL: http://memini-embed.memini.svc:8000/v1
-              MEMINI_EMBED_MODEL: ggml-org/bge-m3-Q8_0-GGUF
+              MEMINI_EMBED_MODEL: qwen3-embedding-0.6b
               MEMINI_EMBED_DIMS: "1024"
+              MEMINI_EMBED_QUERY_PREFIX: "Instruct: Given a user message, retrieve relevant past memories\nQuery: "
+              MEMINI_RECALL_EMBED_TIMEOUT: "10s"
+              MEMINI_EMBED_MAX_CONCURRENCY: "2"
               MEMINI_RERANK: http://memini-rerank.memini.svc:8000/v1
-              MEMINI_RERANK_MODEL: Qwen/Qwen3-Reranker-0.6B
-              MEMINI_RERANK_POOL: "50"
+              MEMINI_RERANK_MODEL: qwen3-reranker-0.6b
+              MEMINI_RERANK_MAX_DOC_CHARS: "4000"
               MEMINI_POSTGRES_DSN:
                 valueFrom:
                   secretKeyRef:
@@ -42,3 +66,24 @@ spec:
     persistence:
       data:
         enabled: false
+    serviceMonitor:
+      main:
+        enabled: true
+    route:
+      main:
+        enabled: true
+        parentRefs:
+          - name: agentgateway-external
+            namespace: network
+            sectionName: https
+        hostnames:
+          - memini.rphilipsen.nl
+      # Split-horizon: same host, internal gateway serves the UI on-LAN.
+      ui:
+        enabled: true
+        parentRefs:
+          - name: agentgateway-internal
+            namespace: network
+            sectionName: https
+        hostnames:
+          - memini.rphilipsen.nl
