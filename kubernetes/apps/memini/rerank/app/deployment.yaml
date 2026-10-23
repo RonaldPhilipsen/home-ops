@@ -50,7 +50,6 @@ spec:
             - --ubatch-size
             - "4096"
             - --no-mmap
-            - "300"
             - --metrics
           env:
             - name: HF_HOME
