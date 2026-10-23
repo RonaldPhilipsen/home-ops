@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/operator.victoriametrics.com/vmservicescrape_v1beta1.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: external-dns-omada
+spec:
+  endpoints:
+    - path: /metrics
+      port: http
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: external-dns-omada

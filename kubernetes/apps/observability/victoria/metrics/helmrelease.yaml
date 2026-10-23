@@ -116,13 +116,13 @@ spec:
       enabled: true
 
     kubelet:
-      enabled: false
+      enabled: true
 
     kubeApiServer:
-      enabled: false
+      enabled: true
 
     kubeControllerManager:
-      enabled: false
+      enabled: true
       service:
         selector:
           component: kube-apiserver # Selects controller node IPs
@@ -136,7 +136,7 @@ spec:
                 insecureSkipVerify: true
 
     kubeEtcd:
-      enabled: false
+      enabled: true
       service:
         selector:
           component: kube-apiserver # Selects controller node IPs
@@ -154,4 +154,4 @@ spec:
       enabled: false
 
     coreDns:
-      enabled: false
+      enabled: true
