@@ -33,9 +33,6 @@ spec:
             - qwen3-reranker-0.6b
             - --port
             - "8000"
-            # Qwen3-Reranker needs rank pooling; --reranking + --pooling rank
-            # exposes the Cohere-style /v1/rerank endpoint memini calls
-            - --reranking
             - --pooling
             - rank
             - --embedding
