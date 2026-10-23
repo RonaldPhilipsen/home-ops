@@ -49,8 +49,6 @@ spec:
             - "8192"
             - --ubatch-size
             - "4096"
-            - --cache-ram
-            - "0"
             - --no-mmap
             - --sleep-idle-seconds
             - "300"
