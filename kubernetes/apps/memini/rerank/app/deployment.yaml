@@ -27,10 +27,8 @@ spec:
           # renovate: datasource=docker depName=ghcr.io/ggml-org/llama.cpp
           image: ghcr.io/ggml-org/llama.cpp:server-rocm-b11783
           args:
-            - --hf-repo
-            - puppyM/bge-reranker-v2-m3-Q4_K_M-GGU
-            - --hf-file
-            - bge-reranker-v2-m3-q4_k_m.gguf
+            - -hf
+            - ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF
             - --alias
             - qwen3-reranker-0.6b
             - --port
