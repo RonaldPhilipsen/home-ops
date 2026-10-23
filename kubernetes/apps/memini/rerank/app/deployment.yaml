@@ -31,8 +31,6 @@ spec:
             - Voodisss/Qwen3-Reranker-0.6B-GGUF-llama_cpp:Q4_K_M
             - --alias
             - qwen3-reranker-0.6b
-            - --host
-            - 0.0.0.0
             - --port
             - "8000"
             # Qwen3-Reranker needs rank pooling; --reranking + --pooling rank
