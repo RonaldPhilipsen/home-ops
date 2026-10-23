@@ -86,4 +86,4 @@ spec:
             namespace: network
             sectionName: https
         hostnames:
-          - memini.rphilipsen.nl
+          - memini-ui.rphilipsen.nl
