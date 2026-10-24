@@ -130,8 +130,8 @@ spec:
         hostnames:
           - "vernemq.rphilipsen.nl"
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
             sectionName: https
         rules:
           - matches:
