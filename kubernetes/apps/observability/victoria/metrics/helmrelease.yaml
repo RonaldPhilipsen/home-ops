@@ -83,8 +83,8 @@ spec:
       route:
         enabled: true
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
         hostnames: ["vmsingle.rphilipsen.nl"]
 
     vmagent:

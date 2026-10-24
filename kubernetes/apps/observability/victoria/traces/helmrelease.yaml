@@ -32,8 +32,8 @@ spec:
         hostnames:
           - "vtraces.rphilipsen.nl"
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
       serviceMonitor:
         enabled: true
       resources:

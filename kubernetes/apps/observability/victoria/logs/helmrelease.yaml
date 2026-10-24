@@ -30,8 +30,8 @@ spec:
         hostnames:
           - "vlogs.rphilipsen.nl"
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
         extraRules:
           - filters:
               - type: RequestRedirect
