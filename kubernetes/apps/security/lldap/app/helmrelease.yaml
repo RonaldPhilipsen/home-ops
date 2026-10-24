@@ -70,8 +70,8 @@ spec:
       main:
         hostnames: ["ldap.rphilipsen.nl"]
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
             port: 443
         rules:
           - backendRefs:

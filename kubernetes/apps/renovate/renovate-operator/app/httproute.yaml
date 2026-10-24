@@ -8,8 +8,8 @@ spec:
   hostnames:
     - renovate.rphilipsen.nl
   parentRefs:
-    - name: agentgateway-internal
-      namespace: network
+    - name: internal
+      namespace: kube-system
       sectionName: https
   rules:
     - backendRefs:
@@ -26,8 +26,8 @@ spec:
   hostnames:
     - renovate-webhook.rphilipsen.nl
   parentRefs:
-    - name: agentgateway-external
-      namespace: network
+    - name: external
+      namespace: kube-system
       sectionName: https
   rules:
     - matches:

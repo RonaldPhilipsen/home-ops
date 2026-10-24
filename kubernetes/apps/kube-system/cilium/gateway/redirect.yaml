@@ -8,8 +8,8 @@ metadata:
     external-dns.kubernetes.io/controller: none
 spec:
   parentRefs:
-    - name: agentgateway-external
-      namespace: network
+    - name: external
+      namespace: kube-system
       sectionName: http
   rules:
     - filters:

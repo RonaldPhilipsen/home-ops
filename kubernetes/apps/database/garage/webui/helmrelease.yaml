@@ -48,8 +48,8 @@ spec:
       app:
         hostnames: ["garageui.rphilipsen.nl"]
         parentRefs:
-          - name: agentgateway-internal
-            namespace: network
+          - name: internal
+            namespace: kube-system
             sectionName: https
         rules:
           - backendRefs:

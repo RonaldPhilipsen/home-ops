@@ -71,8 +71,8 @@ spec:
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:
-          - name: agentgateway-external
-            namespace: network
+          - name: external
+            namespace: kube-system
             sectionName: https
         hostnames:
           - &host matrix.rphilipsen.nl
@@ -80,8 +80,8 @@ spec:
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:
-          - name: agentgateway-external
-            namespace: network
+          - name: external
+            namespace: kube-system
             sectionName: https
         hostnames:
           - rphilipsen.nl
@@ -100,8 +100,8 @@ spec:
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:
-          - name: agentgateway-external
-            namespace: network
+          - name: external
+            namespace: kube-system
             sectionName: https
         hostnames:
           - rphilipsen.nl
