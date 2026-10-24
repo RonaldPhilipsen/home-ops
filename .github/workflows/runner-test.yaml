@@ -1,0 +1,11 @@
+name: runner-test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: home-ops-runner
+    steps:
+      - name: Smoke test
+        run: echo "self-hosted runner ok"

@@ -28,5 +28,5 @@ patches:
         path: /subjects/0/name
         value: semversie-runner
     target:
-      kind: ClusterRoleBinding
+      kind: RoleBinding
       name: runner
