@@ -45,10 +45,10 @@ spec:
             - port: "9091"
               protocol: TCP
     - toEndpoints:
-        # OAuth issuer LB IP resolves in-cluster to agentgateway-external, which has its own identity so toFQDNs doesn't match
+        # OAuth issuer LB IP resolves in-cluster to external, which has its own identity so toFQDNs doesn't match
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: network
-            k8s:app.kubernetes.io/name: agentgateway-external
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:app.kubernetes.io/name: external
       toPorts:
         - ports:
             - port: "443"
