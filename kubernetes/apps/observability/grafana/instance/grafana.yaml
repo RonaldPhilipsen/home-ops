@@ -96,8 +96,8 @@ spec:
       hostnames:
         - grafana.rphilipsen.nl
       parentRefs:
-        - name: agentgateway-external
-          namespace: network
+        - name: external
+          namespace: kube-system
           sectionName: https
       rules:
         - backendRefs:

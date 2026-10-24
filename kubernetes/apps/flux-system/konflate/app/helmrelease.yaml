@@ -22,8 +22,8 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
       parentRefs:
-        - name: agentgateway-external
-          namespace: network
+        - name: external
+          namespace: kube-system
       hostnames:
         - "{{ .Release.Name }}.rphilipsen.nl"
     monitoring:
