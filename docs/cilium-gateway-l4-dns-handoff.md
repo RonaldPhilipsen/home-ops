@@ -1,136 +1,73 @@
 # Cilium Gateway — L4 Routes + DNS Migration: STATUS / HANDOFF
 
-_Last updated: 2026-10-25 (session shutdown handoff). Read top to bottom._
+_Last updated: 2026-10-25 (post L4-DNS ship). Read top to bottom._
 
 ## TL;DR — where we are right now
-Migrating all ingress/L4 through **Cilium Gateway** (`external`+`internal` in `kube-system`) replacing agentgateway (already done) **and** the per-service LoadBalancer services. L4 TCP/UDP routes are in place and co-located with each app.
+All ingress/L4 runs through **Cilium Gateway** (`external` + `internal` in `kube-system`). L4 TCP/UDP routes are in place, co-located with each app, and **resolved to the gateway IPs via DNSEndpoints published by external-dns to the LAN resolvers**. Committed + pushed; Flux reconciled.
 
-**STATUS: core edits DONE (not yet committed).** (1) 11 L4 routes now carry `external-dns.alpha.kubernetes.io/hostname` (bedrock = opt-out, no DNS). (2) 5 LB services converted to ClusterIP + their `external-dns.kubernetes.io/hostname`/`lbipam` annotations removed; `postgres-lb` DELETED (pooler ClusterIP already exists). All 11 routes pass server dry-run. Remaining: commit+push, then post-reconcile verify (external-dns logs, records -> .30/.31, no record conflicts, svc types).
-Annotation key used: `external-dns.alpha.kubernetes.io/hostname` (matches v0.13.1 docs; deployed external-dns is v0.23.0; gh/raw blocked in this env so could not re-verify the v0.23.0 key against source. If a record does not appear, check external-dns logs for the exact key it expects.)
-1. Map the **internal L4 routes** (and external `minecraft`) to DNS names via the external-dns Gateway API `hostname` annotation → records target the gateway IP. **Skip bedrock.**
-2. Turn the per-service **LoadBalancer** services into **ClusterIP** — *only where no other service is already defined* for that backend.
-3. **OPEN QUESTION (must verify):** is `external-dns.alpha.kubernetes.io/hostname` still the right annotation in the **latest** external-dns? (v0.13.1 docs say yes for TCP/UDP routes; the deployed version may be newer and may use a non-alpha key.)
-4. Commit + push when done.
+**Final DNS design (shipped in `563fdd050` + `8aa75bd65`):**
+1. **L7 (HTTPRoutes)** — cloudflare-dns (public, `--source=gateway-httproute --gateway-name=external`) + omada + pihole (LAN). Route `target` annotations CNAME app names → `external./internal.rphilipsen.nl`; the gateway LB services (`cilium-gateway-external`/`-internal`, **Cilium-owned, not repo-managed**) carry `external-dns.kubernetes.io/hostname: external./internal.rphilipsen.nl` on their `service` source → A `172.16.20.30` / `172.16.20.31`.
+2. **L4 (TCP/UDP routes)** — each route carries `external-dns.kubernetes.io/controller: none` (opt-out of every external-dns Gateway source, so no broken CNAME-to-tunnel records for L4). A records are plain `DNSEndpoint`s in `kubernetes/apps/network/external-dns-omada/app/dnsendpoint-l4.yaml`:
+   - `l4-external`: `mc.rphilipsen.nl` A 172.16.20.30
+   - `l4-internal`: `mc-rcon`, `mc-metrics`, `mqtt`, `postgres`, `qbittorrent`, `esphome-build`, `syslog` `.rphilipsen.nl` A 172.16.20.31
+   - Published by the **pihole** instance (stable resolver, `crd` source) and the **omada** instance (best-effort; omada server not guaranteed up).
+3. **cloudflare-dns dropped its `crd` source** — no more DNSEndpoint churn in the public zone, and the pre-existing `omada.rphilipsen.nl` A→192.168.0.2 400 (proxied private IP) loop is gone. `external.rphilipsen.nl` + `internal.rphilipsen.nl` CNAMEs in CF are now **manually managed** (the cloudflare-tunnel DNSEndpoints no longer feed cloudflare-dns; their TXT owner lines become orphaned, so sync won't delete them).
 
-**Because of the 30-min shutdown: the work below may be PARTIALLY applied. Check `git status` to see what's staged/committed before continuing.**
+**Known, accepted duplication (user: "I'll clear the duplicate out later"):** the 5 ex-LB app services (`minecraft`, `vernemq`, `pooler`-via-`postgres-lb` history, `esphome-peer-link`, `syslog-lb`) still carry `external-dns.kubernetes.io/hostname` annotations, so the `service` source emits A records for `mc`/`mqtt`/`postgres`/`esphome-build`/`syslog` pointing at their **old LB VIPs** (.150/.102/.101/.103/.104) — which still work (same backend). For those 5 names the service-source record currently **wins** over the DNSEndpoint in the LAN resolvers; the 3 new names (mc-rcon, mc-metrics, qbittorrent) resolve to .31 cleanly. To finish the migration: remove the `external-dns.kubernetes.io/hostname` annotations from those 5 service manifests (grep `kubernetes/apps` for the key; keep it only on the two `kube-system/cilium/gateway/*.yaml` gateway services). `upsert-only` policies will then update (not delete) the LAN records to the gateway IPs. Note: `upsert-only` never deletes, so any leftover record is rewritten in place on the next cycle.
 
----
+## Verification state (all green, 2026-10-25)
+- All 9 TCPRoutes + both UDPRoutes `Programmed`; all 11 carry `controller: none` (bedrock included — intentionally no DNS).
+- LAN dig via pi-hole (172.16.20.7, queried from a hostNetwork pod in kube-system — plain pod→LAN DNS queries time out on return route, that's expected): `mc-rcon`/`mc-metrics`/`qbittorrent` → .31; `mc`→.150, `mqtt`→.102, `postgres`→.101, `esphome-build`→.103, `syslog`→.104 (accepted duplication, see above); `grafana` → .30 (L7 path intact).
+- `external-dns-pihole` + `external-dns-omada`: "All records are already up to date", no errors. Recurring benign warning on both: `Domain external.rphilipsen.nl contains conflicting record type candidates; discarding CNAME record` (service-source A .30 beats cloudflare-tunnel CNAME — desired, LAN skips the tunnel loopback).
+- `cloudflare-dns`: "All records are already up to date", zero errors/400s in last 10m.
 
-## Objective
-- Single Cilium Gateway for all ingress/egress. L4 (TCP/UDP) via `TCPRoute`/`UDPRoute`. Remove per-service `LoadBalancer` services; DNS for those services now points at the **gateway IP** via external-dns (Gateway API source), not the individual LB VIPs.
+## external-dns v0.23.0 gotchas (learned the hard way)
+- `--policy` must be set explicitly (validation is fatal without it).
+- **No `--crd-source-namespaces` flag exists** (only `--crd-source-apiversion` / `--crd-source-kind`) — per-provider DNSEndpoint scoping is impossible; `--annotation-filter` is global (affects all sources) → the only clean scoping lever is the `controller: none` opt-out annotation.
+- `controller: none` is honored by the gateway sources at the informer-index level (log: "Skipping ... controller value does not match, found: 'none'").
+- The chart builds RBAC from the `sources` list — adding `crd` auto-grants DNSEndpoint list/watch.
+- cloudflare-dns SA has **no** RBAC to list Service/Node/Pod/EndpointSlice → inmemory/dry-run pods emulating `--source=service` will fail; dry-runs must drop that source.
+- Same name+type from two sources with different targets: one candidate wins (empirically the `service` source beat `crd`); no merge, no warning.
 
-## Key facts (verified against the live cluster)
-- Repo: `/home/ronald245/Documents/Source/home-ops`; Flux GitOps, branch `main`. Cilium 1.20.4, K8s v1.37.
-- **Gateways** (`kube-system`): `external` = **172.16.20.30**, `internal` = **172.16.20.31**. Both `Programmed`. L4 listeners already added (see "Listeners").
-- `cilium-gateway-external`/`cilium-gateway-internal` LB Services are **Cilium-owned** (ownerRef→Gateways), durable, NOT repo-managed.
-- **TCPRoute + UDPRoute = `gateway.networking.k8s.io/v1`.**
-- **external-dns instances + sources:**
-  - `cloudflare-dns` (public): sources `crd` + `gateway-httproute`, flag `--gateway-name=external` → **only** creates records for routes on the **external** gateway.
-  - `external-dns-omada` (LAN): sources `gateway-httproute` + `service` + `crd`, no `--gateway-name` → all gateways.
-  - `external-dns-pihole` (LAN): sources `gateway-httproute` + `service`, no `--gateway-name` → all gateways.
-  - ⇒ **Internal** routes get LAN DNS (omada/pihole) → `.31`. **External** routes get public (cloudflare) + LAN → `.30`.
-- **DNS mechanism for TCP/UDP routes** (per external-dns Gateway API tutorial): TCP/UDP route specs have no hostnames; the hostname is supplied by the annotation. v0.13.1 = `external-dns.alpha.kubernetes.io/hostname`. Target = parent Gateway address. (VERIFY latest key — see Open Question.)
-- The `gateway-httproute` source reads Gateways + HTTPRoute + TLSRoute + **TCPRoute + UDPRoute** (RBAC in tutorial lists tcproutes/udproutes).
+## Key facts
+- Repo: `/home/ronald245/Documents/Source/home-ops`; Flux GitOps, branch `main`. Cilium 1.20.4, K8s v1.36.2, Talos 1.14.
+- Gateways (`kube-system`): `external` = **172.16.20.30**, `internal` = **172.16.20.31**, both `Programmed`. LB services are Cilium-owned (durable, not repo-managed).
+- external-dns instances (ns `network`, image v0.23.0): `cloudflare-dns` (public zone, `gateway-httproute` only), `external-dns-omada` (webhook `ghcr.io/ronaldphilipsen/external-dns-omada:v0.1.2`, sources httproute/tcproute/udproute/service/crd, upsert-only), `external-dns-pihole` (server 172.16.20.7:81, same sources, upsert-only).
+- Tunnel: cloudflared in `cloudflare-tunnel` is **HTTPS-only** (no L4 ingress) — the reason L4 can't use the CNAME-to-tunnel shape.
+- LB IP pool 172.16.20.0/24; `CiliumL2AnnouncementPolicy l2-policy` announces the LB IPs (LAN reachability).
 
-## Backend services + intended DNS names
-| Route (gateway / section) | Port/Proto | Backend svc (ns) | Intended FQDN | Notes |
-|---|---|---|---|---|
-| minecraft (external) | 25565/tcp | `minecraft` (games) | `mc.rphilipsen.nl` | |
-| minecraft-bedrock (external) | 19132/udp | `minecraft` (games) | — **SKIP** | user: skip for now |
-| minecraft-rcon (internal) | 25575/tcp | `minecraft` (games) | `mc-rcon.rphilipsen.nl` | new name (no prior DNS) |
-| minecraft-metrics (internal) | 25585/tcp | `minecraft` (games) | `mc-metrics.rphilipsen.nl` | new name (no prior DNS) |
-| vernemq (internal) | 1883/tcp | `vernemq` (database) | `mqtt.rphilipsen.nl` | existing name |
-| vernemq-tls (internal) | 8883/tcp | `vernemq` (database) | `mqtt.rphilipsen.nl` | same host as 1883 |
-| postgres (internal) | 5432/tcp | `pooler` (database) | `postgres.rphilipsen.nl` | existing name |
-| esphome-peer-link (internal) | 6052/tcp | `esphome-peer-link` (home-automation) | `esphome-build.rphilipsen.nl` | existing name |
-| esphome-peer-link-pairing (internal) | 6055/tcp | `esphome-peer-link` (home-automation) | `esphome-build.rphilipsen.nl` | same host |
-| qbittorrent (internal) | 50413/tcp | `qbittorrent` (media) | `qbittorrent.rphilipsen.nl` | new name (no prior DNS); **tcp only, no udp on svc** |
-| syslog (internal) | 5514/udp | `syslog-lb` (observability) | `syslog.rphilipsen.nl` | existing name |
+## L4 routes (co-located, all `controller: none`)
+| File | Routes |
+|---|---|
+| `kubernetes/apps/games/minecraft/app/gateway-l4.yaml` | mc 25565/tcp (ext), bedrock 19132/udp (ext, no DNS), mc-rcon 25575 (int), mc-metrics 25585 (int) |
+| `kubernetes/apps/database/vernemq/app/gateway-l4.yaml` | mqtt 1883, mqtt 8883 (int) |
+| `kubernetes/apps/database/cloudnative-pg/cluster/gateway-l4.yaml` | postgres 5432 (int) |
+| `kubernetes/apps/media/qbittorrent/app/gateway-l4.yaml` | qbittorrent 50413 (int, tcp only) |
+| `kubernetes/apps/home-automation/esphome/app/gateway-l4.yaml` | esphome-build 6052 + 6055 (int) |
+| `kubernetes/apps/observability/opentelemetry/collector/gateway-l4.yaml` | syslog 5514/udp (int) |
 
-## L4 listeners (already added, on the Gateways in kube-system)
-- `external.yaml`: `minecraft` 25565/TCP, `minecraft-bedrock` 19132/UDP (each `allowedRoutes.namespaces.from: All`).
-- `internal.yaml`: `minecraft-rcon` 25575/TCP, `minecraft-metrics` 25585/TCP, `vernemq` 1883/TCP, `vernemq-tls` 8883/TCP, `postgres` 5432/TCP, `esphome-peer-link` 6052/TCP, `esphome-peer-link-pairing` 6055/TCP, `qbittorrent` 50413/TCP, `syslog` 5514/UDP (each `allowedRoutes.namespaces.from: All`).
+Listeners: `external.yaml` (minecraft 25565/TCP, minecraft-bedrock 19132/UDP); `internal.yaml` (the other 9). Each `allowedRoutes.namespaces.from: All`.
 
-## L4 route files (co-located with apps; created this session)
-Currently each has `annotations: external-dns.kubernetes.io/controller: none` (a STOPGAP opt-out from the previous instruction). **These need to be replaced** with the Gateway API `hostname` annotation (the active task):
-- `kubernetes/apps/games/minecraft/app/gateway-l4.yaml` (4 routes)
-- `kubernetes/apps/database/vernemq/app/gateway-l4.yaml` (2)
-- `kubernetes/apps/database/cloudnative-pg/cluster/gateway-l4.yaml` (1)
-- `kubernetes/apps/media/qbittorrent/app/gateway-l4.yaml` (1)
-- `kubernetes/apps/home-automation/esphome/app/gateway-l4.yaml` (2)
-- `kubernetes/apps/observability/opentelemetry/collector/gateway-l4.yaml` (1)
-Each is wired into its app `kustomization.yaml` (`- ./gateway-l4.yaml`).
-Note: qbittorrent app kustomization also references `../../media-nfs.yaml` (pre-existing; isolated `kubectl kustomize` of that app dir fails on the load-restrictor — build from `media/` root or use `kustomize build --load-restrictor=LoadRestrictionsNone`).
+## Open items
+1. **User cleanup**: remove `external-dns.kubernetes.io/hostname` from the 5 ex-LB app services (see TL;DR); then re-dig the 5 names → gateway IPs.
+2. **Manual CF cleanup** (console/API, unowned records): old LB A records `mc`→.150, `mqtt`→.102, `postgres`→.101, `esphome-build`→.103, `syslog`→.104 (dead private IPs); `mc` CNAME → `home.rphilipsen.nl` (kept by design: public mc name, see below); orphaned TXT owner lines for `external./internal.rphilipsen.nl`.
+3. **Manual router work**: home-router 25565 forward re-pointed from 172.16.20.150 to 172.16.20.30 (public mc traffic).
+4. **8883/mqtts gap (pre-existing, app-level)**: vernemq chart has no TLS — listener is Programmed but nothing listens; `openssl s_client -connect 172.16.20.31:8883` → handshake failure. Needs a TLS cert + vernemq config, separate task.
+5. **L7 301-flap investigation (stale)**: 301 bursts on .30:443 reported pre-migration; L2 pin experiment (`l2-policy` pinned to k8s-neo-alpha) showed 0 bad / 270 reqs and was reverted; not reproducible since. If it recurs, re-run the pin test.
 
-## LoadBalancer services to convert → ClusterIP
-Each currently carries `external-dns.kubernetes.io/hostname` (via the `service` source). **When converting to ClusterIP, REMOVE the hostname annotation** (else the `service` source creates a record pointing at a non-routable ClusterIP). Also check the "no other service defined" condition per backend:
-- `games/minecraft/app/helmrelease.yaml` — LB svc `minecraft`, line ~105-107 (`mc.rphilipsen.nl`).
-- `database/vernemq/app/helmrelease.yaml` — LB svc `vernemq`, line ~102-104 (`mqtt.rphilipsen.nl`).
-- `database/cloudnative-pg/cluster/service.yaml` — LB svc `postgres-lb` (`postgres.rphilipsen.nl`, `lbipam.cilium.io/ips: 172.16.20.101`). **A `pooler` ClusterIP service already exists** (route already targets `pooler`) → likely just **delete** `postgres-lb`, don't create a new ClusterIP.
-- `home-automation/esphome/app/helmrelease.yaml` — LB svc `esphome-peer-link`, line ~71-73 (`esphome-build.rphilipsen.nl`). A separate `esphome-app` ClusterIP exists (different purpose/ports) → convert `esphome-peer-link` to ClusterIP.
-- `observability/opentelemetry/collector/syslog-lb.yaml` — LB svc `syslog-lb` (`syslog.rphilipsen.nl`, `lbipam.cilium.io/ips: 172.16.20.104`) → convert to ClusterIP.
-- `media/qbittorrent` — **verify** its service type in `app/helmrelease.yaml` (was not in the hostname grep; check whether it even has an LB svc / `lbipam` IP before converting).
+## Public `mc.rphilipsen.nl` — manual, by design
+Public CF record is a pre-existing **unowned** CNAME → `home.rphilipsen.nl` (A 95.98.157.200, home box). Sync won't touch it (no ownership TXT). After the router-forward re-point (open item 3), 25565 lands on 172.16.20.30 → gateway → mc pods. Do NOT let external-dns claim this name (that's what burned us before: tunnel CNAME shape breaks L4).
 
-"where there's no other service defined" = if a ClusterIP for the same backend already exists, don't add a second one (remove the LB svc / point the route at the existing ClusterIP).
+## Files
+- `kubernetes/apps/network/external-dns-omada/app/dnsendpoint-l4.yaml` — the L4 A records (l4-external / l4-internal).
+- `kubernetes/apps/network/external-dns-omada/app/kustomization.yaml` — includes it.
+- `kubernetes/apps/network/cloudflare-dns/app/helmrelease.yaml` — L7-only sources.
+- `kubernetes/apps/network/external-dns-{omada,pihole}/app/helmrelease.yaml` — both with `crd` source.
+- `docs/superpowers/specs/2026-10-24-cilium-gateway-migration-design.md` — design history (untracked, local only).
 
-## Decisions (this session)
-- Routes co-located with apps (not central) per user. Listeners stay on Gateways (kube-system). Cross-ns `parentRef` works because Gateways allow routes from `All` namespaces.
-- DNS for L4 services moves from per-LB-VIP to the gateway IP (via route hostname annotation).
-- qbittorrent: **TCP only** (its service has no UDP port).
-- rcon + metrics exposed on **internal** gateway only (LAN), with new subdomains.
-- Skip bedrock DNS.
+## Untracked (do not commit)
+`.worktrees/`, `Security-audit.md`, `docs/superpowers/`.
 
-## OPEN QUESTION (resolve before finalizing annotation)
-- Is `external-dns.alpha.kubernetes.io/hostname` still valid in the **deployed/latest** external-dns, or is there a GA (non-`alpha`) key now? Check the deployed image tag (`kubectl -n <ns> get deploy/<external-dns> -o jsonpath='{.spec.template.spec.containers[0].image}'` for cloudflare/omada/pihole) and the matching docs.
-  - v0.13.1 (fetched): TCP/UDP routes → `external-dns.alpha.kubernetes.io/hostname` (annotation), RBAC includes tcproutes/udproutes.
-  - If a newer GA key exists, use it. If unsure, keep `external-dns.alpha.kubernetes.io/hostname` (widely supported) and confirm via external-dns logs after apply.
-
-## Verification (run after changes)
-1. `kubectl kustomize <each app dir>` (or `kustomize build --load-restrictor=LoadRestrictionsNone` for qbittorrent) → routes present with the hostname annotation.
-2. `kubectl apply --dry-run=server -f <each gateway-l4.yaml>` → schema OK.
-3. After push + Flux reconcile: `kubectl get tcproute,udproute -A` → `Programmed`; `kubectl get svc -A | grep LoadBalancer` → the 5 converted ones now `ClusterIP`.
-4. Check external-dns logs (cloudflare/omada/pihole) for the new records (`mc.rphilipsen.nl→.30`, `mqtt/postgres/esphome-build/syslog/mc-rcon/mc-metrics/qbittorrent .rphilipsen.nl→.31`) and **no conflicts**.
-5. `dig`/`nslookup` a couple of names to confirm public vs LAN resolution.
-
-## Remaining (core edits are DONE + validated)
-- [ ] Verify latest external-dns hostname annotation key (Open Question).
-- [ ] Replace `controller: none` on the 6 `gateway-l4.yaml` files with the `hostname` annotation (per table above; bedrock → keep opt-out/no DNS).
-- [ ] Convert the 5 LB services → ClusterIP (+ remove their hostname annotations); handle `postgres-lb` (delete, `pooler` exists) and verify qbittorrent svc first.
-- [ ] Commit + push (message e.g. "map L4 routes to DNS via gateway; LB→ClusterIP").
-- [ ] Reconcile + verify (see Verification).
-
-## Untracked (do not accidentally commit unrelated files)
-`.worktrees/`, `Security-audit.md`, `docs/superpowers/` (this handoff is in `docs/`).
-
----
-
-## SHUTDOWN SNAPSHOT — 2026-10-25 (end of session)
-
-### What's running (verified before shutdown)
-- **All 11 L4 routes live + verified OPEN** through gateway VIPs (mc 25565, bedrock 19132/udp, rcon 25575, metrics 25585, mqtt 1883, mqtts 8883, postgres 5432, esphome 6052+6055, qbittorrent 50413, syslog 5514/udp).
-- **L7 HTTPS working** (user confirmed recovery): grafana/matrix/lidarr etc. served correctly.
-- Commits pushed: `cef79ef9d` (world in netpols), `bef0ddd3a` (drop TLSRoute kind — listener fix), `fff040b6e` (ingress entity in all 12 CNPs). No uncommitted tracked changes expected.
-- `postgres-lb` LB deleted (pooler ClusterIP serves 5432). `database/pooler` svc still LB 172.16.20.141 (cnpg-owned, unchanged).
-
-### Ops fixes applied out-of-band (NOT in repo)
-- Deleted rogue `default/external` + `default/internal` Gateways (created by a `kubectl apply` of the kube-system gateway manifest without namespace).
-- `kubectl rollout restart ds/cilium -n kube-system` (agents: `cilium-2xrqd` alpha, `cilium-q94xn` beta).
-
-### Known issue OPEN: L7 via VIP flaps
-- External VIP 172.16.20.30 :443 intermittently answers **301→`https://host:443/...`** (gateway-envoy port-80-style redirect from the *insecure* filter chain) or **404** (same for internal hosts), in bursts; **200s in other bursts**. L4 always OPEN; HTTP :80→:443 redirect always correct.
-- Both agents' local data planes verified GOOD (`openssl s_client` to 127.0.0.1:12879/17987 with SNI → real Grafana 200). Envoy static config on both nodes correct (14 ext vhosts / 18 int vhosts on secure chains; insecure chain = 1 vhost + https-redirect).
-- No nft `l7proxy` table — L7 is TPROXY via `CILIUM_PRE_mangle` rules. No :443 socket on nodes.
-- Hypothesis: upstream Cilium 1.20.4 gateway data-plane bug (TLS→insecure-chain misroute under VRRP/TPROXY). **1.20.4 is the newest chart on quay** (next = 1.21+).
-- Next experiment: pin `CiliumL2AnnouncementPolicy l2-policy` to one node (remove VRRP as variable), observe 301s. If they stop → per-node issue; if not → upstream bug.
-
-### DNS (external-dns v0.23.0, ns `network`) — NOT finished
-- Route hostname annotations + LB→ClusterIP converted work is done/committed (see table above).
-- Stale records still pointing at old LB IPs: mc→.150, mqtt→.102, postgres→.101, esphome-build→.103, syslog→.104. Missing records: mc-rcon, mc-metrics, qbittorrent (.rphilipsen.nl).
-- `edns-dryrun` pod (ns network) was deleted; recreate: args `--policy=upsert-only --log-level=debug --once --dry-run`, env `CF_DNS_API_TOKEN` from secret `cloudflare-dns-secret` key `api-token`. Verify L4 hostnames appear (if not: v0.23.0 gateway-httproute source may not emit TCP/UDP route records — check, consider DNSEndpoint CRD fallback).
-- Pre-existing, unrelated: `external-dns-omada` 500s (omada down); `cloudflare-dns` loops CREATE `omada.rphilipsen.nl→192.168.0.2` 400 (proxied record).
-- MCP `get_kubernetes_resources` is flaky here — use `kubectl` (context `admin@kubernetes`).
-
-### To do on next session (priority order)
-1. L2-policy pin test (above) → resolve the 301 flap.
-2. DNS dry-run + fix stale/missing records.
-3. Update this doc + `2026-10-24-cilium-gateway-migration-design.md` with final state.
+## Env quirks
+- In this environment the lowercase kubectl resource token for DNSEndpoint gets mangled in output (`dnseンドpoint`); work around with `R="dn""se""n""dpoint"; kubectl get "$R"`.
+- Plain pod → LAN DNS (UDP 53) queries time out (return route); query from `hostNetwork: true` pods in `kube-system` (default ns is PSA baseline).
