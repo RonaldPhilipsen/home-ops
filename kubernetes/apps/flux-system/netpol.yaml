@@ -10,6 +10,8 @@ spec:
         - host
         - remote-node
         - cluster
+    - fromEntities:
+        - world
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: flux-system

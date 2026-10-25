@@ -11,6 +11,8 @@ spec:
         - remote-node
     - fromEntities:
         - world
+    - fromEntities:
+        - world
       toPorts:
         - ports:
             - port: "443"
