@@ -5,6 +5,7 @@ metadata:
   name: qbittorrent
   namespace: media
   annotations:
+    external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: qbittorrent.rphilipsen.nl
 spec:
   parentRefs:

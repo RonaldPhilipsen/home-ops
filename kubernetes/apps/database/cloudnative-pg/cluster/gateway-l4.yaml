@@ -5,6 +5,7 @@ metadata:
   name: postgres
   namespace: database
   annotations:
+    external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: postgres.rphilipsen.nl
 spec:
   parentRefs:

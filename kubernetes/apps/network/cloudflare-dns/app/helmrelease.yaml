@@ -26,19 +26,19 @@ spec:
           secretKeyRef:
             name: &secret cloudflare-dns-secret
             key: api-token
+    # The public zone only carries the L7 CNAMEs to the tunnel. L4 (TCP/UDP)
+    # names are A records to the (private) gateway IPs, so they live only in
+    # the LAN (omada) instance via DNSEndpoints; the `crd` source is dropped
+    # here, which also ends the 400-loop on the private omada A record. The
+    # external.rphilipsen.nl tunnel CNAME becomes manually managed in CF.
     extraArgs:
       - --cloudflare-dns-records-per-page=1000
       - --cloudflare-proxied
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
       - --gateway-name=external
     triggerLoopOnEvent: true
     policy: sync
     sources:
-      - "crd"
       - "gateway-httproute"
-      - "gateway-tcproute"
-      - "gateway-udproute"
     txtPrefix: "k8s-%{record_type}." # Required for managing root domains. See: https://github.com/kubernetes-sigs/external-dns/blob/82905488a8cc963393f623f9a8ba484a141e81dc/docs/registry/txt.md?plain=1#L8
     txtOwnerId: default
     domainFilters: ["rphilipsen.nl"]
