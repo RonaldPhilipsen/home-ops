@@ -100,4 +100,37 @@ Each currently carries `external-dns.kubernetes.io/hostname` (via the `service` 
 - [ ] Reconcile + verify (see Verification).
 
 ## Untracked (do not accidentally commit unrelated files)
-`.worktrees/`, `Security-audit.md`, `docs/` (this handoff is in `docs/`).
+`.worktrees/`, `Security-audit.md`, `docs/superpowers/` (this handoff is in `docs/`).
+
+---
+
+## SHUTDOWN SNAPSHOT — 2026-10-25 (end of session)
+
+### What's running (verified before shutdown)
+- **All 11 L4 routes live + verified OPEN** through gateway VIPs (mc 25565, bedrock 19132/udp, rcon 25575, metrics 25585, mqtt 1883, mqtts 8883, postgres 5432, esphome 6052+6055, qbittorrent 50413, syslog 5514/udp).
+- **L7 HTTPS working** (user confirmed recovery): grafana/matrix/lidarr etc. served correctly.
+- Commits pushed: `cef79ef9d` (world in netpols), `bef0ddd3a` (drop TLSRoute kind — listener fix), `fff040b6e` (ingress entity in all 12 CNPs). No uncommitted tracked changes expected.
+- `postgres-lb` LB deleted (pooler ClusterIP serves 5432). `database/pooler` svc still LB 172.16.20.141 (cnpg-owned, unchanged).
+
+### Ops fixes applied out-of-band (NOT in repo)
+- Deleted rogue `default/external` + `default/internal` Gateways (created by a `kubectl apply` of the kube-system gateway manifest without namespace).
+- `kubectl rollout restart ds/cilium -n kube-system` (agents: `cilium-2xrqd` alpha, `cilium-q94xn` beta).
+
+### Known issue OPEN: L7 via VIP flaps
+- External VIP 172.16.20.30 :443 intermittently answers **301→`https://host:443/...`** (gateway-envoy port-80-style redirect from the *insecure* filter chain) or **404** (same for internal hosts), in bursts; **200s in other bursts**. L4 always OPEN; HTTP :80→:443 redirect always correct.
+- Both agents' local data planes verified GOOD (`openssl s_client` to 127.0.0.1:12879/17987 with SNI → real Grafana 200). Envoy static config on both nodes correct (14 ext vhosts / 18 int vhosts on secure chains; insecure chain = 1 vhost + https-redirect).
+- No nft `l7proxy` table — L7 is TPROXY via `CILIUM_PRE_mangle` rules. No :443 socket on nodes.
+- Hypothesis: upstream Cilium 1.20.4 gateway data-plane bug (TLS→insecure-chain misroute under VRRP/TPROXY). **1.20.4 is the newest chart on quay** (next = 1.21+).
+- Next experiment: pin `CiliumL2AnnouncementPolicy l2-policy` to one node (remove VRRP as variable), observe 301s. If they stop → per-node issue; if not → upstream bug.
+
+### DNS (external-dns v0.23.0, ns `network`) — NOT finished
+- Route hostname annotations + LB→ClusterIP converted work is done/committed (see table above).
+- Stale records still pointing at old LB IPs: mc→.150, mqtt→.102, postgres→.101, esphome-build→.103, syslog→.104. Missing records: mc-rcon, mc-metrics, qbittorrent (.rphilipsen.nl).
+- `edns-dryrun` pod (ns network) was deleted; recreate: args `--policy=upsert-only --log-level=debug --once --dry-run`, env `CF_DNS_API_TOKEN` from secret `cloudflare-dns-secret` key `api-token`. Verify L4 hostnames appear (if not: v0.23.0 gateway-httproute source may not emit TCP/UDP route records — check, consider DNSEndpoint CRD fallback).
+- Pre-existing, unrelated: `external-dns-omada` 500s (omada down); `cloudflare-dns` loops CREATE `omada.rphilipsen.nl→192.168.0.2` 400 (proxied record).
+- MCP `get_kubernetes_resources` is flaky here — use `kubectl` (context `admin@kubernetes`).
+
+### To do on next session (priority order)
+1. L2-policy pin test (above) → resolve the 301 flap.
+2. DNS dry-run + fix stale/missing records.
+3. Update this doc + `2026-10-24-cilium-gateway-migration-design.md` with final state.
