@@ -7,7 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./grafanadashboard.yaml
-  - ./dnsendpoint.yaml
 configMapGenerator:
   - name: cloudflare-tunnel-configmap
     files:

@@ -59,12 +59,14 @@ spec:
           # back to external-dns during webhook startup.
           - name: DOMAIN_FILTER
             value: "rphilipsen.nl"
-          # Export OTLP traces and metrics to the gateway collector; the
-          # collector's spanmetrics connector derives RED metrics from the
-          # spans, and VictoriaMetrics/VictoriaTraces/VictoriaLogs serve
-          # them to the omada-otel Grafana dashboard.
+          # Export OTLP traces and metrics to the gateway collector over
+          # gRPC (the exporter's default protocol); the collector's
+          # spanmetrics connector derives RED metrics from the spans, and
+          # VictoriaMetrics/VictoriaTraces/VictoriaLogs serve them to the
+          # omada-otel Grafana dashboard. Port 4317 is the OTLP/gRPC
+          # receiver; 4318 is OTLP/HTTP and times out from a gRPC client.
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: "http://gateway-collector.observability.svc.cluster.local:4318"
+            value: "http://gateway-collector.observability.svc.cluster.local:4317"
           - name: OTEL_SERVICE_NAME
             value: "external-dns-omada"
     extraArgs:
