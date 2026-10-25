@@ -37,11 +37,15 @@ spec:
       - --metrics-address=:7979
     triggerLoopOnEvent: true
     policy: upsert-only
+    # `crd` publishes the L4 gateway A-records (see
+    # external-dns-omada/app/dnsendpoint-l4.yaml) to this (stable) LAN
+    # resolver; the omada server is best-effort and not guaranteed up.
     sources:
       - "gateway-httproute"
       - "gateway-tcproute"
       - "gateway-udproute"
       - "service"
+      - "crd"
     logLevel: info
     logFormat: text
     domainFilters:
