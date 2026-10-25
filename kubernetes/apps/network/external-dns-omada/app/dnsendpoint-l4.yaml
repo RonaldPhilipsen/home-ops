@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/externaldns.k8s.io/dnsendpoint_v1alpha1.json
+# L4 (TCP/UDP) gateway route records for the LAN. A records pointing at the
+# Cilium Gateway IPs (.30 external, .31 internal); the omada instance's `crd`
+# source publishes them to the Omada DNS server. The TCP/UDP routes themselves
+# are opted out of external-dns (controller: none) because a gateway `target`
+# annotation would turn these into CNAMEs to the Cloudflare Tunnel, which is
+# HTTPS-only. Public `mc.rphilipsen.nl` stays a manual (unowned) CNAME to
+# home.rphilipsen.nl in the Cloudflare zone.
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: l4-external
+spec:
+  endpoints:
+    - dnsName: "mc.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.30"]
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: l4-internal
+spec:
+  endpoints:
+    - dnsName: "mc-rcon.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "mc-metrics.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "mqtt.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "postgres.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "qbittorrent.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "esphome-build.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]
+    - dnsName: "syslog.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.20.31"]

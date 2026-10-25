@@ -5,6 +5,7 @@ metadata:
   name: syslog
   namespace: observability
   annotations:
+    external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: syslog.rphilipsen.nl
 spec:
   parentRefs:

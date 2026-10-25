@@ -5,6 +5,7 @@ metadata:
   name: vernemq
   namespace: database
   annotations:
+    external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: mqtt.rphilipsen.nl
 spec:
   parentRefs:
@@ -22,6 +23,7 @@ metadata:
   name: vernemq-tls
   namespace: database
   annotations:
+    external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: mqtt.rphilipsen.nl
 spec:
   parentRefs:
