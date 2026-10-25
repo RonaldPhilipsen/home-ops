@@ -64,9 +64,7 @@ spec:
     service:
       app:
         controller: *app
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 172.16.20.140
+        type: ClusterIP
         ports:
           http:
             port: *port

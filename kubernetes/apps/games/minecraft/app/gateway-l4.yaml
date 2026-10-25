@@ -1,0 +1,68 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: minecraft
+  namespace: games
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mc.rphilipsen.nl
+spec:
+  parentRefs:
+    - name: external
+      namespace: kube-system
+      sectionName: minecraft
+  rules:
+    - backendRefs:
+        - name: minecraft
+          port: 25565
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: UDPRoute
+metadata:
+  name: minecraft-bedrock
+  namespace: games
+  annotations:
+    external-dns.kubernetes.io/controller: none
+spec:
+  parentRefs:
+    - name: external
+      namespace: kube-system
+      sectionName: minecraft-bedrock
+  rules:
+    - backendRefs:
+        - name: minecraft
+          port: 19132
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: minecraft-rcon
+  namespace: games
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mc-rcon.rphilipsen.nl
+spec:
+  parentRefs:
+    - name: internal
+      namespace: kube-system
+      sectionName: minecraft-rcon
+  rules:
+    - backendRefs:
+        - name: minecraft
+          port: 25575
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: minecraft-metrics
+  namespace: games
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mc-metrics.rphilipsen.nl
+spec:
+  parentRefs:
+    - name: internal
+      namespace: kube-system
+      sectionName: minecraft-metrics
+  rules:
+    - backendRefs:
+        - name: minecraft
+          port: 25585

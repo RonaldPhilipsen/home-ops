@@ -8,6 +8,7 @@ resources:
   - ./minecraft-config.yaml
   - ./pvc.yaml
   - ./ocirepository.yaml
+  - ./gateway-l4.yaml
 configMapGenerator:
   - name: minecraft-bluemap
     files:
