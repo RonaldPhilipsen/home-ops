@@ -68,10 +68,7 @@ spec:
           pairing:
             port: 6055
       peer-link:
-        type: LoadBalancer
-        annotations:
-          external-dns.kubernetes.io/hostname: "esphome-build.rphilipsen.nl"
-          lbipam.cilium.io/ips: 172.16.20.103
+        type: ClusterIP
         ports:
           http:
             port: &port 6052
@@ -86,7 +83,7 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - name: esphome-app
                 port: *port
 
     persistence:

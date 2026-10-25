@@ -102,10 +102,7 @@ spec:
     service:
       minecraft:
         controller: *app
-        type: LoadBalancer
-        annotations:
-          external-dns.kubernetes.io/hostname: mc.rphilipsen.nl
-          lbipam.cilium.io/ips: "172.16.20.150"
+        type: ClusterIP
         ports:
           java:
             port: 25565

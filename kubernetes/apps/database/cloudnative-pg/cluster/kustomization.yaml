@@ -9,8 +9,8 @@ resources:
   - ./prometheusrule.yaml
   - ./scheduledbackup.yaml
   - ./externalsecret.yaml
-  - ./service.yaml
   - ./pooler.yaml
+  - ./gateway-l4.yaml
 
   - ./databases/radarr.yaml
   - ./databases/sonarr.yaml

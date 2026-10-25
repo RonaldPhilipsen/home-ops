@@ -41,3 +41,57 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rphilipsen-nl-tls
+    - name: minecraft-rcon
+      protocol: TCP
+      port: 25575
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: minecraft-metrics
+      protocol: TCP
+      port: 25585
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: vernemq
+      protocol: TCP
+      port: 1883
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: vernemq-tls
+      protocol: TCP
+      port: 8883
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: esphome-peer-link
+      protocol: TCP
+      port: 6052
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: esphome-peer-link-pairing
+      protocol: TCP
+      port: 6055
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: qbittorrent
+      protocol: TCP
+      port: 50413
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: syslog
+      protocol: UDP
+      port: 5514
+      allowedRoutes:
+        namespaces:
+          from: All

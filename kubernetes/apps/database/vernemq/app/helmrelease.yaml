@@ -99,10 +99,7 @@ spec:
 
     service:
       app:
-        type: LoadBalancer
-        annotations:
-          external-dns.kubernetes.io/hostname: "mqtt.rphilipsen.nl"
-          lbipam.cilium.io/ips: 172.16.20.102
+        type: ClusterIP
         ports:
           mqtt:
             port: 1883

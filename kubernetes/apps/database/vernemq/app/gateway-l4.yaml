@@ -1,0 +1,34 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: vernemq
+  namespace: database
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mqtt.rphilipsen.nl
+spec:
+  parentRefs:
+    - name: internal
+      namespace: kube-system
+      sectionName: vernemq
+  rules:
+    - backendRefs:
+        - name: vernemq
+          port: 1883
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: TCPRoute
+metadata:
+  name: vernemq-tls
+  namespace: database
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: mqtt.rphilipsen.nl
+spec:
+  parentRefs:
+    - name: internal
+      namespace: kube-system
+      sectionName: vernemq-tls
+  rules:
+    - backendRefs:
+        - name: vernemq
+          port: 8883

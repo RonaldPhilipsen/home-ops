@@ -9,4 +9,5 @@ resources:
   - ./events.yaml
   - ./rbac.yaml
   - ./syslog-lb.yaml
+  - ./gateway-l4.yaml
 
