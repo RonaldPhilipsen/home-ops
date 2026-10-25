@@ -80,6 +80,8 @@ spec:
     registry: noop
     sources:
       - "gateway-httproute"
+      - "gateway-tcproute"
+      - "gateway-udproute"
       - "service"
       - "crd"
     logLevel: info

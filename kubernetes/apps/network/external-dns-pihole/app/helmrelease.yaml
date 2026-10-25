@@ -39,6 +39,8 @@ spec:
     policy: upsert-only
     sources:
       - "gateway-httproute"
+      - "gateway-tcproute"
+      - "gateway-udproute"
       - "service"
     logLevel: info
     logFormat: text

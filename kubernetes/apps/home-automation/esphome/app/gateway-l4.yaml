@@ -5,7 +5,7 @@ metadata:
   name: esphome-peer-link
   namespace: home-automation
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: esphome-build.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: esphome-build.rphilipsen.nl
 spec:
   parentRefs:
     - name: internal
@@ -22,7 +22,7 @@ metadata:
   name: esphome-peer-link-pairing
   namespace: home-automation
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: esphome-build.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: esphome-build.rphilipsen.nl
 spec:
   parentRefs:
     - name: internal

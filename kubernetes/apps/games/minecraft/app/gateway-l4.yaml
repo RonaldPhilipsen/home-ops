@@ -5,7 +5,7 @@ metadata:
   name: minecraft
   namespace: games
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: mc.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: mc.rphilipsen.nl
 spec:
   parentRefs:
     - name: external
@@ -39,7 +39,7 @@ metadata:
   name: minecraft-rcon
   namespace: games
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: mc-rcon.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: mc-rcon.rphilipsen.nl
 spec:
   parentRefs:
     - name: internal
@@ -56,7 +56,7 @@ metadata:
   name: minecraft-metrics
   namespace: games
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: mc-metrics.rphilipsen.nl
+    external-dns.kubernetes.io/hostname: mc-metrics.rphilipsen.nl
 spec:
   parentRefs:
     - name: internal
