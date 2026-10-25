@@ -10,8 +10,10 @@ spec:
         - host
         - remote-node
     - fromEntities:
+        - ingress
         - world
     - fromEntities:
+        - ingress
         - world
       toPorts:
         - ports:

@@ -11,6 +11,7 @@ spec:
         - remote-node
         - cluster
     - fromEntities:
+        - ingress
         - world
     - fromEndpoints:
         - matchLabels:

@@ -10,6 +10,7 @@ spec:
         - host
         - remote-node
     - fromEntities:
+        - ingress
         - world
     - fromEndpoints:
         - matchLabels:
@@ -69,6 +70,7 @@ spec:
             - port: "5514"
               protocol: UDP
     - fromEntities:
+        - ingress
         - world
       toPorts:
         - ports:
