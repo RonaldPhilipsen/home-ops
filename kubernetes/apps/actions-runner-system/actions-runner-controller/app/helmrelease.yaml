@@ -6,9 +6,13 @@ metadata:
   name: &name actions-runner-controller
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: gha-runner-scale-set-controller
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.15.1
+      url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
   install:
     crds: CreateReplace
     remediation:

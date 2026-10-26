@@ -6,9 +6,13 @@ metadata:
   name: cert-manager
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: cert-manager
+    spec:
+      interval: 5m
+      ref:
+        tag: v1.21.3
+      url: oci://quay.io/jetstack/charts/cert-manager
   install:
     remediation:
       retries: -1

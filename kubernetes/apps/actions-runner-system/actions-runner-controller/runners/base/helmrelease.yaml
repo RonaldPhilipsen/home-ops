@@ -6,9 +6,13 @@ metadata:
   name: runner
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: gha-runner-scale-set
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.15.1
+      url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
   dependsOn:
     - name: actions-runner-controller
       namespace: actions-runner-system

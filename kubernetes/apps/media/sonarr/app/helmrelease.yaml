@@ -5,9 +5,13 @@ kind: HelmRelease
 metadata:
   name: &app sonarr
 spec:
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: sonarr
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
   interval: 30m
   values:
     controllers:

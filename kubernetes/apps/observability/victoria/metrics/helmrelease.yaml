@@ -7,9 +7,13 @@ metadata:
   namespace: observability
 spec:
   interval: 5m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: vm-k8s-stack
+    spec:
+      interval: 15m
+      ref:
+        tag: 0.97.0
+      url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
   maxHistory: 2
   install:
     createNamespace: true
