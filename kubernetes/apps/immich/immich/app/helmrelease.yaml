@@ -6,9 +6,13 @@ metadata:
 
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: immich
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.13.4
+      url: oci://ghcr.io/immich-app/immich-charts/immich
   values:
     controllers:
       main:

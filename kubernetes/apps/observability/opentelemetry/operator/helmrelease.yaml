@@ -6,9 +6,13 @@ metadata:
   name: opentelemetry-operator
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: opentelemetry-operator
+    spec:
+      interval: 15m
+      ref:
+        tag: 0.126.2
+      url: oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-operator
   values:
     manager:
       collectorImage:

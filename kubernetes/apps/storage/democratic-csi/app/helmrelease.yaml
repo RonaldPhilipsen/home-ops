@@ -6,9 +6,13 @@ metadata:
   name: democratic-csi
 spec:
   interval: 30m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: democratic-csi
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.15.1
+      url: oci://ghcr.io/democratic-csi/charts/democratic-csi
   values:
     csiDriver:
       name: "org.democratic-csi.local-hostpath"

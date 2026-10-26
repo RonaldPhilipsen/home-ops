@@ -1,8 +1,5 @@
 # JSON6902 patch for the shared ARC runner base
 - op: replace
-  path: /spec/chartRef/name
-  value: semversie-gha-runner-scale-set
-- op: replace
   path: /spec/values/githubConfigUrl
   value: https://github.com/RonaldPhilipsen/semversie
 - op: replace

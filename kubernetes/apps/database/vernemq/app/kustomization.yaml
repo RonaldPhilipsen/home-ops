@@ -5,6 +5,5 @@ kind: Kustomization
 namespace: database
 resources:
   - ./helmrelease.yaml
-  - ./ocirepository.yaml
   - ./externalsecret.yaml
   - ./gateway-l4.yaml

@@ -6,9 +6,13 @@ metadata:
   name: &app pihole-exporter
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: pihole-exporter
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
   values:
     defaultPodOptions:
       securityContext:

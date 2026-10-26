@@ -6,9 +6,13 @@ metadata:
   name: &app external-dns-omada
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: external-dns
+    spec:
+      interval: 5m
+      ref:
+        tag: 1.23.0
+      url: oci://ghcr.io/home-operations/charts-mirror/external-dns
   values:
     fullnameOverride: *app
     # Stock external-dns image (chart 1.23.0 -> v0.23.0); the Omada provider
