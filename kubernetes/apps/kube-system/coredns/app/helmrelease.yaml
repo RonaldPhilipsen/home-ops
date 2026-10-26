@@ -6,9 +6,13 @@ metadata:
   name: coredns
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: coredns
+    spec:
+      interval: 15m
+      ref:
+        tag: 1.49.0
+      url: oci://ghcr.io/coredns/charts/coredns
   install:
     remediation:
       retries: -1

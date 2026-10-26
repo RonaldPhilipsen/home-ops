@@ -6,9 +6,13 @@ metadata:
   name: omada-exporter
 spec:
   interval: 30m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: omada-exporter
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
   install:
     remediation:
       retries: 3

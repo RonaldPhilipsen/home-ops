@@ -6,9 +6,13 @@ metadata:
   name: metrics-server
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: metrics-server
+    spec:
+      interval: 15m
+      ref:
+        tag: 3.14.0
+      url: oci://ghcr.io/home-operations/charts-mirror/metrics-server
   install:
     remediation:
       retries: -1

@@ -6,9 +6,13 @@ metadata:
   name: kodi
 spec:
   interval: 10m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: kodi
+    spec:
+      interval: 15m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
   values:
     controllers:
       kodi:

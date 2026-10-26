@@ -8,9 +8,13 @@ metadata:
   namespace: database
 spec:
   interval: 30m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: vernemq
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
 
   values:
     controllers:

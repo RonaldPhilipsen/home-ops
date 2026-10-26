@@ -6,9 +6,13 @@ metadata:
   name: lldap
 spec:
   interval: 15m
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: lldap
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
   install:
     remediation:
       retries: -1

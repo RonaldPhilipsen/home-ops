@@ -9,9 +9,13 @@ metadata:
     secret.reloader.stakater.com/reload: "renovate-s3"
 spec:
   interval: 1h
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: *app
+    spec:
+      interval: 15m
+      ref:
+        tag: 6.6.0
+      url: oci://ghcr.io/mogenius/helm-charts/renovate-operator
   values:
     fullnameOverride: *app
 

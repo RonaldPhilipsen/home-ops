@@ -7,7 +7,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./referencegrant.yaml
-  - ./ocirepository.yaml
 configMapGenerator:
   - name: authelia-config-tpl
     files:

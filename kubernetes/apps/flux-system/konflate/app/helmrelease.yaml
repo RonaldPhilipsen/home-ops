@@ -5,9 +5,13 @@ kind: HelmRelease
 metadata:
   name: konflate
 spec:
-  chartRef:
+  chart:
     kind: OCIRepository
-    name: konflate
+    spec:
+      interval: 15m
+      ref:
+        tag: 0.6.6
+      url: oci://ghcr.io/home-operations/charts/konflate
   interval: 1h
   values:
     config:
