@@ -54,7 +54,7 @@ spec:
     uid: victoria-traces
     name: victoria-traces
     access: proxy
-    url: http://victoria-traces-server.observability.svc.cluster.local:10428/select/tempo
+    url: http://vtsingle-vmetrics.observability.svc.cluster.local:10428/select/tempo
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -71,4 +71,4 @@ spec:
     uid: victoria-logs
     name: victoria-logs
     access: proxy
-    url: http://victoria-logs-server.observability.svc.cluster.local:9428
+    url: http://vlsingle-vmetrics.observability.svc.cluster.local:9428
