@@ -105,7 +105,7 @@ spec:
           envflag.prefix: VM_
           loggerFormat: json
           http.shutdownDelay: 15s
-          retentionMaxDiskUsagePercent: "80"
+          retention.maxDiskUsagePercent: "80"
         # -- No operator-managed PVC: data continues on the existing vmsingle-vlogs PVC
         storage: null
         storageDataPath: /storage
@@ -161,7 +161,7 @@ spec:
           envflag.prefix: VM_
           loggerFormat: json
           http.shutdownDelay: 15s
-          retentionMaxDiskUsagePercent: "80"
+          retention.maxDiskUsagePercent: "80"
         # -- No operator-managed PVC: data continues on the existing traces StatefulSet PVC
         storage: null
         storageDataPath: /storage
