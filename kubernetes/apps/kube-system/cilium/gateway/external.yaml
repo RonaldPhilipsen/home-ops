@@ -40,6 +40,28 @@ spec:
         certificateRefs:
           - kind: Secret
             name: rphilipsen-nl-tls
+    # Wildcard hostnames never match the apex, so the apex gets its own listeners.
+    - name: http-apex
+      protocol: HTTP
+      port: 80
+      hostname: "rphilipsen.nl"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https-apex
+      hostname: "rphilipsen.nl"
+      port: 443
+      protocol: HTTPS
+      allowedRoutes:
+        kinds:
+          - kind: HTTPRoute
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: rphilipsen-nl-tls
     - name: minecraft
       protocol: TCP
       port: 25565
