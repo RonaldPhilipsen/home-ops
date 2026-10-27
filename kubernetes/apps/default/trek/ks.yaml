@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app trek
+  namespace: &namespace flux-system
+spec:
+  components:
+    - ../../../../components/kopiur/hot
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  targetNamespace: default
+  path: ./kubernetes/apps/default/trek/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      KOPIUR_CAPACITY: 10Gi
+      NAMESPACE: default
