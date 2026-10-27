@@ -35,7 +35,7 @@ spec:
             env:
               TZ: "Europe/Amsterdam"
               RADARR__APP__INSTANCENAME: Radarr
-              RADARR__APP__ALLOWEDHOSTS: ""
+              RADARR__APP__ALLOWEDHOSTS: "radarr.rphilipsen.nl,radarr.media.svc.cluster.local"
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
@@ -53,6 +53,7 @@ spec:
                 spec:
                   httpGet:
                     path: /ping
+                    host: radarr.media.svc.cluster.local
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
