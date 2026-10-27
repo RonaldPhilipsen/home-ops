@@ -4,6 +4,8 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: immich
+  labels:
+    expose: public
 spec:
   hostnames:
     - photos.rphilipsen.nl

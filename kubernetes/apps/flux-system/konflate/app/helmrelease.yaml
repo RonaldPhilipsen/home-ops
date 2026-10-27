@@ -23,6 +23,8 @@ spec:
       existingSecret: konflate-webhook-token-secret
     httpRoute:
       enabled: true
+      labels:
+        expose: public
       annotations:
         reloader.stakater.com/auto: "true"
       parentRefs:

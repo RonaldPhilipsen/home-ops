@@ -134,6 +134,8 @@ spec:
     route:
       map:
         enabled: true
+        labels:
+          expose: public
         hostnames: ["mcmap.rphilipsen.nl"]
         parentRefs:
           - name: external
