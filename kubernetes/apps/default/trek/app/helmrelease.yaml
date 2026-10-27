@@ -32,9 +32,15 @@ spec:
                 value: https://trek.rphilipsen.nl
               - name: ALLOWED_ORIGINS
                 value: https://trek.rphilipsen.nl
+              - name: OIDC_ISSUER
+                value: https://auth.rphilipsen.nl
+              - name: OIDC_ONLY
+                value: "true"
             envFrom:
               - secretRef:
                   name: trek
+              - secretRef:
+                  name: trek-oidc
             probes:
               startup:
                 enabled: true
