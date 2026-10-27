@@ -4,6 +4,8 @@ kind: TCPRoute
 metadata:
   name: minecraft
   namespace: games
+  labels:
+    expose: public
   annotations:
     external-dns.kubernetes.io/controller: none
     external-dns.kubernetes.io/hostname: mc.rphilipsen.nl
@@ -22,6 +24,8 @@ kind: UDPRoute
 metadata:
   name: minecraft-bedrock
   namespace: games
+  labels:
+    expose: public
   annotations:
     external-dns.kubernetes.io/controller: none
 spec:

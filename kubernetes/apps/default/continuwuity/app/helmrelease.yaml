@@ -72,6 +72,8 @@ spec:
 
     route:
       app:
+        labels:
+          expose: public
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:
@@ -81,6 +83,8 @@ spec:
         hostnames:
           - &host matrix.rphilipsen.nl
       federation:
+        labels:
+          expose: public
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:
@@ -101,6 +105,8 @@ spec:
               - name: continuwuity
                 port: *port
       well-known:
+        labels:
+          expose: public
         annotations:
           external-dns.kubernetes.io/external: "true"
         parentRefs:

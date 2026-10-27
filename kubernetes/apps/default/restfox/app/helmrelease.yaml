@@ -79,6 +79,8 @@ spec:
 
     route:
       app:
+        labels:
+          expose: public
         hostnames: ["restfox.rphilipsen.nl"]
         parentRefs:
           - name: external

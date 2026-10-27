@@ -76,6 +76,8 @@ spec:
     route:
       main:
         enabled: true
+        labels:
+          expose: public
         parentRefs:
           - name: external
             namespace: kube-system

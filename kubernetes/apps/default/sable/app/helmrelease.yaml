@@ -78,6 +78,8 @@ spec:
 
     route:
       app:
+        labels:
+          expose: public
         hostnames: ["sable.rphilipsen.nl"]
         parentRefs:
           - name: external

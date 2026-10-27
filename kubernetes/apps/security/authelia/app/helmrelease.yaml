@@ -74,6 +74,8 @@ spec:
             port: 9091
     route:
       main:
+        labels:
+          expose: public
         hostnames: ["auth.rphilipsen.nl"]
         parentRefs:
           - name: external

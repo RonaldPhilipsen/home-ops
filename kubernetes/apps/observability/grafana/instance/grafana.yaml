@@ -92,6 +92,9 @@ spec:
               persistentVolumeClaim:
                 claimName: grafana-pvc
   httpRoute:
+    metadata:
+      labels:
+        expose: public
     spec:
       hostnames:
         - grafana.rphilipsen.nl

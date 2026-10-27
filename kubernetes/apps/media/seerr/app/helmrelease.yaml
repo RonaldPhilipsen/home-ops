@@ -72,6 +72,8 @@ spec:
             port: *port
     route:
       app:
+        labels:
+          expose: public
         hostnames: ["requests.rphilipsen.nl"]
         parentRefs:
           - name: external

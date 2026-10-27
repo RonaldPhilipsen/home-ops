@@ -69,6 +69,8 @@ spec:
 
     route:
       rphilipsen:
+        labels:
+          expose: public
         hostnames: ["rphilipsen.nl", "www.rphilipsen.nl"]
         parentRefs:
           - name: external
