@@ -3,6 +3,7 @@ kind: Talstomize
 
 clusterName: kubernetes
 controlPlaneEndpoint: https://172.16.20.20:6443
+talosVersion: v1.14.1
 kubernetesVersion: "v1.36.2"
 secrets: ./talsecret.sops.yaml
 additionalSubjectAltNames:
@@ -15,7 +16,6 @@ nodes:
     ip: "172.16.20.6"
     kind: controlplane
     installer:
-      talosVersion: v1.14.1
       schematic:
         customization:
           systemExtensions:
@@ -53,7 +53,6 @@ nodes:
     ip: "172.16.20.5"
     kind: worker
     installer:
-      talosVersion: v1.14.1
       schematic:
         customization:
           extraKernelArgs:
@@ -67,7 +66,6 @@ nodes:
               - siderolabs/util-linux-tools
           bootloader: sd-boot
     patches:
-      - ./patches/volumes/volumeconfig-k8s-neo-beta.yaml
       - machine:
           install:
             diskSelector:
