@@ -13,6 +13,8 @@ resources:
   # Other
   - ./nginx-static/ks.yaml
   - ./restfox/ks.yaml
+  # Travel
+  - ./trek/ks.yaml
   # Matrix
   - ./continuwuity/ks.yaml
   - ./sable/ks.yaml
