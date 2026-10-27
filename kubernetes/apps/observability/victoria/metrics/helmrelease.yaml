@@ -91,6 +91,108 @@ spec:
             namespace: kube-system
         hostnames: ["vmsingle.rphilipsen.nl"]
 
+    vlsingle:
+      enabled: true
+      spec:
+        port: "9428"
+        retentionPeriod: "1"
+        terminationGracePeriodSeconds: 60
+        image:
+          registry: quay.io
+          repository: victoriametrics/victoria-logs
+          tag: v1.53.0
+        extraArgs:
+          envflag.enable: "true"
+          envflag.prefix: VM_
+          loggerFormat: json
+          http.shutdownDelay: 15s
+          retentionMaxDiskUsagePercent: "80"
+        # -- No operator-managed PVC: data continues on the existing vmsingle-vlogs PVC
+        storage: null
+        storageDataPath: /storage
+        volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: vmsingle-vlogs
+        volumeMounts:
+          - name: data
+            mountPath: /storage
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 30m
+            memory: 512Mi
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          fsGroup: 2000
+          seccompProfile:
+            type: RuntimeDefault
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+        hostnames: ["vlogs.rphilipsen.nl"]
+        extraRules:
+          - filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  path:
+                    type: ReplaceFullPath
+                    replaceFullPath: /select/vmui/
+                  statusCode: 302
+            matches:
+              - path:
+                  type: Exact
+                  value: /
+
+    vtsingle:
+      enabled: true
+      spec:
+        port: "10428"
+        retentionPeriod: "1"
+        terminationGracePeriodSeconds: 60
+        image:
+          registry: quay.io
+          repository: victoriametrics/victoria-traces
+          tag: v0.12.1
+        extraArgs:
+          envflag.enable: "true"
+          envflag.prefix: VM_
+          loggerFormat: json
+          http.shutdownDelay: 15s
+          retentionMaxDiskUsagePercent: "80"
+        # -- No operator-managed PVC: data continues on the existing traces StatefulSet PVC
+        storage: null
+        storageDataPath: /storage
+        volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: server-volume-victoria-traces-server-0
+        volumeMounts:
+          - name: data
+            mountPath: /storage
+        resources:
+          limits:
+            memory: 1Gi
+          requests:
+            cpu: 30m
+            memory: 512Mi
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          fsGroup: 2000
+          seccompProfile:
+            type: RuntimeDefault
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+        hostnames: ["vtraces.rphilipsen.nl"]
+
     vmagent:
       enabled: true
       spec:
