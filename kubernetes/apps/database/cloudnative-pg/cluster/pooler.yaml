@@ -12,7 +12,7 @@ spec:
       labels:
         app: pooler
     spec:
-      type: LoadBalancer
+      type: ClusterIP
   template:
     spec:
       affinity:
