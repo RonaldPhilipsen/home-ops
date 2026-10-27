@@ -13,6 +13,9 @@ spec:
     - name: external
       namespace: kube-system
       sectionName: http
+    - name: external
+      namespace: kube-system
+      sectionName: http-apex
   rules:
     - filters:
         - requestRedirect:

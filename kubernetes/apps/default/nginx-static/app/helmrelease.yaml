@@ -76,6 +76,9 @@ spec:
           - name: external
             namespace: kube-system
             sectionName: https
+          - name: external
+            namespace: kube-system
+            sectionName: https-apex
         rules:
           - backendRefs:
               - name: *app
