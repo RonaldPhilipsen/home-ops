@@ -17,6 +17,8 @@ spec:
       labels:
         app.kubernetes.io/name: memini-rerank
     spec:
+      serviceAccountName: memini-rerank
+      automountServiceAccountToken: false
       nodeSelector:
         kubernetes.io/hostname: k8s-neo-alpha
       securityContext:

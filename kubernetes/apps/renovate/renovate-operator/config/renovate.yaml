@@ -19,6 +19,9 @@ spec:
       memory: 2Gi
   schedule: "@hourly"
   secretRef: renovate-secret
+  serviceAccount:
+    name: renovate-job
+    automountServiceAccountToken: false
   skipForks: true
   webhook:
     enabled: true

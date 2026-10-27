@@ -7,6 +7,7 @@ resources:
   - ./httproute.yaml
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./serviceaccount.yaml
 patches:
   - path: patch-role.yaml
     target:
