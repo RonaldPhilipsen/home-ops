@@ -8,6 +8,7 @@ components:
   - ../../components/flux-alerts
 resources:
   - ./namespace.yaml
+  - ./limitrange.yaml
   - ./netpol.yaml
   # Other
   - ./nginx-static/ks.yaml

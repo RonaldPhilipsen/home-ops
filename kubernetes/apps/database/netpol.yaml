@@ -9,9 +9,6 @@ spec:
     - fromEntities:
         - host
         - remote-node
-    - fromEntities:
-        - ingress
-        - world
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: database
