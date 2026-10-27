@@ -26,6 +26,9 @@ spec:
       forwardS3CacheToJobs: true
     rbac:
       ownNamespaceOnly: true
+    policy:
+      allowedServiceAccounts:
+        - renovate-job
     webhook:
       enabled: true
 
