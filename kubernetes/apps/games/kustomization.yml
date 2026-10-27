@@ -6,5 +6,6 @@ namespace: games
 components:
   - ../../components/flux-alerts
 resources:
+  - ./namespace.yaml
   - ./netpol.yaml
   - ./minecraft/ks.yaml
