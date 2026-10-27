@@ -51,9 +51,7 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /ping
-                    host: radarr.media.svc.cluster.local
+                  tcpSocket:
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
