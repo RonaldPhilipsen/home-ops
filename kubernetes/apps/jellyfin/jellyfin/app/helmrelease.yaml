@@ -31,12 +31,23 @@ spec:
       securityContext:
         runAsUser: 2000
         runAsGroup: 2000
-        runAsNonRoot: false
+        runAsNonRoot: true
         fsGroup: 2000
         fsGroupChangePolicy: "OnRootMismatch"
         supplementalGroups: [160, 140, 241, 0, 10, 121, 44, 65537, 1000]
         seccompProfile: { type: RuntimeDefault }
       hostNetwork: false
+
+    # pin to the node with the AMD iGPU (/dev/dri); beta has no GPU
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - k8s-neo-alpha
 
     controllers:
       jellyfin:
@@ -57,9 +68,9 @@ spec:
               JELLYFIN_FFmpeg__analyzeduration: 50000000
               JELLYFIN_PublishedServerUrl: &url "jellyfin.rphilipsen.nl"
 
+            # VAAPI hardware acceleration via /dev/dri (renderD128 is world-writable, no privileged needed)
             securityContext:
-              privileged: true # required for hardware acceleration
-              # allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
                 drop: ["ALL"]
