@@ -15,7 +15,7 @@ spec:
       namespace: external-secrets
     - name: cnpg
       namespace: *namespace
-    - name: memini-embed
+    - name: toolhive-embedding
       namespace: *namespace
     - name: memini-rerank
       namespace: *namespace

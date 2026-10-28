@@ -10,6 +10,8 @@ spec:
   dependsOn:
     - name: toolhive-operator
       namespace: ai
+    - name: toolhive-embedding
+      namespace: ai
     - name: memini
       namespace: ai
   path: ./kubernetes/apps/ai/toolhive/config

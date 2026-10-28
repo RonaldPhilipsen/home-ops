@@ -9,11 +9,11 @@ resources:
   - ./namespace.yaml
   - ./netpol.yaml
   - ./cnpg/ks.yaml
-  - ./embed/ks.yaml
   - ./rerank/ks.yaml
   - ./memini/ks.yaml
   - ./toolhive/crds/ks.yaml
   - ./toolhive/operator/ks.yaml
+  - ./toolhive/embedding/ks.yaml
   - ./toolhive/config/ks.yaml
   - ./toolhive/grafana/ks.yaml
   - ./toolhive/github/secret/ks.yaml
