@@ -1,0 +1,17 @@
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: MCPTelemetryConfig
+metadata:
+  name: shared-otel
+  namespace: toolhive-system
+spec:
+  openTelemetry:
+    enabled: true
+    endpoint: http://gateway-collector.observability.svc.cluster.local:4318
+    insecure: true
+    tracing:
+      enabled: true
+      samplingRate: '0.05'
+    metrics:
+      enabled: true
+  prometheus:
+    enabled: true

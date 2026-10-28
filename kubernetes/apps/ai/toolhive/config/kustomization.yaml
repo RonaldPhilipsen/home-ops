@@ -14,5 +14,5 @@ resources:
   - ./flux-operator-mcp-entry.yaml
   - ./httproute.yaml
   - ./virtualmcpserver.yaml
-  - ./podmonitor.yaml
+  - ./telemetry-config.yaml
   - ./dashboard/

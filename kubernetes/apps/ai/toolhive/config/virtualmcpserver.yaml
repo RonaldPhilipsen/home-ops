@@ -17,6 +17,9 @@ spec:
       embeddingService: http://memini-embed.ai.svc:8000/v1
       embeddingModel: qwen3-embedding-0.6b
       embeddingServiceTimeout: 180s
+  telemetryConfigRef:
+    name: shared-otel
+    serviceName: vmcp
   incomingAuth:
     type: anonymous
   outgoingAuth:
