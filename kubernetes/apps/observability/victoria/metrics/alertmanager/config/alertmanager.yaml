@@ -10,8 +10,9 @@ receivers:
     email_configs:
       - to: k8s@rphilipsen.nl
         from: "{{ .SMTP_USERNAME }}"
-        smtphost: "{{ .SMTP_HOST }}:{{ .SMTP_PORT }}"
+        smarthost: "{{ .SMTP_HOST }}:{{ .SMTP_PORT }}"
         auth_username: "{{ .SMTP_USERNAME }}"
         auth_password: "{{ .SMTP_PASSWORD }}"
-        require_tls: false
+        require_tls: true
+        force_implicit_tls: false
         send_resolved: true
