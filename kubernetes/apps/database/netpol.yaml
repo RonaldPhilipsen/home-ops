@@ -57,7 +57,7 @@ spec:
             k8s:io.kubernetes.pod.namespace: database
     - toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: memini
+            k8s:io.kubernetes.pod.namespace: ai
       toPorts:
         - ports:
             - port: "8000"

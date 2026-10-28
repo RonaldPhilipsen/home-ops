@@ -14,7 +14,7 @@ spec:
         - world
     - fromEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: memini
+            k8s:io.kubernetes.pod.namespace: ai
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: network
@@ -41,7 +41,7 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
-            k8s:io.kubernetes.pod.namespace: memini
+            k8s:io.kubernetes.pod.namespace: ai
     # HuggingFace model downloads; the FQDN rule alone is not materialized by
     # the agent (DNS proxy inactive), so allow plain world:443 egress like immich
     - toFQDNs:

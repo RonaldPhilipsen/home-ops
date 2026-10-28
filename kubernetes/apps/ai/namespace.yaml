@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: memini
+  name: ai
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
   labels:
-    kustomize.toolkit.fluxcd.io/name: memini
-    kustomize.toolkit.fluxcd.io/namespace: memini
+    kustomize.toolkit.fluxcd.io/name: ai
+    kustomize.toolkit.fluxcd.io/namespace: ai
     pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/audit: baseline
     pod-security.kubernetes.io/warn: baseline
