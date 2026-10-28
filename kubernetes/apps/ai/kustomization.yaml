@@ -12,3 +12,9 @@ resources:
   - ./embed/ks.yaml
   - ./rerank/ks.yaml
   - ./memini/ks.yaml
+  - ./toolhive/crds/ks.yaml
+  - ./toolhive/operator/ks.yaml
+  - ./toolhive/config/ks.yaml
+  - ./toolhive/grafana/ks.yaml
+  - ./toolhive/github/secret/ks.yaml
+  - ./toolhive/github/config/ks.yaml
