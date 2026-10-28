@@ -51,6 +51,7 @@ spec:
       enabled: true
       spec:
         disableNamespaceMatcher: true
+        configSecret: alertmanager-config
 
     vmalert:
       enabled: true
