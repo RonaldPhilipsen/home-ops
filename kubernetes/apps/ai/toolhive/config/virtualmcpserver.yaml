@@ -14,7 +14,7 @@ spec:
         prefixFormat: "{workload}_"
     optimizer:
       embeddingProvider: openai
-      embeddingService: http://memini-embed.ai.svc:8000
+      embeddingService: http://memini-embed.ai.svc:8000/v1
       embeddingModel: qwen3-embedding-0.6b
       embeddingServiceTimeout: 180s
   incomingAuth:
