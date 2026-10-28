@@ -225,6 +225,16 @@ spec:
 
     kubeApiServer:
       enabled: true
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              max_scrape_size: 64MiB
+              port: https
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                serverName: kubernetes
 
     kubeControllerManager:
       enabled: true
