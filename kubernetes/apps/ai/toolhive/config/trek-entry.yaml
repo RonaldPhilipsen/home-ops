@@ -6,6 +6,6 @@ metadata:
   name: trek
 spec:
   groupRef:
-    name: ai-tools
+    name: configured-disabled-tools
   remoteUrl: https://trek.rphilipsen.nl/mcp
   transport: streamable-http
