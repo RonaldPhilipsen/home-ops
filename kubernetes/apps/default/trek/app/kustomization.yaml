@@ -8,3 +8,20 @@ resources:
   - ./oidc-proxy-netpol.yaml
   - ./pvc.yaml
   - ./secret.sops.yaml
+patches:
+  # The shared kopiur component only backs up the PVC named after the app;
+  # trek's uploads live on a second PVC, so add it as a source.
+  - target:
+      kind: SnapshotPolicy
+      name: trek
+    patch: |-
+      apiVersion: kopiur.home-operations.com/v1alpha1
+      kind: SnapshotPolicy
+      metadata:
+        name: trek
+      spec:
+        sources:
+          - pvc:
+              name: trek
+          - pvc:
+              name: trek-uploads

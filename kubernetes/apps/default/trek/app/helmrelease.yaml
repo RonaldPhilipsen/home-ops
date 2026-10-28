@@ -88,9 +88,8 @@ spec:
             ports:
               - containerPort: 8080
             securityContext:
-              runAsUser: 101
-              runAsGroup: 101
-              runAsNonRoot: true
+              runAsGroup: 2000
+              runAsNonRoot: false
               allowPrivilegeEscalation: false
               capabilities:
                 drop: ["ALL"]
@@ -103,14 +102,13 @@ spec:
                 memory: 64Mi
     defaultPodOptions:
       securityContext:
-        # Group 2000 is shared with the kopiur backup mover (runs as uid/gid 2000),
-        # so scheduled snapshots can read data written by the trek app (uid 1000).
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 2000
+        # The image entrypoint drops from root to its in-image `node` user
+        # (uid 1000), so the pod must start as root.
+        # Group 2000 is shared with the kopiur backup mover (runs as uid/gid 2000);
+        # the hostpath dirs carry setgid, so app files are group 2000 and readable
+        # by the mover (e.g. 644 1000:2000).
         fsGroup: 2000
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [1000]
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
