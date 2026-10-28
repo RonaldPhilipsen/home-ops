@@ -11,4 +11,5 @@ resources:
   - ./flux-operator-mcp.yaml
   - ./flux-operator-mcp-rbac.yaml
   - ./flux-operator-mcp-entry.yaml
+  - ./httproute.yaml
   - ./virtualmcpserver.yaml
