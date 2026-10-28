@@ -48,7 +48,7 @@ spec:
               MEMINI_LOG_FORMAT: json
               MEMINI_DEMOTE_AFTER: 1440h
               MEMINI_TOMBSTONE_TTL: 720h
-              MEMINI_EMBED_BASE_URL: http://memini-embed.ai.svc:8000/v1
+              MEMINI_EMBED_BASE_URL: http://memini-embedding.ai.svc:8080/v1
               MEMINI_EMBED_MODEL: qwen3-embedding-0.6b
               MEMINI_EMBED_DIMS: "1024"
               MEMINI_EMBED_QUERY_PREFIX: "Instruct: Given a user message, retrieve relevant past memories\nQuery: "
