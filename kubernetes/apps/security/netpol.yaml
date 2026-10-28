@@ -35,6 +35,13 @@ spec:
         - ports:
             - port: "3890"
               protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            k8s:app.kubernetes.io/name: trek
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
   egress:
     - toEntities:
         - host
