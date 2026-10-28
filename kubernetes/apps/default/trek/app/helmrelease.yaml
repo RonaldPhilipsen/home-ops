@@ -103,7 +103,9 @@ spec:
                 memory: 64Mi
     defaultPodOptions:
       securityContext:
-        fsGroup: 1000
+        # Group 2000 is shared with the kopiur backup mover (runs as uid/gid 2000),
+        # so scheduled snapshots can read data written by the trek app (uid 1000).
+        fsGroup: 2000
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
