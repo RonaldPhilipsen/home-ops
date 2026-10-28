@@ -74,6 +74,14 @@ access_control:
         - 192.168.10.0/24
         - 192.168.200.0/24
   rules:
+    # OIDC protocol endpoints are authenticated at the protocol level
+    # (client credentials, access tokens, interactive 2FA), so no IP-based
+    # trust is needed for in-cluster OIDC clients.
+    - domain: "auth.rphilipsen.nl"
+      resources:
+        - "^/\\.well-known/"
+        - "^/oidc/"
+      policy: bypass
     - domain: "*.rphilipsen.nl"
       policy: bypass
       networks:
