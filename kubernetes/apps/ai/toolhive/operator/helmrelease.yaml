@@ -13,18 +13,6 @@ spec:
         tag: 0.58.0
       url: oci://ghcr.io/stacklok/toolhive/toolhive-operator
   interval: 30m
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              group: apps
-              version: v1
-              kind: Deployment
-              name: toolhive-operator
-            patch: |
-              - op: add
-                path: /spec/template/spec/containers/0/args/-
-                value: --zap-log-level=warn
   values:
     operator:
       replicaCount: 1
