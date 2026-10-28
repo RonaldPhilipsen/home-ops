@@ -3,8 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app memini
-  namespace: &namespace memini
+  name: &app cnpg
+  namespace: &namespace ai
 spec:
   targetNamespace: *namespace
   commonMetadata:
@@ -13,13 +13,7 @@ spec:
   dependsOn:
     - name: onepassword-connect
       namespace: external-secrets
-    - name: cnpg
-      namespace: *namespace
-    - name: memini-embed
-      namespace: *namespace
-    - name: memini-rerank
-      namespace: *namespace
-  path: ./kubernetes/apps/memini/memini/app
+  path: ./kubernetes/apps/ai/cnpg/app
   prune: true
   sourceRef:
     kind: GitRepository
