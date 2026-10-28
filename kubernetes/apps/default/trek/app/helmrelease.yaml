@@ -36,6 +36,8 @@ spec:
                 value: https://auth.rphilipsen.nl
               - name: OIDC_ONLY
                 value: "true"
+              - name: OIDC_DISCOVERY_URL
+                value: http://127.0.0.1:8080/.well-known/openid-configuration
             envFrom:
               - secretRef:
                   name: trek
@@ -74,6 +76,27 @@ spec:
               limits:
                 cpu: 500m
                 memory: 512Mi
+          oidc-proxy:
+            image:
+              repository: ghcr.io/nginxinc/nginx-unprivileged
+              tag: "1.27.4"
+              pullPolicy: IfNotPresent
+            ports:
+              - containerPort: 8080
+            securityContext:
+              runAsUser: 101
+              runAsGroup: 101
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                cpu: 100m
+                memory: 64Mi
     defaultPodOptions:
       securityContext:
         fsGroup: 1000
@@ -105,3 +128,13 @@ spec:
         existingClaim: trek-uploads
         globalMounts:
           - path: /app/uploads
+      oidc-proxy-config:
+        type: configMap
+        name: trek-oidc-proxy
+        globalMounts:
+          - path: /etc/nginx/conf.d/default.conf
+            subPath: default.conf
+            readOnly: true
+          - path: /etc/nginx/oidc/openid-configuration.json
+            subPath: openid-configuration.json
+            readOnly: true
