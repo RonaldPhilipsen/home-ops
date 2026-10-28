@@ -13,5 +13,5 @@ receivers:
         smtphost: "{{ .SMTP_HOST }}:{{ .SMTP_PORT }}"
         auth_username: "{{ .SMTP_USERNAME }}"
         auth_password: "{{ .SMTP_PASSWORD }}"
-        require_tls: true
+        require_tls: false
         send_resolved: true
