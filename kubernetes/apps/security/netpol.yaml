@@ -37,6 +37,7 @@ spec:
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
+            k8s:io.kubernetes.pod.namespace: default
             k8s:app.kubernetes.io/name: trek
       toPorts:
         - ports:
