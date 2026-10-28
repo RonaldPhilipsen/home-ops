@@ -5,7 +5,7 @@ kind: EmbeddingServer
 metadata:
   name: memini-embedding
 spec:
-  model: Qwen/Qwen3-Embedding-0.6B
+  model: Qwen/Qwen3-Embedding-0.6B-GGUF:Q8_0
   image: ghcr.io/huggingface/text-embeddings-inference:cpu-1.9
   imagePullPolicy: IfNotPresent
   port: 8080
