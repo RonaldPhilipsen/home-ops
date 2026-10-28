@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: toolhive-embedding
-  namespace: ai
+  name: &app memini-embed
+  namespace: &namespace ai
 spec:
-  targetNamespace: ai
-  dependsOn:
-    - name: toolhive-operator
-      namespace: ai
-  path: ./kubernetes/apps/ai/toolhive/embedding
+  targetNamespace: *namespace
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/ai/embed/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -19,4 +19,8 @@ spec:
   wait: true
   interval: 30m
   retryInterval: 1m
-  timeout: 20m
+  timeout: 10m
+  postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: *namespace
