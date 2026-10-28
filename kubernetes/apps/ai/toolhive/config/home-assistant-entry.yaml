@@ -6,6 +6,6 @@ metadata:
   name: home-assistant
 spec:
   groupRef:
-    name: ai-tools
+    name: configured-disabled-tools
   remoteUrl: https://hass.rphilipsen.nl/api/mcp
   transport: streamable-http

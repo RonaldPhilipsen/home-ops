@@ -5,8 +5,9 @@ kind: MCPExternalAuthConfig
 metadata:
   name: memini-auth
 spec:
-  type: bearerToken
-  bearerToken:
-    tokenSecretRef:
+  type: headerInjection
+  headerInjection:
+    headerName: Authorization
+    valueSecretRef:
       name: memini
-      key: api_key
+      key: authorization
