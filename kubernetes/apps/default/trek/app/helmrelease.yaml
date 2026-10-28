@@ -79,7 +79,7 @@ spec:
                 memory: 256Mi
               limits:
                 cpu: 500m
-                memory: 512Mi
+                memory: 1Gi
           oidc-proxy:
             image:
               repository: ghcr.io/nginxinc/nginx-unprivileged
