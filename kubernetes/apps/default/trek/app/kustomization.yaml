@@ -4,5 +4,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./oidc-proxy-configmap.yaml
+  - ./oidc-proxy-netpol.yaml
   - ./pvc.yaml
   - ./secret.sops.yaml

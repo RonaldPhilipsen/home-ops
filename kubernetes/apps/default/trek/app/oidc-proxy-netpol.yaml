@@ -1,0 +1,18 @@
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-trek-oidc-egress
+  namespace: default
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/name: trek
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP

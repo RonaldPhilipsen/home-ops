@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trek-oidc-proxy
+  namespace: default
+data:
+  default.conf: |
+    server {
+      listen 8080;
+      server_name _;
+
+      location = "/.well-known/openid-configuration" {
+        default_type application/json;
+        alias /etc/nginx/oidc/openid-configuration.json;
+      }
+
+      location / {
+        proxy_pass http://authelia.security.svc.cluster.local:9091;
+        proxy_http_version 1.1;
+        proxy_set_header Host auth.rphilipsen.nl;
+        proxy_set_header X-Forwarded-Host auth.rphilipsen.nl;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Connection "";
+      }
+    }
+  openid-configuration.json: |
+    {
+      "issuer": "https://auth.rphilipsen.nl",
+      "jwks_uri": "http://127.0.0.1:8080/jwks.json",
+      "authorization_endpoint": "https://auth.rphilipsen.nl/api/oidc/authorization",
+      "token_endpoint": "http://127.0.0.1:8080/api/oidc/token",
+      "subject_types_supported": ["public", "pairwise"],
+      "response_types_supported": ["code", "id_token", "token", "id_token token", "code id_token", "code token", "code id_token token"],
+      "grant_types_supported": ["authorization_code", "implicit", "client_credentials", "refresh_token", "urn:ietf:params:oauth:grant-type:device_code"],
+      "response_modes_supported": ["form_post", "query", "fragment", "jwt", "form_post.jwt", "query.jwt", "fragment.jwt"],
+      "scopes_supported": ["offline_access", "openid", "profile", "email", "address", "phone", "groups"],
+      "claims_supported": ["amr", "aud", "azp", "client_id", "exp", "iat", "iss", "jti", "rat", "auth_time", "nonce", "groups", "sub", "name", "given_name", "family_name", "middle_name", "nickname", "preferred_username", "profile", "picture", "website", "email", "email_verified", "alt_emails", "gender", "birthdate", "zoneinfo", "locale", "phone_number", "phone_number_verified", "address", "updated_at"],
+      "token_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post", "client_secret_jwt", "private_key_jwt", "none"],
+      "token_endpoint_auth_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"],
+      "introspection_endpoint": "http://127.0.0.1:8080/api/oidc/introspection",
+      "revocation_endpoint": "http://127.0.0.1:8080/api/oidc/revocation",
+      "introspection_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post", "client_secret_jwt", "private_key_jwt"],
+      "revocation_endpoint_auth_methods_supported": ["client_secret_basic", "client_secret_post", "client_secret_jwt", "private_key_jwt", "none"],
+      "revocation_endpoint_auth_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"],
+      "code_challenge_methods_supported": ["S256"],
+      "device_authorization_endpoint": "http://127.0.0.1:8080/api/oidc/device-authorization",
+      "authorization_response_iss_parameter_supported": true,
+      "introspection_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87", "none"],
+      "introspection_encryption_alg_values_supported": ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256", "A128KW", "A192KW", "A256KW", "dir", "ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW", "A128GCMKW", "A192GCMKW", "A256GCMKW", "PBES2-HS256+A128KW", "PBES2-HS384+A192KW", "PBES2-HS512+A256KW"],
+      "introspection_encryption_enc_values_supported": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"],
+      "pushed_authorization_request_endpoint": "http://127.0.0.1:8080/api/oidc/pushed-authorization-request",
+      "require_pushed_authorization_requests": false,
+      "id_token_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"],
+      "id_token_encryption_alg_values_supported": ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256", "A128KW", "A192KW", "A256KW", "dir", "ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW", "A128GCMKW", "A192GCMKW", "A256GCMKW", "PBES2-HS256+A128KW", "PBES2-HS384+A192KW", "PBES2-HS512+A256KW"],
+      "id_token_encryption_enc_values_supported": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"],
+      "userinfo_endpoint": "http://127.0.0.1:8080/api/oidc/userinfo",
+      "userinfo_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87", "none"],
+      "userinfo_encryption_alg_values_supported": ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256", "A128KW", "A192KW", "A256KW", "dir", "ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW", "A128GCMKW", "A192GCMKW", "A256GCMKW", "PBES2-HS256+A128KW", "PBES2-HS384+A192KW", "PBES2-HS512+A256KW"],
+      "userinfo_encryption_enc_values_supported": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"],
+      "request_object_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87", "none"],
+      "request_object_encryption_alg_values_supported": ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256", "A128KW", "A192KW", "A256KW", "dir", "ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW", "A128GCMKW", "A192GCMKW", "A256GCMKW", "PBES2-HS256+A128KW", "PBES2-HS384+A192KW", "PBES2-HS512+A256KW"],
+      "request_object_encryption_enc_values_supported": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"],
+      "claim_types_supported": ["normal"],
+      "request_parameter_supported": true,
+      "request_uri_parameter_supported": true,
+      "require_request_uri_registration": true,
+      "claims_parameter_supported": true,
+      "prompt_values_supported": ["consent", "login", "none", "select_account"],
+      "authorization_signing_alg_values_supported": ["HS256", "HS384", "HS512", "RS256", "RS384", "RS512", "ES256", "ES384", "ES512", "PS256", "PS384", "PS512", "Ed25519", "EdDSA", "ML-DSA-44", "ML-DSA-65", "ML-DSA-87"],
+      "authorization_encryption_alg_values_supported": ["RSA1_5", "RSA-OAEP", "RSA-OAEP-256", "A128KW", "A192KW", "A256KW", "dir", "ECDH-ES", "ECDH-ES+A128KW", "ECDH-ES+A192KW", "ECDH-ES+A256KW", "A128GCMKW", "A192GCMKW", "A256GCMKW", "PBES2-HS256+A128KW", "PBES2-HS384+A192KW", "PBES2-HS512+A256KW"],
+      "authorization_encryption_enc_values_supported": ["A128CBC-HS256", "A192CBC-HS384", "A256CBC-HS512", "A128GCM", "A192GCM", "A256GCM"]
+    }
