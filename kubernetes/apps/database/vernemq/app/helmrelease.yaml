@@ -122,7 +122,7 @@ spec:
         enabled: true
         serviceName: *app
         endpoints:
-          - port: metrics
+          - port: api
             scheme: http
             path: /status.json
             interval: 1m
