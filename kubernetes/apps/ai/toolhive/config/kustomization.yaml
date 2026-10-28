@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./mcp-group.yaml
+  - ./memini-auth.yaml
+  - ./memini-entry.yaml
+  - ./home-assistant-entry.yaml
+  - ./trek-entry.yaml
+  - ./flux-operator-mcp.yaml
+  - ./flux-operator-mcp-rbac.yaml
+  - ./flux-operator-mcp-entry.yaml
+  - ./virtualmcpserver.yaml

@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: toolhive-operator-crds
+spec:
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 1h
+      ref:
+        tag: 0.58.0
+      url: oci://ghcr.io/stacklok/toolhive/toolhive-operator-crds
+  interval: 30m

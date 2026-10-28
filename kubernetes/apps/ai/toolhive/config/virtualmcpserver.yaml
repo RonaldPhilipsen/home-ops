@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/toolhive.stacklok.dev/virtualmcpserver_v1beta1.json
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: VirtualMCPServer
+metadata:
+  name: ai-mcp
+spec:
+  groupRef:
+    name: ai-tools
+  config:
+    aggregation:
+      conflictResolution: prefix
+      conflictResolutionConfig:
+        prefixFormat: "{workload}_"
+    optimizer:
+      embeddingProvider: openai
+      embeddingService: http://memini-embed.ai.svc:8000/v1
+      embeddingModel: qwen3-embedding-0.6b
+      embeddingServiceTimeout: 180s
+  incomingAuth:
+    type: anonymous
+  outgoingAuth:
+    source: discovered
