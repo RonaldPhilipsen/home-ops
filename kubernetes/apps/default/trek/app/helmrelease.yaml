@@ -34,6 +34,8 @@ spec:
                 value: https://trek.rphilipsen.nl
               - name: OIDC_ISSUER
                 value: https://auth.rphilipsen.nl
+              - name: OIDC_SCOPE
+                value: openid profile email groups
               - name: OIDC_ADMIN_VALUE
                 value: trek_admin
               - name: OIDC_ONLY
