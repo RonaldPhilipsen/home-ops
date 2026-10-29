@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/operator.victoriametrics.com/v1beta1/VMServiceScrape.json
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: snapshot-controller
+spec:
+  endpoints:
+    - port: http
+      path: /metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: snapshot-controller
+      app.kubernetes.io/name: snapshot-controller

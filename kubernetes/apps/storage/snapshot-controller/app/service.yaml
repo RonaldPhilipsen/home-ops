@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/v1/Service.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: snapshot-controller
+  labels:
+    app.kubernetes.io/instance: snapshot-controller
+    app.kubernetes.io/name: snapshot-controller
+spec:
+  selector:
+    app.kubernetes.io/name: snapshot-controller
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
