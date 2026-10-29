@@ -42,6 +42,15 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    # SMTP for alertmanager email notifications (ProtonMail submission)
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "465"
+              protocol: TCP
+            - port: "587"
+              protocol: TCP
     - toCIDRSet:
         - cidr: 172.16.10.32/32
       toPorts:
