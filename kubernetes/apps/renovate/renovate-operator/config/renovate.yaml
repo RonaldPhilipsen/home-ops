@@ -22,7 +22,7 @@ spec:
   serviceAccount:
     name: renovate-job
     automountServiceAccountToken: false
-  skipForks: true
+  skipForks: false
   webhook:
     enabled: true
   provider:
