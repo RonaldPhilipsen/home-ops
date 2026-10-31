@@ -9,9 +9,10 @@ spec:
     name: ai-tools
   config:
     aggregation:
-      conflictResolution: prefix
+      conflictResolution: priority
       conflictResolutionConfig:
-        prefixFormat: "{workload}_"
+        priorityOrder:
+          - memini
     optimizer:
       embeddingProvider: openai
       embeddingService: http://memini-embed.ai.svc:8000/v1
