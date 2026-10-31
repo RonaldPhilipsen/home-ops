@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/cronjob.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vmbackup
+  namespace: observability
+spec:
+  # -- daily full backup of vmsingle to the vm-backup Garage bucket,
+  #    similar to the barman-cloud ScheduledBackup for the CNPG cluster.
+  #    vmbackup is the OSS tool (no enterprise license needed); retention is
+  #    enforced by the 17d lifecycle expiration policy on the bucket.
+  schedule: "@daily"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 7200
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: vmbackup
+              # renovate: image=victoriametrics/vmbackup
+              image: victoriametrics/vmbackup:v1.155.0
+              imagePullPolicy: IfNotPresent
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: ["ALL"]
+              command:
+                - sh
+                - -c
+                - |
+                  set -e
+                  # create a consistent snapshot of the vmsingle storage
+                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8429/snapshot/create
+                  # back up the snapshot to the vm-backup bucket
+                  /vmbackup-prod \
+                    -src=http://vmsingle-vmetrics:8429/snapshot \
+                    -dst=s3://vm-backup/vmsingle \
+                    -credsFilePath=/creds/credentials.json \
+                    -customS3Endpoint=https://s3.rphilipsen.nl \
+                    -concurrency=4
+                  # drop the snapshot again
+                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8429/snapshot/delete
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 256Mi
+                limits:
+                  memory: 1Gi
+              volumeMounts:
+                - name: creds
+                  mountPath: /creds
+                  readOnly: true
+          volumes:
+            - name: creds
+              secret:
+                secretName: vmbackup-credentials
