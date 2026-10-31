@@ -33,11 +33,13 @@ spec:
         dnsDomain: cluster.local.
     fullnameOverride: vmetrics
 
-    crds:
-      enabled: false
-
     victoria-metrics-operator:
       enabled: true
+      crds:
+        # -- CRDs are provisioned by this chart (plain) and kept up to date
+        #    by the pre-install/pre-upgrade upgrade job.
+        upgrade:
+          enabled: true
 
     defaultDashboards:
       enabled: true
@@ -70,6 +72,12 @@ spec:
 
     vmalert:
       enabled: true
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+        hostnames: ["vmalert.rphilipsen.nl"]
 
     grafana:
       enabled: false
@@ -218,6 +226,12 @@ spec:
             cpu: 150m
         selectAllByDefault: true
         scrapeInterval: 20s
+      route:
+        enabled: true
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+        hostnames: ["vmagent.rphilipsen.nl"]
 
     defaultDatasources:
       grafanaOperator:
