@@ -48,6 +48,13 @@ spec:
         - ports:
             - port: "6379"
               protocol: TCP
+    - fromEntities:
+        - ingress
+      toPorts:
+        - ports:
+            - port: "3909"
+              protocol: TCP
+
   egress:
     - toEntities:
         - host
