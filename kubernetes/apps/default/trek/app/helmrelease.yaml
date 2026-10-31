@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: mauriceboe/trek
-              tag: 5.0.1
+              tag: 5.1.0
             env:
               - name: TZ
                 value: Europe/Amsterdam
