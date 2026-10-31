@@ -72,6 +72,11 @@ spec:
 
     vmalert:
       enabled: true
+      spec:
+        extraArgs:
+          # -- used to build the 'source' link in alertmanager alerts;
+          #    must match the vmalert HTTPRoute hostname
+          external.url: "https://vmalert.rphilipsen.nl"
       route:
         enabled: true
         parentRefs:
