@@ -54,6 +54,18 @@ spec:
         configSecret: alertmanager-config
         # Externally reachable base URL used in notification links (must match the HTTPRoute hostname)
         externalURL: "https://alertmanager.rphilipsen.nl"
+        # Persist silences and notification state (emptyDir by default loses them on restart)
+        storage:
+          volumeClaimTemplate:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: local-hostpath
+            resources:
+              requests:
+                storage: 1Gi
+        # prom/alertmanager runs as nobody (65534); fsGroup makes the PVC writable
+        securityContext:
+          fsGroup: 65534
 
     vmalert:
       enabled: true
