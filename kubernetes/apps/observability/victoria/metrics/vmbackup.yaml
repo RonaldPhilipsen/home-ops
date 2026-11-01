@@ -38,17 +38,18 @@ spec:
                 - -c
                 - |
                   set -e
-                  # create a consistent snapshot of the vmsingle storage
-                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8428/snapshot/create
-                  # back up the snapshot to the vm-backup bucket
+                  # Back up a consistent snapshot of the vmsingle storage to the
+                  # vm-backup bucket. vmbackup creates the snapshot itself
+                  # (-snapshot.createURL) and deletes it again after the upload
+                  # (-snapshot.deleteURL is derived from the create URL).
+                  # Note: with a custom S3 endpoint the -dst URL carries only the
+                  # bucket name; the host comes from -customS3Endpoint.
                   /vmbackup-prod \
-                    -src=http://vmsingle-vmetrics:8428/snapshot \
                     -dst=s3://vm-backup/vmsingle \
                     -credsFilePath=/creds/credentials.json \
                     -customS3Endpoint=https://s3.rphilipsen.nl \
+                    -snapshot.createURL=http://vmsingle-vmetrics:8428/snapshot/create \
                     -concurrency=4
-                  # drop the snapshot again
-                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8428/snapshot/delete
               resources:
                 requests:
                   cpu: 50m
