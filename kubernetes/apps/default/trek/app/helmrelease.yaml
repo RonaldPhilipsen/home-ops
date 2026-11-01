@@ -25,6 +25,13 @@ spec:
             image:
               repository: mauriceboe/trek
               tag: 5.1.0
+            # Use the local entrypoint variant (ConfigMap trek-entrypoint)
+            # instead of the image's /usr/local/bin/trek-entrypoint: the
+            # upstream chown forces group 1000 on the data dirs, which breaks
+            # the kopiur backup mover (uid/gid 2000). Keep dumb-init as the
+            # entrypoint (signal handling), override only the CMD.
+            command: ["dumb-init", "--"]
+            args: ["/etc/trek/entrypoint.sh"]
             env:
               - name: TZ
                 value: Europe/Amsterdam
@@ -146,4 +153,13 @@ spec:
             readOnly: true
           - path: /etc/nginx/oidc/openid-configuration.json
             subPath: openid-configuration.json
+            readOnly: true
+      entrypoint:
+        type: configMap
+        name: trek-entrypoint
+        # executable: the container args exec this script directly
+        defaultMode: 0755
+        globalMounts:
+          - path: /etc/trek
+            subPath: entrypoint.sh
             readOnly: true
