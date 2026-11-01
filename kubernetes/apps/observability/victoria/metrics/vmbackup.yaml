@@ -21,6 +21,11 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          # vmsingle's data (and the snapshots vmbackup reads) live on the
+          # RWO local-hostpath PVC vmsingle-vmetrics, so the job must run on
+          # the same node as vmsingle.
+          nodeSelector:
+            kubernetes.io/hostname: k8s-neo-alpha
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -48,6 +53,7 @@ spec:
                     -dst=s3://vm-backup/vmsingle \
                     -credsFilePath=/creds/credentials.json \
                     -customS3Endpoint=https://s3.rphilipsen.nl \
+                    -storageDataPath=/victoria-metrics-data \
                     -snapshot.createURL=http://vmsingle-vmetrics:8428/snapshot/create \
                     -concurrency=4
               resources:
@@ -60,7 +66,17 @@ spec:
                 - name: creds
                   mountPath: /creds
                   readOnly: true
+                # vmsingle's data dir; vmbackup reads the snapshot it created
+                # from <storageDataPath>/snapshots. Read-only: vmsingle is the
+                # only writer.
+                - name: vmsingle-data
+                  mountPath: /victoria-metrics-data
+                  readOnly: true
           volumes:
             - name: creds
               secret:
                 secretName: vmbackup-credentials
+            - name: vmsingle-data
+              persistentVolumeClaim:
+                claimName: vmsingle-vmetrics
+                readOnly: true
