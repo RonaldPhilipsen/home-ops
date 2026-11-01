@@ -157,9 +157,12 @@ spec:
       entrypoint:
         type: configMap
         name: trek-entrypoint
-        # executable: the container args exec this script directly
+        # Mount the whole ConfigMap as the /etc/trek directory so the
+        # container can exec /etc/trek/entrypoint.sh. Mounting the file
+        # itself at /etc/trek (subPath) makes /etc/trek a file and the
+        # exec fails with ENOTDIR.
+        # defaultMode 0755 makes the script executable.
         defaultMode: 0755
         globalMounts:
           - path: /etc/trek
-            subPath: entrypoint.sh
             readOnly: true
