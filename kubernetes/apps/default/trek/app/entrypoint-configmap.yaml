@@ -1,0 +1,53 @@
+---
+# TREK's in-image entrypoint (mauriceboe/trek) runs:
+#
+#   chown -R node:node /app/data /app/uploads
+#
+# on every container start. That forces the data dirs to group 1000, which
+# breaks the kopiur backup mover (runs as uid/gid 2000): the PVC root is 2770
+# and the mover loses all read access, so every snapshot fails with
+# "upload error: permission denied" (see trek-20261101031819).
+#
+# This is a verbatim copy of /usr/local/bin/trek-entrypoint from
+# mauriceboe/trek:5.1.0 with the chown target changed to node:2000, keeping
+# the data dirs group-readable by the backup mover (the group the hostpath
+# dirs and the mover are built around). Mount it over the image entrypoint
+# via the HelmRelease command/args override.
+#
+# If the upstream entrypoint changes in a new TREK release, re-sync this
+# script (keep the chown target at node:2000).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trek-entrypoint
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    # Container start-up: check the image layout, correct ownership of the mounted
+    # data dirs while still root, then drop to the node user.
+    #
+    # Local variant of /usr/local/bin/trek-entrypoint (mauriceboe/trek): the chown
+    # target is node:2000 instead of node:node so the kopiur backup mover
+    # (uid/gid 2000) keeps read access to the data dirs.
+    set -e
+
+    # If the app code is missing, a volume was almost certainly mounted over /app
+    # (it hides the image's node_modules + dist). Fail with actionable guidance
+    # instead of a cryptic "Cannot find module 'tsconfig-paths/register'".
+    if [ ! -f /app/server/dist/index.js ] || [ ! -d /app/node_modules/tsconfig-paths ]; then
+      echo 'FATAL: TREK application files are missing from the image.'
+      echo 'A volume is likely mounted over /app, which hides the app code.'
+      echo 'Mount ONLY your data and uploads dirs: -v ./data:/app/data -v ./uploads:/app/uploads'
+      echo 'Do NOT mount a volume at /app. See https://github.com/liketrek/TREK/wiki/Troubleshooting'
+      exit 1
+    fi
+
+    # Best effort: a read-only host filesystem or a locked-down bind mount must keep
+    # booting, exactly as it did before. Group 2000 is shared with the kopiur
+    # backup mover, so the data dirs must stay group-readable by it.
+    chown -R node:2000 /app/data /app/uploads 2>/dev/null || true
+
+    # cd into server/ so tsconfig-paths/register finds tsconfig.json and
+    # ../node_modules resolves correctly.
+    cd /app/server
+    exec gosu node node --require tsconfig-paths/register dist/index.js
