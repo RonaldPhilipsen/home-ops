@@ -39,16 +39,16 @@ spec:
                 - |
                   set -e
                   # create a consistent snapshot of the vmsingle storage
-                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8429/snapshot/create
+                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8428/snapshot/create
                   # back up the snapshot to the vm-backup bucket
                   /vmbackup-prod \
-                    -src=http://vmsingle-vmetrics:8429/snapshot \
+                    -src=http://vmsingle-vmetrics:8428/snapshot \
                     -dst=s3://vm-backup/vmsingle \
                     -credsFilePath=/creds/credentials.json \
                     -customS3Endpoint=https://s3.rphilipsen.nl \
                     -concurrency=4
                   # drop the snapshot again
-                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8429/snapshot/delete
+                  wget -q -O /dev/null --post-data="" http://vmsingle-vmetrics:8428/snapshot/delete
               resources:
                 requests:
                   cpu: 50m
