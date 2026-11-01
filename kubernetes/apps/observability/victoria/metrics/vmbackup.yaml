@@ -51,7 +51,7 @@ spec:
                   # bucket name; the host comes from -customS3Endpoint.
                   /vmbackup-prod \
                     -dst=s3://vm-backup/vmsingle \
-                    -credsFilePath=/creds/credentials.json \
+                    -credsFilePath=/creds/credentials \
                     -customS3Endpoint=https://s3.rphilipsen.nl \
                     -storageDataPath=/victoria-metrics-data \
                     -snapshot.createURL=http://vmsingle-vmetrics:8428/snapshot/create \
