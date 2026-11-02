@@ -85,6 +85,9 @@ spec:
                 readOnly: true
               - mountPath: /tmp
                 name: tmp
+        securityContext:
+          fsGroup: 1001
+          fsGroupChangePolicy: OnRootMismatch
         volumes:
           - name: talos
             secret:
