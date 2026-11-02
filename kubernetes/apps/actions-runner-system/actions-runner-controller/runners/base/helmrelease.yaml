@@ -73,7 +73,6 @@ spec:
             securityContext:
               privileged: false
               allowPrivilegeEscalation: false
-              runAsUser: 2000
               runAsNonRoot: true
               seccompProfile:
                 type: RuntimeDefault
@@ -85,9 +84,6 @@ spec:
                 readOnly: true
               - mountPath: /tmp
                 name: tmp
-        securityContext:
-          fsGroup: 123
-          fsGroupChangePolicy: OnRootMismatch
         volumes:
           - name: talos
             secret:
