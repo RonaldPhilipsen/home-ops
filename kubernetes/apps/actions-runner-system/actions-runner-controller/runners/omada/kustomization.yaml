@@ -1,0 +1,32 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namePrefix: omada-
+resources:
+  - ../base
+patches:
+  - path: ./helmrelease.yaml
+    target:
+      group: helm.toolkit.fluxcd.io
+      version: v2
+      kind: HelmRelease
+      name: runner
+  - patch: |-
+      apiVersion: external-secrets.io/v1
+      kind: ExternalSecret
+      metadata:
+        name: runner
+      spec:
+        target:
+          name: omada-runner-secret
+    target:
+      kind: ExternalSecret
+      name: runner
+  - patch: |-
+      - op: replace
+        path: /subjects/0/name
+        value: omada-runner
+    target:
+      kind: RoleBinding
+      name: runner

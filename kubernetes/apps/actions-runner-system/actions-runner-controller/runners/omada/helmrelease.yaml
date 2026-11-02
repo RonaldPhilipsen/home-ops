@@ -1,0 +1,18 @@
+# JSON6902 patch for the shared ARC runner base
+- op: replace
+  path: /spec/values/githubConfigUrl
+  value: https://github.com/RonaldPhilipsen/omada
+- op: replace
+  path: /spec/values/githubConfigSecret
+  value: omada-runner-secret
+- op: replace
+  path: /spec/values/template/metadata/labels
+  value:
+    app.kubernetes.io/name: omada-runner
+    actions.github.com/scale-set-name: omada-runner
+- op: replace
+  path: /spec/values/template/spec/serviceAccountName
+  value: omada-runner
+- op: replace
+  path: /spec/values/template/spec/volumes/0/secret/secretName
+  value: omada-runner
