@@ -5,6 +5,7 @@ kind: Kustomization
 namePrefix: home-ops-
 resources:
   - ../base
+  - ./netpol.yaml
 patches:
   - path: ./helmrelease.yaml
     target:
