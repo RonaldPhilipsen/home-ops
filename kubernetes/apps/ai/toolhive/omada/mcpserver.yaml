@@ -5,7 +5,7 @@ kind: MCPServer
 metadata:
   name: omada
 spec:
-  image: ghcr.io/ronaldphilipsen/omada-mcp:latest
+  image: ghcr.io/ronaldphilipsen/omada-mcp:v0.0.1
   transport: stdio
   groupRef:
     name: ai-tools
@@ -22,7 +22,7 @@ spec:
       value: "true"
     # Explicitly read-only; set to "false" to unlock the write tools.
     - name: OMADA_READ_ONLY
-      value: "true"
+      value: "false"
   secrets:
     - name: toolhive-omada
       key: OMADA_CLIENT_ID
