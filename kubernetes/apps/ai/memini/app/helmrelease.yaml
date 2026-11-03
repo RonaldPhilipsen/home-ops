@@ -35,7 +35,7 @@ spec:
             image:
               # chart default points at the developer's private registry
               repository: ghcr.io/eleboucher/memini
-              tag: "0.7.37"
+              tag: "0.7.38"
               digest: ""
             resources:
               requests:
