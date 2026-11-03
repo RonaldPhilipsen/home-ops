@@ -13,10 +13,6 @@ spec:
     # ToolHive runs the container and speaks MCP over stdio.
     - name: OMADA_TRANSPORT
       value: stdio
-    - name: OMADA_BASE_URL
-      value: https://REDACTED
-    - name: OMADA_OMADAC_ID
-      value: "REDACTED"
     # The on-prem controller serves a self-signed certificate.
     - name: OMADA_INSECURE_TLS
       value: "true"
@@ -24,6 +20,12 @@ spec:
     - name: OMADA_READ_ONLY
       value: "false"
   secrets:
+    - name: toolhive-omada
+      key: OMADA_BASE_URL
+      targetEnvName: OMADA_BASE_URL
+    - name: toolhive-omada
+      key: OMADA_OMADAC_ID
+      targetEnvName: OMADA_OMADAC_ID
     - name: toolhive-omada
       key: OMADA_CLIENT_ID
       targetEnvName: OMADA_CLIENT_ID
