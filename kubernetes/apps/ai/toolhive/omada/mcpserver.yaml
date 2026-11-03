@@ -1,0 +1,38 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/toolhive.stacklok.dev/mcpserver_v1beta1.json
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: MCPServer
+metadata:
+  name: omada
+spec:
+  image: ghcr.io/ronaldphilipsen/omada-mcp:latest
+  transport: stdio
+  groupRef:
+    name: ai-tools
+  env:
+    # ToolHive runs the container and speaks MCP over stdio.
+    - name: OMADA_TRANSPORT
+      value: stdio
+    - name: OMADA_BASE_URL
+      value: https://REDACTED
+    - name: OMADA_OMADAC_ID
+      value: "REDACTED"
+    # The on-prem controller serves a self-signed certificate.
+    - name: OMADA_INSECURE_TLS
+      value: "true"
+    # Explicitly read-only; set to "false" to unlock the write tools.
+    - name: OMADA_READ_ONLY
+      value: "true"
+  secrets:
+    - name: toolhive-omada
+      key: OMADA_CLIENT_ID
+      targetEnvName: OMADA_CLIENT_ID
+    - name: toolhive-omada
+      key: OMADA_CLIENT_SECRET
+      targetEnvName: OMADA_CLIENT_SECRET
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi

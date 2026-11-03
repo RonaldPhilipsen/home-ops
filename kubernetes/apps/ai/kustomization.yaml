@@ -18,3 +18,4 @@ resources:
   - ./toolhive/grafana/ks.yaml
   - ./toolhive/github/secret/ks.yaml
   - ./toolhive/github/config/ks.yaml
+  - ./toolhive/omada/ks.yaml
