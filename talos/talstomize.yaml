@@ -4,7 +4,7 @@ kind: Talstomize
 clusterName: kubernetes
 controlPlaneEndpoint: https://172.16.20.20:6443
 talosVersion: v1.14.1
-kubernetesVersion: "v1.36.2"
+kubernetesVersion: "v1.37.2"
 secrets: ./talsecret.sops.yaml
 additionalSubjectAltNames:
   - "127.0.0.1"
