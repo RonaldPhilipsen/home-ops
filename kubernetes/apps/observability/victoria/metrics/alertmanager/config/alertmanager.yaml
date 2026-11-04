@@ -8,6 +8,9 @@ route:
     - receiver: "null"
       matchers:
         - alertname = "InfoInhibitor"
+    - receiver: "null"
+      matchers:
+        - alertname = "Watchdog"
 
 inhibit_rules:
   - source_matchers:
