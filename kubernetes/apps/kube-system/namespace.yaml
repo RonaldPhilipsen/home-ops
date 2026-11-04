@@ -5,3 +5,9 @@ metadata:
   name: _
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    # privileged (not baseline): kube-system runs hostNetwork workloads
+    # (cilium agent/operator, control plane) that baseline would reject.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged

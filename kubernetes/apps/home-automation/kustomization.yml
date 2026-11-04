@@ -8,3 +8,4 @@ components:
 resources:
   - ./esphome/ks.yaml
   - ./namespace.yaml
+  - ./netpol.yaml
