@@ -9,6 +9,7 @@ spec:
   replicas: 0
   persistence:
     size: 1Gi
+    storageClassName: local-hostpath
   config:
     maxmemory: 512mb
   resources:
