@@ -15,6 +15,11 @@ spec:
       value: http://vmsingle-vmetrics.observability.svc:8428
     - name: VM_INSTANCE_TYPE
       value: single
+    # The embedded docs corpus is exposed as thousands of MCP resources, which
+    # makes the ToolHive virtual server's resources/list health check time out.
+    # Disabling resources keeps the documentation search tool working.
+    - name: MCP_DISABLE_RESOURCES
+      value: "true"
   resources:
     requests:
       cpu: 50m

@@ -13,6 +13,12 @@ spec:
     # In-cluster VictoriaLogs endpoint; no auth required.
     - name: VL_INSTANCE_ENTRYPOINT
       value: http://vlsingle-vmetrics.observability.svc:9428
+    # The embedded docs corpus is exposed as thousands of MCP resources, which
+    # makes the ToolHive virtual server's resources/list health check time out.
+    # Disabling the documentation tool also skips registering the doc resources
+    # (no MCP_DISABLE_RESOURCES switch exists for this image).
+    - name: MCP_DISABLED_TOOLS
+      value: documentation
   resources:
     requests:
       cpu: 50m
