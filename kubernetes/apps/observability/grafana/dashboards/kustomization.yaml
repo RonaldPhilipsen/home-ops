@@ -6,3 +6,4 @@ resources:
   - ./etcd.yaml
   - ./k8s.yaml
   - ./grafanadashboard.yaml
+  - ./syslog.yaml

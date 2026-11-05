@@ -1,0 +1,2484 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: syslog-omada
+spec:
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasources:
+    - datasourceName: victoria-logs
+      inputName: DS_VLOGS
+  json: |
+    {
+      "annotations": {
+        "list": []
+      },
+      "description": "Interpret Omada gateway, AP, switch and controller syslog records stored in VictoriaLogs. All panels filter on facility_text, which is only set for syslog data, so Kubernetes logs and events are excluded.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 1,
+      "links": [
+        {
+          "asDropdown": false,
+          "icon": "external link",
+          "includeVars": false,
+          "keepTime": true,
+          "tags": [],
+          "targetBlank": true,
+          "title": "VictoriaLogs UI",
+          "tooltip": "Open the raw syslog stream in VictoriaLogs",
+          "type": "link",
+          "url": "https://vlogs.rphilipsen.nl/select/vmui/"
+        }
+      ],
+      "liveNow": false,
+      "panels": [
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "panels": [],
+          "title": "Overview",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "All syslog records in the selected range, summed over the collector's dedup_count. This excludes Kubernetes container logs and events.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 0,
+            "y": 1
+          },
+          "id": 2,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* | stats sum(dedup_count) as events",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Syslog events",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Age of the newest syslog record. A rising value means the gateway/APs stopped shipping or the OTel syslog collector is stalled.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 300
+                  },
+                  {
+                    "color": "red",
+                    "value": 900
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 3,
+            "y": 1
+          },
+          "id": 3,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* | first 1 by (_time desc) | math (now() - _time) / 1000000000 as lag_s | stats max(lag_s) as lag_s",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Last syslog age",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Gateway ACL records with ACTION=Block. These are parsed into src_ip, dst_ip, proto and port fields.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 6,
+            "y": 1
+          },
+          "id": 4,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats sum(dedup_count) as blocks",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Firewall blocks",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Distinct LAN client IPs with at least one denied connection in the range.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 9,
+            "y": 1
+          },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats count_uniq(src_ip) as clients",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked clients",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "DHCP allocations reported by the ER8411 gateway.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 12,
+            "y": 1
+          },
+          "id": 6,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user hostname:dhcp_server | stats sum(dedup_count) as leases",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "DHCP leases",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "IP address conflicts reported by the gateway, counting both 'used conflicted ip' and 'conflicted ip resolved' lines.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 15,
+            "y": 1
+          },
+          "id": 7,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* _msg:\"conflicted ip\" | stats sum(dedup_count) as conflicts",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "IP conflicts",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Events emitted by the Omada access points, such as admission control, load balancing and roaming decisions.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 18,
+            "y": 1
+          },
+          "id": 8,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "_msg:\"[ap:\" | stats sum(dedup_count) as events",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Wireless AP events",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Controller configuration audit records plus syslog auth records. Low volume, but usually the first place to look after an unexpected change.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 3,
+            "x": 21,
+            "y": 1
+          },
+          "id": 9,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:(local3 OR auth) | stats sum(dedup_count) as events",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Config & auth events",
+          "type": "stat"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "id": 10,
+          "panels": [],
+          "title": "Volume & sources",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Stacked event count per payload type. Use this to see which device class is responsible for a change in syslog volume.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 11,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* | format \"Syslog\" as source | format if (_msg:\"[ACL]\") \"Firewall ACL\" as source | format if (hostname:dhcp_server) \"DHCP\" as source | format if (_msg:\"[ap:\") \"Wireless AP\" as source | format if (_msg:\"conflicted ip\") \"IP conflict\" as source | format if (switch_model:*) \"Switch\" as source | format if (facility_text:local3) \"Controller audit\" as source | format if (facility_text:auth) \"Auth\" as source | stats by (source) sum(dedup_count) as events",
+              "legendFormat": "{{source}}",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "Syslog volume by source",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Syslog severity split. Most gateway traffic is notice; warning, err and crit are the lines worth reading.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "normal"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 6,
+            "x": 12,
+            "y": 6
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* | stats by (severity_text) sum(dedup_count) as events",
+              "legendFormat": "{{severity_text}}",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "Events by severity",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Share of syslog records by payload type. A sudden jump in Wireless AP or Auth can point at a client or configuration problem.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 6,
+            "x": 18,
+            "y": 6
+          },
+          "id": 13,
+          "options": {
+            "displayLabels": [
+              "name",
+              "percent"
+            ],
+            "legend": {
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "pieType": "donut",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* | format \"Syslog\" as source | format if (_msg:\"[ACL]\") \"Firewall ACL\" as source | format if (hostname:dhcp_server) \"DHCP\" as source | format if (_msg:\"[ap:\") \"Wireless AP\" as source | format if (_msg:\"conflicted ip\") \"IP conflict\" as source | format if (switch_model:*) \"Switch\" as source | format if (facility_text:local3) \"Controller audit\" as source | format if (facility_text:auth) \"Auth\" as source | stats by (source) sum(dedup_count) as events | sort by (events desc)",
+              "legendFormat": "{{source}}",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Events by source",
+          "type": "piechart"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 15
+          },
+          "id": 14,
+          "panels": [],
+          "title": "Firewall (gateway ACL)",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Denied connections over time. A spike usually means a client is retrying a blocked service, probing, or a new device is misconfigured.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 16
+          },
+          "id": 15,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats sum(dedup_count) as blocks",
+              "legendFormat": "Blocked",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "Firewall blocks over time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "LAN clients with the most denied outbound attempts. Cross-check the MAC against DHCP leases to identify the device.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 16
+          },
+          "id": 16,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Blocks"
+              }
+            ]
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats by (src_ip, src_mac) sum(dedup_count) as blocks | sort by (blocks desc) | limit 10",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Top blocked clients",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "renameByName": {
+                  "Value": "Blocks",
+                  "src_ip": "Client IP",
+                  "src_mac": "Client MAC"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Most frequent blocked destination IP, port and protocol. Repeated attempts to an unknown address can indicate a misconfigured client or malware.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 16
+          },
+          "id": 17,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Blocks"
+              }
+            ]
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats by (dst_ip, dst_port, proto) sum(dedup_count) as blocks | sort by (blocks desc) | limit 10",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Top blocked destinations",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "renameByName": {
+                  "Value": "Blocks",
+                  "dst_ip": "Destination",
+                  "dst_port": "Port",
+                  "proto": "Protocol"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "ACL rule IDs producing events, split by action. This shows which rules are actually matching traffic.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 25
+          },
+          "id": 18,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Events"
+              }
+            ]
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats by (rule_id, action) sum(dedup_count) as events | sort by (events desc) | limit 10",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Firewall rules",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "renameByName": {
+                  "Value": "Events",
+                  "rule_id": "Rule ID",
+                  "action": "Action"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Transport split of blocked traffic. UDP is commonly NTP or discovery noise; TCP usually means an application retrying a blocked port.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "mappings": [],
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 25
+          },
+          "id": 19,
+          "options": {
+            "displayLabels": [
+              "name",
+              "percent"
+            ],
+            "legend": {
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "pieType": "donut",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats by (proto) sum(dedup_count) as events | sort by (events desc)",
+              "legendFormat": "{{proto}}",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked protocols",
+          "type": "piechart"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Destination ports behind the firewall blocks. Pair with the destination table above to distinguish expected service noise from a real problem.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 25
+          },
+          "id": 20,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Events"
+              }
+            ]
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user _msg:\"[ACL]\" | extract if (action:\"\") \"[ACL]GATEWAY=<gateway_mac>,DESC=<rule_id>,ACTION=<action>,SRC_MAC=<src_mac>,DST_MAC=<dst_mac>,SRC=<src_ip>,DST=<dst_ip>,PROTO=<proto>,Sport=<src_port>,Dport=<dst_port>\" | stats by (dst_port, proto) sum(dedup_count) as events | sort by (events desc) | limit 10",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Blocked port summary",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "renameByName": {
+                  "Value": "Events",
+                  "dst_port": "Port",
+                  "proto": "Protocol"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 34
+          },
+          "id": 21,
+          "panels": [],
+          "title": "DHCP",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "DHCP allocations over time. A sudden drop means fewer devices are joining, or the gateway stopped logging DHCP.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 35
+          },
+          "id": 22,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user hostname:dhcp_server | stats sum(dedup_count) as leases",
+              "legendFormat": "Leases",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "DHCP leases over time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Distinct client MACs that received a lease in the selected range.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 8,
+            "y": 35
+          },
+          "id": 23,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user hostname:dhcp_server | extract \"allocated IP address <lease_ip> for the [client:<client_mac> ]\" | stats count_uniq(client_mac) as clients",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Unique DHCP clients",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Distinct IP addresses handed out in the selected range.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 8,
+            "y": 39
+          },
+          "id": 24,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user hostname:dhcp_server | extract \"allocated IP address <lease_ip> for the [client:<client_mac> ]\" | stats count_uniq(lease_ip) as addresses",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Unique DHCP addresses",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Latest lease grants with the client MAC. Use this to map a blocked client IP back to a device.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 35
+          },
+          "id": 25,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:user hostname:dhcp_server | extract \"allocated IP address <lease_ip> for the [client:<client_mac> ]\" | fields _time, lease_ip, client_mac | sort by (_time desc) | limit 100",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Recent DHCP leases",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels",
+                "format": "json",
+                "replace": true
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "includeByName": {
+                  "Time": true,
+                  "lease_ip": true,
+                  "client_mac": true
+                },
+                "renameByName": {
+                  "Time": "Time",
+                  "lease_ip": "Leased IP",
+                  "client_mac": "Client MAC"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 44
+          },
+          "id": 26,
+          "panels": [],
+          "title": "IP conflicts",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "IP address conflicts over time. A burst means a device is reusing an address already assigned to another client.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 45
+          },
+          "id": 27,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* _msg:\"conflicted ip\" | stats sum(dedup_count) as conflicts",
+              "legendFormat": "Conflicts",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "IP conflicts over time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Latest IP conflict records. Both the 'used conflicted ip' and 'conflicted ip resolved' lines are shown, with the offending address extracted.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 16,
+            "x": 8,
+            "y": 45
+          },
+          "id": 28,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:* _msg:\"conflicted ip\" | extract \"conflicted ip: <conflict_ip>\" | fields _time, conflict_ip, _msg | sort by (_time desc) | limit 100",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Recent IP conflicts",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels",
+                "format": "json",
+                "replace": true
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "includeByName": {
+                  "Time": true,
+                  "conflict_ip": true,
+                  "Line": true
+                },
+                "renameByName": {
+                  "Time": "Time",
+                  "conflict_ip": "Conflicted IP",
+                  "Line": "Details"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 54
+          },
+          "id": 29,
+          "panels": [],
+          "title": "Wireless APs & controller",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Wireless events grouped by AP name. One AP dominating the chart usually means client steering, interference or a configuration mismatch on that AP.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "opacity",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 55
+          },
+          "id": 30,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "hideZeros": false,
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "_msg:\"[ap:\" | extract \"[ap:<ap_name>:<ap_mac>]\" | stats by (ap_name) sum(dedup_count) as events",
+              "legendFormat": "{{ap_name}}",
+              "queryType": "statsRange",
+              "refId": "A"
+            }
+          ],
+          "title": "AP events per AP",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Latest AP messages with the AP name and the human-readable event text extracted from the raw syslog line.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 16,
+            "x": 8,
+            "y": 55
+          },
+          "id": 31,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "_msg:\"[ap:\" | extract \"[ap:<ap_name>:<ap_mac>] <ap_event>\" | fields _time, ap_name, ap_mac, ap_event | sort by (_time desc) | limit 100",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Recent AP events",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels",
+                "format": "json",
+                "replace": true
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "includeByName": {
+                  "Time": true,
+                  "ap_name": true,
+                  "ap_mac": true,
+                  "ap_event": true
+                },
+                "renameByName": {
+                  "Time": "Time",
+                  "ap_name": "AP",
+                  "ap_mac": "AP MAC",
+                  "ap_event": "Event"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Controller audit operations such as configuration edits, logins and export failures.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 0,
+            "y": 64
+          },
+          "id": 32,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true,
+            "sortBy": [
+              {
+                "desc": true,
+                "displayName": "Events"
+              }
+            ]
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:local3 | extract '\"operation\":\"<operation>\"' | stats by (operation) sum(dedup_count) as events | sort by (events desc) | limit 20",
+              "queryType": "stats",
+              "refId": "A"
+            }
+          ],
+          "title": "Controller audit actions",
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "columns"
+              }
+            },
+            {
+              "id": "merge",
+              "options": {}
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "__name__": true
+                },
+                "renameByName": {
+                  "Value": "Events",
+                  "operation": "Operation"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Raw controller audit entries with the operation extracted. Read this after an unexpected network change.",
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "footer": {
+                  "reducers": []
+                },
+                "inspect": false,
+                "wrapText": true
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 8,
+            "y": 64
+          },
+          "id": 33,
+          "options": {
+            "cellHeight": "sm",
+            "showHeader": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:local3 | extract '\"operation\":\"<operation>\"' | fields _time, operation, _msg | sort by (_time desc) | limit 100",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Recent controller changes",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels",
+                "format": "json",
+                "replace": true
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "includeByName": {
+                  "Time": true,
+                  "operation": true,
+                  "Line": true
+                },
+                "renameByName": {
+                  "Time": "Time",
+                  "operation": "Operation",
+                  "Line": "Details"
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Syslog records with facility auth. These are usually device logins or failed authentication attempts.",
+          "gridPos": {
+            "h": 9,
+            "w": 8,
+            "x": 16,
+            "y": 64
+          },
+          "id": 34,
+          "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "fontSize": 10,
+            "hideZeros": false,
+            "prependRowLabels": false,
+            "showFullLogMessage": false,
+            "showLabels": false,
+            "showLiveTail": true,
+            "showRealTimeLogCount": false,
+            "showRowType": false,
+            "showTime": true,
+            "showType": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:auth | fields _time, _msg | sort by (_time desc) | limit 200",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Auth events",
+          "type": "logs"
+        },
+        {
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 73
+          },
+          "id": 35,
+          "panels": [],
+          "title": "All syslog",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "victoriametrics-logs-datasource",
+            "uid": "${DS_VLOGS}"
+          },
+          "description": "Unfiltered syslog tail. Use the source, severity and search controls at the top to narrow it down.",
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 74
+          },
+          "id": 36,
+          "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "fontSize": 10,
+            "hideZeros": false,
+            "prependRowLabels": false,
+            "showFullLogMessage": false,
+            "showLabels": false,
+            "showLiveTail": true,
+            "showRealTimeLogCount": false,
+            "showRowType": false,
+            "showTime": true,
+            "showType": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": true
+          },
+          "pluginVersion": "13.1.3",
+          "targets": [
+            {
+              "datasource": {
+                "type": "victoriametrics-logs-datasource",
+                "uid": "${DS_VLOGS}"
+              },
+              "editorMode": "code",
+              "expr": "facility_text:$facility severity_text:$severity $search",
+              "queryType": "instant",
+              "refId": "A"
+            }
+          ],
+          "title": "Live syslog",
+          "type": "logs"
+        }
+      ],
+      "preload": false,
+      "refresh": "30s",
+      "schemaVersion": 39,
+      "tags": [
+        "syslog",
+        "omada",
+        "network",
+        "victorialogs"
+      ],
+      "templating": {
+        "list": [
+          {
+            "allValue": "*",
+            "current": {
+              "selected": true,
+              "text": "All",
+              "value": "$__all"
+            },
+            "includeAll": true,
+            "label": "Syslog source",
+            "multi": false,
+            "name": "facility",
+            "options": [
+              {
+                "selected": true,
+                "text": "All",
+                "value": "$__all"
+              },
+              {
+                "selected": false,
+                "text": "Gateway (firewall/DHCP)",
+                "value": "user"
+              },
+              {
+                "selected": false,
+                "text": "Wireless APs",
+                "value": "local0"
+              },
+              {
+                "selected": false,
+                "text": "Controller audit",
+                "value": "local3"
+              },
+              {
+                "selected": false,
+                "text": "Auth",
+                "value": "auth"
+              }
+            ],
+            "query": "user : Gateway (firewall/DHCP),local0 : Wireless APs,local3 : Controller audit,auth : Auth",
+            "type": "custom"
+          },
+          {
+            "allValue": "*",
+            "current": {
+              "selected": true,
+              "text": "All",
+              "value": "$__all"
+            },
+            "includeAll": true,
+            "label": "Severity",
+            "multi": false,
+            "name": "severity",
+            "options": [
+              {
+                "selected": true,
+                "text": "All",
+                "value": "$__all"
+              },
+              {
+                "selected": false,
+                "text": "Critical",
+                "value": "crit"
+              },
+              {
+                "selected": false,
+                "text": "Error",
+                "value": "err"
+              },
+              {
+                "selected": false,
+                "text": "Warning",
+                "value": "warning"
+              },
+              {
+                "selected": false,
+                "text": "Notice",
+                "value": "notice"
+              },
+              {
+                "selected": false,
+                "text": "Info",
+                "value": "info"
+              }
+            ],
+            "query": "crit : Critical,err : Error,warning : Warning,notice : Notice,info : Info",
+            "type": "custom"
+          },
+          {
+            "current": {
+              "selected": false,
+              "text": "",
+              "value": ""
+            },
+            "label": "Search",
+            "name": "search",
+            "options": [],
+            "query": "",
+            "type": "textbox"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Syslog \u2014 Omada Gateway, APs & Controller",
+      "uid": "syslog-omada",
+      "version": 1,
+      "weekStart": ""
+    }
