@@ -4,9 +4,11 @@ kind: ValkeyCluster
 metadata:
   name: valkey
 spec:
-  image: valkey/valkey:9.0.0@sha256:00e026f877bbbed33d13241e5e701142e8842f94e1124ce1d5ddbbf6d0cee4fb
+  image: ghcr.io/valkey-io/valkey:9.0.0@sha256:00e026f877bbbed33d13241e5e701142e8842f94e1124ce1d5ddbbf6d0cee4fb
   shards: 1
   replicas: 0
+  exporter:
+    image: ghcr.io/oliver006/redis_exporter:v1.88.0@sha256:2c8c55c63ce4d915389f03d337b8acef56aaaca9fab8728291287e612d4d6398
   persistence:
     size: 1Gi
     storageClassName: local-hostpath
