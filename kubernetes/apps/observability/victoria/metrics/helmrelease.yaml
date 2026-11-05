@@ -184,7 +184,7 @@ spec:
         terminationGracePeriodSeconds: 60
         image:
           repository: victoriametrics/victoria-traces
-          tag: v0.12.1
+          tag: v0.13.0
         extraArgs:
           envflag.enable: "true"
           envflag.prefix: VM_
