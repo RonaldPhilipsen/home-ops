@@ -45,6 +45,9 @@ spec:
             args:
               - --health-probe-bind-address=:8081
               - --metrics-bind-address=:8080
+              # operator serves metrics over HTTPS+K8s authn/authz by default;
+              # disable secure serving so the plain-HTTP ServiceMonitor can scrape it
+              - --metrics-secure=false
               - --watch-namespace=database
             probes:
               liveness:
