@@ -4,7 +4,7 @@ kind: ValkeyCluster
 metadata:
   name: valkey
 spec:
-  image: ghcr.io/valkey-io/valkey:9.0.0@sha256:00e026f877bbbed33d13241e5e701142e8842f94e1124ce1d5ddbbf6d0cee4fb
+  image: ghcr.io/valkey-io/valkey:9.1.3@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7
   shards: 1
   replicas: 0
   exporter:
