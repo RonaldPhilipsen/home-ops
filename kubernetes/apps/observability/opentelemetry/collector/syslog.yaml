@@ -75,6 +75,8 @@ spec:
             expr: 'body matches "dhcp_server"'
           - output: parse_gateway_acl
             expr: 'body matches "\\[ACL\\]"'
+          - output: parse_controller
+            expr: 'body matches "^<\\d+>[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s+\\["'
           default: noop
         - id: parse_ap_traffic
           type: regex_parser
@@ -126,71 +128,26 @@ spec:
           parse_from: body
           on_error: send
           regex: '^(?:<\d+>[A-Za-z]{3}\s+\d+\s+\d{2}:\d{2}:\d{2}\s+\S+:\s+)?(?:\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(?P<hostname>[\w.-]+)(?:<\d+>)?:\s+(?P<message>.*)$'
+          output: noop
         - id: parse_gateway_acl
           type: regex_parser
           parse_from: body
           on_error: send
-          # Gateway firewall ACL records: "[ACL]GATEWAY=...,DESC=...,ACTION=Block,..."
-          regex: '\[ACL\]\s*(?P<acl_kv>.*)$'
-        # Normalize ACL keys to the same attribute names used for the AP firewall records
-        - id: acl_kv_rename_gateway
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bGATEWAY='
-          replace_with: 'gateway_mac='
-        - id: acl_kv_rename_desc
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bDESC='
-          replace_with: 'rule_id='
-        - id: acl_kv_rename_action
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bACTION='
-          replace_with: 'action='
-        - id: acl_kv_rename_src_mac
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bSRC_MAC='
-          replace_with: 'src_mac='
-        - id: acl_kv_rename_dst_mac
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bDST_MAC='
-          replace_with: 'dst_mac='
-        - id: acl_kv_rename_src
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bSRC='
-          replace_with: 'src_ip='
-        - id: acl_kv_rename_dst
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bDST='
-          replace_with: 'dst_ip='
-        - id: acl_kv_rename_proto
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bPROTO='
-          replace_with: 'proto='
-        - id: acl_kv_rename_sport
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bSport='
-          replace_with: 'src_port='
-        - id: acl_kv_rename_dport
-          type: regex_replace
-          field: attributes.acl_kv
-          regex: '\bDport='
-          replace_with: 'dst_port='
-        - id: parse_acl_kv
-          type: key_value_parser
-          parse_from: attributes.acl_kv
-          pair_delimiter: ','
+          # Gateway firewall ACL fields arrive in a fixed order, so capture them in one pass.
+          # Trailing fields are ignored, so adding a field at the end won't break parsing.
+          regex: '\[ACL\]\s*GATEWAY=(?P<gateway_mac>[^,]+),DESC=(?P<rule_id>[^,]*),ACTION=(?P<action>[^,]+),SRC_MAC=(?P<src_mac>[^,]+),DST_MAC=(?P<dst_mac>[^,]+),SRC=(?P<src_ip>[^,]+),DST=(?P<dst_ip>[^,]+),PROTO=(?P<proto>[^,]+),Sport=(?P<src_port>\d+),Dport=(?P<dst_port>\d+)'
+          output: noop
+        # Controller-generated records follow RFC3164: "<PRI>Mon DD HH:MM:SS Controller [Module/Client Info] Message"
+        - id: parse_controller
+          type: syslog_parser
+          protocol: rfc3164
+          location: Europe/Amsterdam
           on_error: send
-        - id: remove_acl_kv
-          type: remove
-          field: attributes.acl_kv
+        - id: parse_controller_module
+          type: regex_parser
+          parse_from: attributes.message
+          on_error: send
+          regex: '^\[(?P<module>[^\]]+)\]\s*(?P<message>.*)$'
           output: noop
         - id: noop
           type: noop
