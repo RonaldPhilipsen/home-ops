@@ -77,6 +77,8 @@ spec:
             expr: 'body matches "\\[ACL\\]"'
           - output: parse_controller
             expr: 'body matches "^<\\d+>[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s+\\["'
+          - output: parse_switch
+            expr: 'body matches "^<\\d+>\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\S+\\s+\\d+\\s+"'
           default: noop
         - id: parse_ap_traffic
           type: regex_parser
@@ -148,6 +150,21 @@ spec:
           parse_from: attributes.message
           on_error: send
           regex: '^\[(?P<module>[^\]]+)\]\s*(?P<message>.*)$'
+          output: noop
+        # Switch records: "<PRI>YYYY-MM-DD HH:MM:SS SwitchModel Index/LogID Message"
+        - id: parse_switch
+          type: regex_parser
+          parse_from: body
+          on_error: send
+          regex: '^<\d+>(?P<switch_timestamp>\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})\s+(?P<switch_model>\S+)\s+(?P<log_id>\d+)\s+(?P<message>.*)$'
+          timestamp:
+            parse_from: attributes.switch_timestamp
+            layout_type: strptime
+            layout: '%Y-%m-%d %H:%M:%S'
+            location: Europe/Amsterdam
+        - id: remove_switch_timestamp
+          type: remove
+          field: attributes.switch_timestamp
           output: noop
         - id: noop
           type: noop
