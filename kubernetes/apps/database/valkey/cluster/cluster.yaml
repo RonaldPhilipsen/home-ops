@@ -1,0 +1,19 @@
+---
+apiVersion: valkey.io/v1alpha1
+kind: ValkeyCluster
+metadata:
+  name: valkey
+spec:
+  image: valkey/valkey:9.0.0@sha256:00e026f877bbbed33d13241e5e701142e8842f94e1124ce1d5ddbbf6d0cee4fb
+  shards: 1
+  replicas: 0
+  persistence:
+    size: 1Gi
+  config:
+    maxmemory: 512mb
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
