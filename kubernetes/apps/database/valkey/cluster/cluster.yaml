@@ -8,7 +8,7 @@ spec:
   shards: 1
   replicas: 0
   exporter:
-    image: ghcr.io/oliver006/redis_exporter:v1.88.0@sha256:2c8c55c63ce4d915389f03d337b8acef56aaaca9fab8728291287e612d4d6398
+    image: ghcr.io/oliver006/redis_exporter:v1.97.0@sha256:f5f903fbe77571d455ede0453b084d6840bc62fc105efac001034421cab83b99
   persistence:
     size: 1Gi
     storageClassName: local-hostpath
