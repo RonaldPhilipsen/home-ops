@@ -8,7 +8,6 @@ components:
 resources:
   - ./namespace.yaml
   - ./netpol.yaml
-  - ./dragonfly/ks.yaml
   - ./valkey/ks.yaml
   - ./garage/ks.yaml
   - ./vernemq/ks.yaml
