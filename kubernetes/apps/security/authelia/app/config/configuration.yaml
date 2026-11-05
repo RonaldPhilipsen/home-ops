@@ -99,7 +99,7 @@ session:
       authelia_url: https://auth.rphilipsen.nl
       default_redirection_url: https://rphilipsen.nl
   redis:
-    host: dragonfly.database.svc.cluster.local
+    host: valkey.database.svc.cluster.local
 regulation:
   max_retries: 3
   find_time: 2m
