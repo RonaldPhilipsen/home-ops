@@ -41,6 +41,10 @@ spec:
       - --metrics-address=:7979
     triggerLoopOnEvent: true
     policy: upsert-only
+    # Pi-hole only stores A/AAAA/CNAME records, so the TXT registry cannot
+    # track ownership. Use the noop registry; upsert-only keeps manual
+    # records safe from deletion.
+    registry: noop
     # `crd` publishes the L4 gateway A-records (see
     # external-dns-omada/app/dnsendpoint-l4.yaml) to this (stable) LAN
     # resolver; the omada server is best-effort and not guaranteed up.
