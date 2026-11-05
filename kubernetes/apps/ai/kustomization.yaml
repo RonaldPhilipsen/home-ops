@@ -19,3 +19,6 @@ resources:
   - ./toolhive/github/secret/ks.yaml
   - ./toolhive/github/config/ks.yaml
   - ./toolhive/omada/ks.yaml
+  - ./toolhive/victoriametrics/ks.yaml
+  - ./toolhive/victorialogs/ks.yaml
+  - ./toolhive/victoriatraces/ks.yaml

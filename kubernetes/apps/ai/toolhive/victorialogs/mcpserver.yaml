@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/toolhive.stacklok.dev/mcpserver_v1beta1.json
+apiVersion: toolhive.stacklok.dev/v1beta1
+kind: MCPServer
+metadata:
+  name: victorialogs
+spec:
+  image: ghcr.io/victoriametrics/mcp-victorialogs:v1.9.0
+  transport: stdio
+  groupRef:
+    name: ai-tools
+  env:
+    # In-cluster VictoriaLogs endpoint; no auth required.
+    - name: VL_INSTANCE_ENTRYPOINT
+      value: http://vlsingle-vmetrics.observability.svc:9428
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
