@@ -91,6 +91,9 @@ spec:
           - name: external
             namespace: kube-system
             sectionName: https
+          - name: external
+            namespace: kube-system
+            sectionName: https-apex
         hostnames:
           - rphilipsen.nl
         rules:
@@ -113,6 +116,9 @@ spec:
           - name: external
             namespace: kube-system
             sectionName: https
+          - name: external
+            namespace: kube-system
+            sectionName: https-apex
         hostnames:
           - rphilipsen.nl
         rules:
