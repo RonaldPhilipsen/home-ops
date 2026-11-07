@@ -23,6 +23,10 @@ spec:
   superuserSecret:
     name: cloudnative-pg-secret
   enableSuperuserAccess: true
+  certificates:
+    # Combined CNPG + SPIRE CA (kept current by the spire-ca-bridge CronJob):
+    # Postgres trusts its own CA (replication/pooler) and the SPIRE CA (app SVIDs).
+    clientCASecret: postgres-spipe-client-ca
   env:
     - name: AWS_ACCESS_KEY_ID
       valueFrom:
@@ -43,6 +47,11 @@ spec:
     parameters:
       max_connections: "200"
       shared_buffers: 256MB
+    # SPIFFE cert auth for migrated roles (user-defined section: precedes the
+    # default scram catch-all). SVID CN = role name.
+    pg_hba:
+      - hostssl all radarr all cert
+      - hostnossl all radarr all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
