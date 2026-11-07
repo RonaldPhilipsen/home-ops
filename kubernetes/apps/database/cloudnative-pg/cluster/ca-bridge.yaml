@@ -19,10 +19,14 @@ rules:
     resources: ["secrets"]
     resourceNames: ["postgres-ca"]
     verbs: ["get"]
+  # create cannot be restricted by resourceNames in RBAC
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
   - apiGroups: [""]
     resources: ["secrets"]
     resourceNames: ["postgres-spipe-client-ca"]
-    verbs: ["create", "get", "update", "patch"]
+    verbs: ["get", "update", "patch"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
 apiVersion: rbac.authorization.k8s.io/v1
