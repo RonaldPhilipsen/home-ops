@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrepository-source-v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: spiffe-charts-hardened
+  namespace: spiffe
+  labels:
+    kustomize.toolkit.fluxcd.io/substitute: "disabled"
+spec:
+  interval: 1h
+  url: https://spiffe.github.io/helm-charts-hardened
