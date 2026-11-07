@@ -2350,7 +2350,7 @@ spec:
                 "uid": "${DS_VLOGS}"
               },
               "editorMode": "code",
-              "expr": "facility_text:$facility severity_text:$severity $search",
+              "expr": "facility_text:$facility severity_text:$severity  host.name: syslog-collector $search",
               "queryType": "instant",
               "refId": "A"
             }
