@@ -48,6 +48,10 @@ metadata:
   namespace: spiffe
 rules:
   - apiGroups: [""]
+    resources: ["pods"]
+    resourceNames: ["spire-server-0"]
+    verbs: ["get"]
+  - apiGroups: [""]
     resources: ["pods/exec"]
     resourceNames: ["spire-server-0"]
     verbs: ["create"]
