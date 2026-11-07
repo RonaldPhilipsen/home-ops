@@ -120,8 +120,8 @@ spec:
                   [ -n "$CA_CRT" ] || { echo "ERROR: postgres-ca ca.crt is empty" >&2; exit 1; }
                   [ -n "$CA_KEY" ] || { echo "ERROR: postgres-ca ca.key is empty" >&2; exit 1; }
                   # 2. Current SPIRE X.509 bundle (PEM), published by spire-server
-                  SPIRE_BUNDLE=$(kubectl -n spiffe get configmap spire-bundle -o jsonpath='{.data.bundle\.pem}')
-                  [ -n "$SPIRE_BUNDLE" ] || { echo "ERROR: spire-bundle bundle.pem is missing or empty" >&2; exit 1; }
+                  SPIRE_BUNDLE=$(kubectl -n spiffe get configmap spire-bundle -o jsonpath='{.data.bundle\.crt}')
+                  [ -n "$SPIRE_BUNDLE" ] || { echo "ERROR: spire-bundle bundle.crt is missing or empty" >&2; exit 1; }
                   # 3. Combined bundle; apply only when it changed
                   COMBINED="${CA_CRT}
                   ${SPIRE_BUNDLE}"

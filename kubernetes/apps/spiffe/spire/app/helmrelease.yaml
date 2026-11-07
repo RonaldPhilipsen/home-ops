@@ -34,6 +34,10 @@ spec:
       spire:
         trustDomain: spiffe.rphilipsen.nl
         clusterName: kubernetes
+        caSubject:
+          country: NL
+          organization: rphilipsen
+          commonName: spiffe.rphilipsen.nl
         persistence:
           storageClass: nfs-provision
     spire-server:
