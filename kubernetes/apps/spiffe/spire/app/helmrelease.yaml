@@ -36,5 +36,10 @@ spec:
         clusterName: kubernetes
         persistence:
           storageClass: nfs-provision
+    spire-server:
+      bundlePublisher:
+        k8sConfigMap:
+          # PEM so the CNPG CA bridge can concatenate it with postgres-ca.crt
+          format: pem
     spiffe-oidc-discovery-provider:
       enabled: false
