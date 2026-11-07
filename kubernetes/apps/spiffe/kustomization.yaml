@@ -5,4 +5,5 @@ kind: Kustomization
 namespace: spiffe
 resources:
   - ./namespace.yaml
+  - ./ca-bridge-rbac.yaml
   - ./spire/ks.yaml

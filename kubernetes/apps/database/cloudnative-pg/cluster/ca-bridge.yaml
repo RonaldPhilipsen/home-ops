@@ -40,36 +40,9 @@ subjects:
     namespace: database
 ---
 # Reads the SPIRE trust bundle (PEM) from the spire server via its CLI.
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: spiffe-ca-bridge-bundle-reader
-  namespace: spiffe
-rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    resourceNames: ["spire-server-0"]
-    verbs: ["get"]
-  - apiGroups: [""]
-    resources: ["pods/exec"]
-    resourceNames: ["spire-server-0"]
-    verbs: ["create"]
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: spiffe-ca-bridge-bundle-reader
-  namespace: spiffe
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: spiffe-ca-bridge-bundle-reader
-subjects:
-  - kind: ServiceAccount
-    name: spiffe-ca-bridge
-    namespace: database
+# Lives in the spiffe area (kubernetes/apps/spiffe/ca-bridge-rbac.yaml) because
+# the cluster Kustomization's targetNamespace would relocate it to database.
+# The RoleBinding here references the database-namespace service account.
 ---
 # Keeps postgres-spipe-client-ca current:
 #   ca.crt = <postgres-ca.ca.crt> + <SPIRE X.509 bundle (PEM)>
