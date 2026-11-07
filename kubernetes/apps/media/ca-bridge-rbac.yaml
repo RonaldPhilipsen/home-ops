@@ -1,0 +1,28 @@
+---
+# Lets the database-namespace CA bridge publish the CNPG server CA
+# (cnpg-server-ca) into this namespace for the db-bridge sidecars.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: spiffe-ca-bridge
+  namespace: media
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spiffe-ca-bridge
+  namespace: media
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: spiffe-ca-bridge
+subjects:
+  - kind: ServiceAccount
+    name: spiffe-ca-bridge
+    namespace: database

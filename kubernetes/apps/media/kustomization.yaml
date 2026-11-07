@@ -9,6 +9,7 @@ resources:
   - ./namespace.yaml
   - ./limitrange.yaml
   - ./netpol.yaml
+  - ./ca-bridge-rbac.yaml
   - ./sabnzbd/ks.yaml
   - ./seerr/ks.yaml
   - ./lidarr/ks.yaml

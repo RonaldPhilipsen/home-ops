@@ -13,6 +13,24 @@ spec:
         tag: 5.3.0
       url: oci://ghcr.io/bjw-s-labs/helm/app-template
   interval: 30m
+  # app-template can't emit inline CSI volumes; add the SPIRE agent socket
+  # volume to the rendered Deployment.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: radarr
+            patch: |
+              - op: add
+                path: /spec/template/spec/volumes/-
+                value:
+                  name: spiffe
+                  csi:
+                    driver: csi.spiffe.io
+                    readOnly: true
   values:
     controllers:
       radarr:
@@ -27,6 +45,18 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups: [1000]
             seccompProfile: { type: RuntimeDefault }
+          volumes:
+            # SVID files written by spiffe-helper, read by pgbouncer
+            svid:
+              type: emptyDir
+            # CNPG server CA (published by the spire-ca-bridge CronJob)
+            cnpg-ca:
+              type: secret
+              secretName: cnpg-server-ca
+            # pgbouncer config for this app
+            db-bridge-config:
+              type: configMap
+              configMapName: radarr-db-bridge
         containers:
           app:
             image:
@@ -67,6 +97,55 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+        # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
+        # SVID (CN=radarr), pgbouncer presents it to the CNPG rw service and
+        # serves Radarr on loopback with trust auth. No DB password involved.
+        extraContainers:
+          db-bridge:
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.0.0@sha256:ade0e8dba67232d89201c470f85a2955287ac19e6318908fa2dea7aca7a83043
+            env:
+              SPIFFE_ENDPOINT_SOCKET: unix:///run/spiffe/agent.sock
+              CERT_DIR: /spiffe
+              PGBOUNCER_INI: /etc/db-bridge/pgbouncer.ini
+              # fired by spiffe-helper on every SVID renewal
+              CMD: "kill -HUP $(cat /tmp/pgbouncer.pid) 2>/dev/null || true"
+            volumeMounts:
+              # SPIRE agent Workload API socket (CSI volume added by postRenderer)
+              - name: spiffe
+                mountPath: /run/spiffe
+                readOnly: true
+              - name: svid
+                mountPath: /spiffe
+              - name: cnpg-ca
+                mountPath: /cnpg-ca
+                readOnly: true
+              - name: db-bridge-config
+                mountPath: /etc/db-bridge
+                readOnly: true
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 5432
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
               capabilities:
                 drop:
                   - ALL

@@ -1,0 +1,18 @@
+---
+# SPIFFE identity for the Radarr pod: SVID with CN=radarr (the Postgres role)
+# and URI SAN spiffe://spiffe.rphilipsen.nl/ns/media/sa/radarr.
+# Cluster-scoped: the hardened chart only ships the ClusterSPIFFEID CRD.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: radarr
+spec:
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/media/sa/radarr"
+  dnsNameTemplates:
+    - radarr
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: media
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: radarr

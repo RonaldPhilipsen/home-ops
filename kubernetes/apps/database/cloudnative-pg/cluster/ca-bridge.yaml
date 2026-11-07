@@ -53,6 +53,8 @@ subjects:
 #   ca.key = <postgres-ca.ca.key>
 # CNPG uses this secret as clientCASecret (ssl_ca_file), so Postgres trusts
 # both its own CA (replication/pooler certs) and the SPIRE CA (app SVIDs).
+# It also publishes the CNPG server CA as cnpg-server-ca into the app
+# namespaces (media), where db-bridge sidecars mount it to verify Postgres.
 # The SPIRE half is fetched live from the server (spire-server bundle show),
 # so a CA rotation is picked up on the next run.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/cronjob.json
@@ -117,6 +119,15 @@ spec:
                     --from-literal=ca.key="$CA_KEY" \
                     --dry-run=client -o yaml | kubectl apply -f -
                   echo "postgres-spipe-client-ca updated"
+                  # 5. Publish the CNPG server CA to app namespaces so db-bridge
+                  #    sidecars can verify the Postgres server (cross-namespace
+                  #    secret mounts are not allowed by the k8s API).
+                  for NS in media; do
+                    kubectl -n "$NS" create secret generic cnpg-server-ca \
+                      --from-literal=ca.crt="$CA_CRT" \
+                      --dry-run=client -o yaml | kubectl apply -f -
+                    echo "cnpg-server-ca updated in $NS"
+                  done
               resources:
                 requests:
                   cpu: 10m
