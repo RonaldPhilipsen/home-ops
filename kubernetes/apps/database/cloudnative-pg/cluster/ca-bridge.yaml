@@ -111,14 +111,14 @@ spec:
                   ${SPIRE_BUNDLE}"
                   EXISTING=$(kubectl -n database get secret postgres-spipe-client-ca -o jsonpath='{.data.ca\.crt}' 2>/dev/null | base64 -d || true)
                   if [ "$EXISTING" = "$COMBINED" ]; then
-                    echo "postgres-spipe-client-ca unchanged; nothing to do"
-                    exit 0
+                    echo "postgres-spipe-client-ca unchanged"
+                  else
+                    kubectl -n database create secret generic postgres-spipe-client-ca \
+                      --from-literal=ca.crt="$COMBINED" \
+                      --from-literal=ca.key="$CA_KEY" \
+                      --dry-run=client -o yaml | kubectl apply -f -
+                    echo "postgres-spipe-client-ca updated"
                   fi
-                  kubectl -n database create secret generic postgres-spipe-client-ca \
-                    --from-literal=ca.crt="$COMBINED" \
-                    --from-literal=ca.key="$CA_KEY" \
-                    --dry-run=client -o yaml | kubectl apply -f -
-                  echo "postgres-spipe-client-ca updated"
                   # 5. Publish the CNPG server CA to app namespaces so db-bridge
                   #    sidecars can verify the Postgres server (cross-namespace
                   #    secret mounts are not allowed by the k8s API).
