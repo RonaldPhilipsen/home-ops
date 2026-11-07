@@ -39,7 +39,7 @@ subjects:
     name: spiffe-ca-bridge
     namespace: database
 ---
-# Reads the SPIRE trust bundle (PEM) published by spire-server.
+# Reads the SPIRE trust bundle (PEM) from the spire server via its CLI.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -48,9 +48,9 @@ metadata:
   namespace: spiffe
 rules:
   - apiGroups: [""]
-    resources: ["configmaps"]
-    resourceNames: ["spire-bundle"]
-    verbs: ["get"]
+    resources: ["pods/exec"]
+    resourceNames: ["spire-server-0"]
+    verbs: ["create"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
 apiVersion: rbac.authorization.k8s.io/v1
@@ -72,8 +72,8 @@ subjects:
 #   ca.key = <postgres-ca.ca.key>
 # CNPG uses this secret as clientCASecret (ssl_ca_file), so Postgres trusts
 # both its own CA (replication/pooler certs) and the SPIRE CA (app SVIDs).
-# The SPIRE half is refreshed by spire-server's bundle publisher into the
-# spiffe-bundle configmap; this job only re-concatenates on change.
+# The SPIRE half is fetched live from the server (spire-server bundle show),
+# so a CA rotation is picked up on the next run.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/cronjob.json
 apiVersion: batch/v1
 kind: CronJob
@@ -119,9 +119,10 @@ spec:
                   CA_KEY=$(kubectl -n database get secret postgres-ca -o jsonpath='{.data.ca\.key}' | base64 -d)
                   [ -n "$CA_CRT" ] || { echo "ERROR: postgres-ca ca.crt is empty" >&2; exit 1; }
                   [ -n "$CA_KEY" ] || { echo "ERROR: postgres-ca ca.key is empty" >&2; exit 1; }
-                  # 2. Current SPIRE X.509 bundle (PEM), published by spire-server
-                  SPIRE_BUNDLE=$(kubectl -n spiffe get configmap spire-bundle -o jsonpath='{.data.bundle\.crt}')
-                  [ -n "$SPIRE_BUNDLE" ] || { echo "ERROR: spire-bundle bundle.crt is missing or empty" >&2; exit 1; }
+                  # 2. Current SPIRE X.509 bundle (PEM) straight from the server
+                  SPIRE_BUNDLE=$(kubectl -n spiffe exec spire-server-0 -c spire-server -- spire-server bundle show -socketPath /tmp/spire-server/private/api.sock)
+                  [ -n "$SPIRE_BUNDLE" ] || { echo "ERROR: spire-server bundle show returned empty" >&2; exit 1; }
+                  case "$SPIRE_BUNDLE" in *BEGIN\ CERTIFICATE*) ;; *) echo "ERROR: bundle is not PEM" >&2; exit 1;; esac
                   # 3. Combined bundle; apply only when it changed
                   COMBINED="${CA_CRT}
                   ${SPIRE_BUNDLE}"

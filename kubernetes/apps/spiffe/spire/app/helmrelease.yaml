@@ -43,10 +43,5 @@ spec:
           # not export newly created subdirectories, so the PVC mount fails.
           # Single-replica server pinned to one node — accepted for a homelab.
           storageClass: local-hostpath
-    spire-server:
-      bundlePublisher:
-        k8sConfigMap:
-          # PEM so the CNPG CA bridge can concatenate it with postgres-ca.crt
-          format: pem
     spiffe-oidc-discovery-provider:
       enabled: false
