@@ -39,7 +39,10 @@ spec:
           organization: rphilipsen
           commonName: spiffe.rphilipsen.nl
         persistence:
-          storageClass: nfs-provision
+          # local-hostpath (same as CNPG data): nfs-provision's NFS server does
+          # not export newly created subdirectories, so the PVC mount fails.
+          # Single-replica server pinned to one node — accepted for a homelab.
+          storageClass: local-hostpath
     spire-server:
       bundlePublisher:
         k8sConfigMap:
