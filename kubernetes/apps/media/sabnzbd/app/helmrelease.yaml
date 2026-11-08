@@ -41,7 +41,7 @@ spec:
                 sab.media.svc,
                 sab.media.svc.cluster,
                 sab.media.svc.cluster.local,
-                sab.rphilipsen.nl
+                sab.rphilipsen.nl,
                 sabnzbd,
                 sabnzbd.default,
                 sabnzbd.media.svc,
@@ -52,6 +52,18 @@ spec:
               - secretRef:
                   name: sabnzbd-secret
             probes:
+              # startup: a slow first start (e.g. with HTTPS enabled) must not
+              # trip the 1s liveness probe; liveness starts after this
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api?mode=version
+                    port: *port
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
               liveness: &probes
                 enabled: true
                 custom: true
