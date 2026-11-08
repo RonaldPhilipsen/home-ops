@@ -122,7 +122,7 @@ spec:
                   # 5. Publish the CNPG server CA to app namespaces so db-bridge
                   #    sidecars can verify the Postgres server (cross-namespace
                   #    secret mounts are not allowed by the k8s API).
-                  for NS in media; do
+                  for NS in media security; do
                     kubectl -n "$NS" create secret generic cnpg-server-ca \
                       --from-literal=ca.crt="$CA_CRT" \
                       --dry-run=client -o yaml | kubectl apply -f -

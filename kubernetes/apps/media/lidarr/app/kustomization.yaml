@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./spiffeid.yaml
   - ../../media-nfs.yaml

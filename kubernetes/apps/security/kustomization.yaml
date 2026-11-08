@@ -7,4 +7,5 @@ resources:
   - ./netpol.yaml
   - ./authelia/ks.yaml
   - ./lldap/ks.yaml
+  - ./ca-bridge-rbac.yaml
   - namespace.yaml

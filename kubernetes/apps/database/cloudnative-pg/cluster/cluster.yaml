@@ -54,6 +54,10 @@ spec:
       - hostnossl all radarr all reject
       - hostssl all sonarr all cert
       - hostnossl all sonarr all reject
+      - hostssl all lidarr all cert
+      - hostnossl all lidarr all reject
+      - hostssl all prowlarr all cert
+      - hostnossl all prowlarr all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
