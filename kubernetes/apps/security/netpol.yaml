@@ -43,6 +43,16 @@ spec:
         - ports:
             - port: "9091"
               protocol: TCP
+    # pgAdmin's OIDC calls (metadata, token, userinfo) to Authelia via the
+    # external gateway; Cilium checks them with pgAdmin's own identity
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: database
+            k8s:app.kubernetes.io/name: pgadmin
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
   egress:
     - toEntities:
         - host
