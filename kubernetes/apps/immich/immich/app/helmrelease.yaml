@@ -39,7 +39,7 @@ spec:
                       - name: cnpg-ca
                         secret:
                           secretName: immich-postgres-server-ca
-                    containers:
+                    initContainers:
                       - name: db-bridge
                         volumeMounts:
                           - name: spiffe
@@ -102,26 +102,35 @@ spec:
     server:
       controllers:
         main:
-          containers:
-            main:
-              env:
-                REDIS_PASSWORD:
-                  valueFrom:
-                    secretKeyRef:
-                      name: immich-valkey-auth
-                      key: password
+          initContainers:
             # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
             # SVID (CN=immich); the bridge serves the app on loopback and presents
             # the SVID to immich-postgres-rw.database.svc:5432 (pg_hba "cert"). No DB password involved.
             # (volumeMounts are added by the postRenderer: the chart schema does not
             # allow them in values)
             db-bridge:
+              # native sidecar: the kubelet starts it before the app and
+              # starts the app only after the startup probe passes (the
+              # bridge listens only once it has the SVID), then keeps it
+              # running next to the app
+              restartPolicy: Always
               image:
                 repository: ghcr.io/ronaldphilipsen/db-bridge
                 tag: 1.3.0@sha256:a56fc5a98e33f767227541f99c441728b42a08bee4a1b940c1a93fcb344fa1f0
               env:
                 DB_BRIDGE_UPSTREAM: immich-postgres-rw.database.svc:5432
               probes:
+                startup:
+                  enabled: true
+                  custom: true
+                  spec:
+                    exec:
+                      command:
+                        - db-bridge
+                        - -health
+                    periodSeconds: 2
+                    timeoutSeconds: 3
+                    failureThreshold: 45
                 # the bridge listens on loopback only, so a kubelet tcpSocket probe
                 # (which dials the pod IP) can never work; ask the binary
                 liveness:
@@ -147,6 +156,14 @@ spec:
                 readOnlyRootFilesystem: true
                 capabilities:
                   drop: ["ALL"]
+          containers:
+            main:
+              env:
+                REDIS_PASSWORD:
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-valkey-auth
+                      key: password
     immich:
       metrics:
         enabled: true

@@ -67,7 +67,7 @@ spec:
                       - name: cnpg-ca
                         secret:
                           secretName: cnpg-server-ca
-                    containers:
+                    initContainers:
                       - name: db-bridge
                         volumeMounts:
                           - name: spiffe
@@ -87,35 +87,33 @@ spec:
           reloader.stakater.com/auto: "true"
         pod:
           enableServiceLinks: false
-        containers:
-          main:
-            image:
-              repository: ghcr.io/authelia/authelia
-              tag: 4.39.28
-            resources:
-              requests:
-                cpu: 1m
-                memory: 50Mi
-            probes:
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
+        initContainers:
           # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
           # SVID (CN=authelia); the bridge serves Authelia on loopback and
           # presents the SVID to the CNPG rw service (pg_hba "cert"). No DB
           # password involved. (volumeMounts are added by the postRenderer:
           # the chart schema does not allow them in values)
           db-bridge:
+            # native sidecar: the kubelet starts it before the app and
+            # starts the app only after the startup probe passes (the
+            # bridge listens only once it has the SVID), then keeps it
+            # running next to the app
+            restartPolicy: Always
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
               tag: 1.2.0@sha256:7e2b6a81e7f08d2a3f351c4b2e89b022d54f98305f28d1844b4efa070d9e930b
             probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - db-bridge
+                      - -health
+                  periodSeconds: 2
+                  timeoutSeconds: 3
+                  failureThreshold: 45
               # the bridge listens on loopback only, so a kubelet tcpSocket
               # probe (which dials the pod IP) can never work; ask the binary
               liveness:
@@ -145,6 +143,25 @@ spec:
               capabilities:
                 drop:
                   - ALL
+        containers:
+          main:
+            image:
+              repository: ghcr.io/authelia/authelia
+              tag: 4.39.28
+            resources:
+              requests:
+                cpu: 1m
+                memory: 50Mi
+            probes:
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
     service:
       main:
         controller: authelia
