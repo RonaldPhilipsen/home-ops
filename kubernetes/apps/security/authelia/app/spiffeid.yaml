@@ -1,0 +1,20 @@
+---
+# SPIFFE identity for the Authelia pod: SVID with CN=authelia (the Postgres role)
+# and URI SAN spiffe://spiffe.rphilipsen.nl/ns/security/sa/authelia.
+# Cluster-scoped: the hardened chart only ships the ClusterSPIFFEID CRD.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: authelia
+spec:
+  # the controller manager only watches its own class (watchClassless: false)
+  className: spiffe-spire
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/security/sa/authelia"
+  dnsNameTemplates:
+    - authelia
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: security
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: authelia

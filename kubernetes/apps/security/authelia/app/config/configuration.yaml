@@ -24,10 +24,13 @@ webauthn:
 storage:
   encryption_key: "{{ .STORAGE_ENCRYPTION_KEY }}"
   postgres:
-    address: tcp://{{ .POSTGRES_HOST }}:{{ .POSTGRES_PORT }}
+    # local db-bridge sidecar: it presents the pod's SPIFFE SVID (CN=authelia)
+    # to CNPG, which authenticates it with pg_hba "cert". Authelia requires
+    # a password value; nothing checks it.
+    address: tcp://127.0.0.1:5432
     database: "{{ .POSTGRES_DBNAME }}"
     username: "{{ .POSTGRES_USER }}"
-    password: "{{ .POSTGRES_PASSWORD }}"
+    password: "unused-spiffe-cert-auth"
 notifier:
   disable_startup_check: true
   smtp:

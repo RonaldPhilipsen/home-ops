@@ -60,6 +60,8 @@ spec:
       - hostnossl all prowlarr all reject
       - hostssl all lldap all cert
       - hostnossl all lldap all reject
+      - hostssl all authelia all cert
+      - hostnossl all authelia all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
