@@ -13,6 +13,49 @@ spec:
         tag: 5.3.0
       url: oci://ghcr.io/bjw-s-labs/helm/app-template
   interval: 1h
+  # app-template's schema allows neither pod.volumes nor container
+  # volumeMounts, so the db-bridge volumes and their mounts are added here
+  # (strategic merge: containers merge by name, volumes by name).
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: seerr
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: seerr
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      # SPIRE agent Workload API socket
+                      - name: spiffe
+                        csi:
+                          driver: csi.spiffe.io
+                          readOnly: true
+                      # SVID files written by spiffe-helper, read by the bridge
+                      - name: svid
+                        emptyDir: {}
+                      # CNPG server CA (published by the spire-ca-bridge CronJob)
+                      - name: cnpg-ca
+                        secret:
+                          secretName: cnpg-server-ca
+                    containers:
+                      - name: db-bridge
+                        volumeMounts:
+                          - name: spiffe
+                            mountPath: /run/spiffe
+                            readOnly: true
+                          - name: svid
+                            mountPath: /spiffe
+                          - name: cnpg-ca
+                            mountPath: /cnpg-ca
+                            readOnly: true
   values:
     controllers:
       seerr:
@@ -33,6 +76,15 @@ spec:
             env:
               TZ: "Europe/Amsterdam"
               PORT: &port 5055
+              # Postgres through the local db-bridge sidecar, which presents
+              # the pod's SPIFFE SVID (CN=seerr) to CNPG (pg_hba "cert").
+              # Nothing checks the password; it is only a placeholder.
+              DB_TYPE: postgres
+              DB_HOST: 127.0.0.1
+              DB_PORT: "5432"
+              DB_USER: seerr
+              DB_PASS: unused-spiffe-cert-auth
+              DB_NAME: seerr
             probes:
               # TCP checks, not /api/v1/status: that endpoint asks the GitHub
               # releases API for the latest version and blocks past the probe
@@ -67,6 +119,40 @@ spec:
                 memory: 250Mi
               limits:
                 memory: 500Mi
+          # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
+          # SVID (CN=seerr); the bridge serves Seerr on loopback and presents
+          # the SVID to the CNPG rw service (pg_hba "cert"). (volumeMounts
+          # are added by the postRenderer: the chart schema does not allow
+          # them in values)
+          db-bridge:
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.2.0@sha256:7e2b6a81e7f08d2a3f351c4b2e89b022d54f98305f28d1844b4efa070d9e930b
+            probes:
+              # the bridge listens on loopback only, so a kubelet tcpSocket
+              # probe (which dials the pod IP) can never work; ask the binary
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - db-bridge
+                      - -health
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -97,7 +183,10 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-        globalMounts:
-          - path: /app/config
+        # advancedMounts: keep the app config out of the db-bridge sidecar
+        advancedMounts:
+          seerr:
+            app:
+              - path: /app/config
       tmp:
         type: emptyDir
