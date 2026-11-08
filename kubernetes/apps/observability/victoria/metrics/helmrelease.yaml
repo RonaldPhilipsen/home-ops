@@ -136,6 +136,8 @@ spec:
     alertmanager:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         disableNamespaceMatcher: true
         configSecret: alertmanager-config
         # HTTPS only, with a certificate from the internal CA (tls.yaml). The
@@ -168,6 +170,8 @@ spec:
     vmalert:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         # trust store = public CAs + internal CA, for HTTPS to the other
         # components (Go reads SSL_CERT_FILE)
         configMaps:
@@ -201,6 +205,8 @@ spec:
     vmsingle:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         # trust store = public CAs + internal CA, for HTTPS to the other
         # components (Go reads SSL_CERT_FILE)
         configMaps:
@@ -250,6 +256,8 @@ spec:
     vlsingle:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         # trust store = public CAs + internal CA, for HTTPS to the other
         # components (Go reads SSL_CERT_FILE)
         configMaps:
@@ -322,6 +330,8 @@ spec:
     vtsingle:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         # trust store = public CAs + internal CA, for HTTPS to the other
         # components (Go reads SSL_CERT_FILE)
         configMaps:
@@ -382,6 +392,8 @@ spec:
     internal:
       vmauth:
         spec:
+          # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+          disableSelfServiceScrape: true
           # trust store = public CAs + internal CA, for HTTPS to the other
           # components (Go reads SSL_CERT_FILE)
           configMaps:
@@ -410,6 +422,8 @@ spec:
     vmagent:
       enabled: true
       spec:
+        # self-scrape over HTTPS instead (VMServiceScrapes in tls.yaml)
+        disableSelfServiceScrape: true
         # HTTPS to vmsingle (merged over the chart's generated remote write)
         remoteWrite:
           - url: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428/api/v1/write
