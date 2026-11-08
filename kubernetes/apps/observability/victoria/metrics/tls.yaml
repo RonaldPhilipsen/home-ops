@@ -615,3 +615,43 @@ spec:
       relabelConfigs:
         - targetLabel: job
           replacement: vmalertmanager-vmetrics-reloader-http
+---
+# Stage 4: the HTTP ports stay open only for the kubelet probes (host) and
+# the local config reloaders (127.0.0.1, not filtered). Every client uses
+# the HTTPS ports, so no pod in any namespace, the gateways and the world
+# may reach the HTTP ports any more. Deny rules win over the namespace
+# allow-lists. Alertmanager is not listed: it serves HTTPS only.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: victoria-deny-plain-http
+spec:
+  endpointSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values: [vmsingle, vlsingle, vtsingle, vmagent, vmalert, vmauth]
+  ingressDeny:
+    - fromEndpoints:
+        - matchExpressions:
+            - key: k8s:io.kubernetes.pod.namespace
+              operator: Exists
+      toPorts: &httpPorts
+        - ports:
+            - port: "8428"
+              protocol: TCP
+            - port: "9428"
+              protocol: TCP
+            - port: "10428"
+              protocol: TCP
+            - port: "8429"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8427"
+              protocol: TCP
+    - fromEntities:
+        - ingress
+        - world
+      toPorts: *httpPorts
