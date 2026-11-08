@@ -137,6 +137,12 @@ spec:
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: &port 7878
+              # native TLS on 9898 (tls.yaml); 7878 stays plain for probes and
+              # in-cluster clients that do not use TLS yet
+              RADARR__SERVER__ENABLESSL: "True"
+              RADARR__SERVER__SSLPORT: &tlsport 9898
+              RADARR__SERVER__SSLCERTPATH: /tls/keystore.p12
+              RADARR__SERVER__SSLCERTPASSWORD: radarr
               RADARR__UPDATE__BRANCH: develop
             envFrom:
               - secretRef:
@@ -171,6 +177,8 @@ spec:
         ports:
           http:
             port: *port
+          https:
+            port: *tlsport
     route:
       app:
         hostnames: ["{{ .Release.Name }}.rphilipsen.nl"]
@@ -179,10 +187,20 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy radarr (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
     persistence:
+      tls:
+        type: secret
+        name: radarr-tls
+        defaultMode: 0440
+        advancedMounts:
+          radarr:
+            app:
+              - path: /tls
+                readOnly: true
       # advancedMounts: without them, app-template mounts every persistence
       # item into every container; scope app data to the app container only
       config:

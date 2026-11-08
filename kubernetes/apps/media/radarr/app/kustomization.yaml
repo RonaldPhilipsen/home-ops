@@ -6,4 +6,5 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./spiffeid.yaml
+  - ./tls.yaml
   - ../../media-nfs.yaml

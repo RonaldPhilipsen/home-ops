@@ -1,0 +1,51 @@
+---
+# Backend TLS for Radarr (served natively on 9898). Issued by the internal
+# CA; Radarr loads the PKCS#12 keystore at startup, and Reloader restarts
+# it when cert-manager renews the secret. The keystore password is not a
+# secret: the secret also holds the key in clear.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: radarr-tls
+spec:
+  secretName: radarr-tls
+  dnsNames:
+    - radarr.media.svc.cluster.local
+    - radarr.media.svc
+    - radarr.media
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  keystores:
+    pkcs12:
+      create: true
+      password: radarr
+      profile: Modern2023
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+# The gateway connects to Radarr's TLS port and verifies the certificate
+# against the internal CA (ca.crt of the issued secret).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: radarr
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: radarr
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: Secret
+        name: radarr-tls
+    hostname: radarr.media.svc.cluster.local
