@@ -130,6 +130,9 @@ spec:
               # Postgres through the local db-bridge sidecar, which presents
               # the pod's SPIFFE SVID (CN=seerr) to CNPG (pg_hba "cert").
               # Nothing checks the password; it is only a placeholder.
+              # trust the internal CA for the HTTPS backends (Jellyfin 8920,
+              # Radarr/Sonarr 9898); read once at startup, root valid to 2036
+              NODE_EXTRA_CA_CERTS: /etc/internal-ca/ca.crt
               DB_TYPE: postgres
               DB_HOST: 127.0.0.1
               DB_PORT: "5432"
@@ -198,6 +201,14 @@ spec:
               - name: *app
                 port: *port
     persistence:
+      internal-ca:
+        type: configMap
+        name: internal-ca
+        advancedMounts:
+          seerr:
+            app:
+              - path: /etc/internal-ca
+                readOnly: true
       config:
         existingClaim: "{{ .Release.Name }}"
         # advancedMounts: keep the app config out of the db-bridge sidecar
