@@ -262,6 +262,9 @@ spec:
             env:
               - name: PGADMIN_LISTEN_PORT
                 value: "5050"
+              # native HTTPS on 5050 (tls.yaml): /certs/server.cert + server.key
+              - name: PGADMIN_ENABLE_TLS
+                value: "True"
               - name: PGADMIN_DEFAULT_EMAIL
                 value: pgadmin-setup@rphilipsen.nl
               - name: PGADMIN_DEFAULT_PASSWORD
@@ -297,6 +300,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
+                    scheme: HTTPS
                     path: /misc/ping
                     port: &port 5050
                   periodSeconds: 5
@@ -307,6 +311,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
+                    scheme: HTTPS
                     path: /misc/ping
                     port: *port
                   periodSeconds: 30
@@ -327,7 +332,7 @@ spec:
       app:
         controller: *app
         ports:
-          http:
+          https:
             port: *port
     route:
       app:
@@ -337,10 +342,25 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy pgadmin (tls.yaml) verifies it
           - backendRefs:
               - name: *app
                 port: *port
     persistence:
+      tls:
+        type: secret
+        name: pgadmin-tls
+        defaultMode: 0440
+        items:
+          - key: tls.crt
+            path: server.cert
+          - key: tls.key
+            path: server.key
+        advancedMounts:
+          pgadmin:
+            app:
+              - path: /certs
+                readOnly: true
       # pgAdmin's config DB; the server list is rebuilt from servers.json on
       # every start (PGADMIN_REPLACE_SERVERS_ON_STARTUP)
       data:
