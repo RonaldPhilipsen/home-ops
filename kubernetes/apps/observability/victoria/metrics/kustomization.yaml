@@ -9,4 +9,5 @@ resources:
   - ./pvc.yaml
   - ./httproute.yaml
   - ./vmbackup.yaml
+  - ./tls.yaml
 

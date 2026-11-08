@@ -1,0 +1,224 @@
+---
+# Backend TLS for the VictoriaMetrics stack (stage 1 of the HTTPS move).
+# Each component listens on HTTPS on an extra port next to its HTTP port
+# (extraArgs httpListenAddr/tls lists in helmrelease.yaml). VictoriaMetrics
+# re-reads the certificate every second, so renewal needs no restart. The
+# <name>-tls Services expose the HTTPS ports; their names are in the
+# certificates. Clients move to them one by one, then HTTP is limited to the
+# kubelet probes and the local config reloaders.
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmsingle-tls
+spec:
+  secretName: vmsingle-tls
+  dnsNames:
+    - vmsingle-vmetrics-tls.observability.svc.cluster.local
+    - vmsingle-vmetrics-tls.observability.svc
+    - vmsingle-vmetrics-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmsingle-vmetrics-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vmsingle
+    app.kubernetes.io/instance: vmetrics
+  ports:
+    - name: https
+      port: 18428
+      targetPort: 18428
+      protocol: TCP
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vlsingle-tls
+spec:
+  secretName: vlsingle-tls
+  dnsNames:
+    - vlsingle-vmetrics-tls.observability.svc.cluster.local
+    - vlsingle-vmetrics-tls.observability.svc
+    - vlsingle-vmetrics-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vlsingle-vmetrics-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vlsingle
+    app.kubernetes.io/instance: vmetrics
+  ports:
+    - name: https
+      port: 19428
+      targetPort: 19428
+      protocol: TCP
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vtsingle-tls
+spec:
+  secretName: vtsingle-tls
+  dnsNames:
+    - vtsingle-vmetrics-tls.observability.svc.cluster.local
+    - vtsingle-vmetrics-tls.observability.svc
+    - vtsingle-vmetrics-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vtsingle-vmetrics-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vtsingle
+    app.kubernetes.io/instance: vmetrics
+  ports:
+    - name: https
+      port: 20428
+      targetPort: 20428
+      protocol: TCP
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmagent-tls
+spec:
+  secretName: vmagent-tls
+  dnsNames:
+    - vmagent-vmetrics-tls.observability.svc.cluster.local
+    - vmagent-vmetrics-tls.observability.svc
+    - vmagent-vmetrics-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmagent-vmetrics-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vmagent
+    app.kubernetes.io/instance: vmetrics
+  ports:
+    - name: https
+      port: 18429
+      targetPort: 18429
+      protocol: TCP
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmalert-tls
+spec:
+  secretName: vmalert-tls
+  dnsNames:
+    - vmalert-vmetrics-tls.observability.svc.cluster.local
+    - vmalert-vmetrics-tls.observability.svc
+    - vmalert-vmetrics-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmalert-vmetrics-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vmalert
+    app.kubernetes.io/instance: vmetrics
+  ports:
+    - name: https
+      port: 18080
+      targetPort: 18080
+      protocol: TCP
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmauth-tls
+spec:
+  secretName: vmauth-tls
+  dnsNames:
+    - vmauth-vmetrics-internal-tls.observability.svc.cluster.local
+    - vmauth-vmetrics-internal-tls.observability.svc
+    - vmauth-vmetrics-internal-tls.observability
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmauth-vmetrics-internal-tls
+spec:
+  selector:
+    app.kubernetes.io/name: vmauth
+    app.kubernetes.io/instance: vmetrics-internal
+  ports:
+    - name: https
+      port: 18427
+      targetPort: 18427
+      protocol: TCP

@@ -73,7 +73,16 @@ spec:
     vmalert:
       enabled: true
       spec:
+        # certificate for the HTTPS listener, at /etc/vm/secrets/vmalert-tls/
+        secrets:
+          - vmalert-tls
         extraArgs:
+          # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+          # primary port, probes and chart URLs on HTTP
+          httpListenAddr: ":8080,:18080"
+          tls: "false,true"
+          tlsCertFile: ",/etc/vm/secrets/vmalert-tls/tls.crt"
+          tlsKeyFile: ",/etc/vm/secrets/vmalert-tls/tls.key"
           # -- used to build the 'source' link in alertmanager alerts;
           #    must match the vmalert HTTPRoute hostname
           external.url: "https://vmalert.rphilipsen.nl"
@@ -90,7 +99,16 @@ spec:
     vmsingle:
       enabled: true
       spec:
+        # certificate for the HTTPS listener, at /etc/vm/secrets/vmsingle-tls/
+        secrets:
+          - vmsingle-tls
         extraArgs:
+          # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+          # primary port, probes and chart URLs on HTTP
+          httpListenAddr: ":8428,:18428"
+          tls: "false,true"
+          tlsCertFile: ",/etc/vm/secrets/vmsingle-tls/tls.crt"
+          tlsKeyFile: ",/etc/vm/secrets/vmsingle-tls/tls.key"
           maxLabelsPerTimeseries: "40"
           search.maxUniqueTimeseries: "600000"
           search.minStalenessInterval: 5m
@@ -123,6 +141,9 @@ spec:
     vlsingle:
       enabled: true
       spec:
+        # certificate for the HTTPS listener, at /etc/vm/secrets/vlsingle-tls/
+        secrets:
+          - vlsingle-tls
         port: "9428"
         retentionPeriod: "1"
         terminationGracePeriodSeconds: 60
@@ -130,6 +151,12 @@ spec:
           repository: victoriametrics/victoria-logs
           tag: v1.53.0
         extraArgs:
+          # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+          # primary port, probes and chart URLs on HTTP
+          httpListenAddr: ":9428,:19428"
+          tls: "false,true"
+          tlsCertFile: ",/etc/vm/secrets/vlsingle-tls/tls.crt"
+          tlsKeyFile: ",/etc/vm/secrets/vlsingle-tls/tls.key"
           envflag.enable: "true"
           envflag.prefix: VM_
           loggerFormat: json
@@ -179,6 +206,9 @@ spec:
     vtsingle:
       enabled: true
       spec:
+        # certificate for the HTTPS listener, at /etc/vm/secrets/vtsingle-tls/
+        secrets:
+          - vtsingle-tls
         port: "10428"
         retentionPeriod: "1"
         terminationGracePeriodSeconds: 60
@@ -186,6 +216,12 @@ spec:
           repository: victoriametrics/victoria-traces
           tag: v0.13.0
         extraArgs:
+          # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+          # primary port, probes and chart URLs on HTTP
+          httpListenAddr: ":10428,:20428"
+          tls: "false,true"
+          tlsCertFile: ",/etc/vm/secrets/vtsingle-tls/tls.crt"
+          tlsKeyFile: ",/etc/vm/secrets/vtsingle-tls/tls.key"
           envflag.enable: "true"
           envflag.prefix: VM_
           loggerFormat: json
@@ -220,9 +256,32 @@ spec:
             namespace: kube-system
         hostnames: ["vtraces.rphilipsen.nl"]
 
+    internal:
+      vmauth:
+        spec:
+          # certificate for the HTTPS listener, at /etc/vm/secrets/vmauth-tls/
+          secrets:
+            - vmauth-tls
+          extraArgs:
+            # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+            # primary port, probes and chart URLs on HTTP
+            httpListenAddr: ":8427,:18427"
+            tls: "false,true"
+            tlsCertFile: ",/etc/vm/secrets/vmauth-tls/tls.crt"
+            tlsKeyFile: ",/etc/vm/secrets/vmauth-tls/tls.key"
     vmagent:
       enabled: true
       spec:
+        # certificate for the HTTPS listener, at /etc/vm/secrets/vmagent-tls/
+        secrets:
+          - vmagent-tls
+        extraArgs:
+          # HTTPS listener next to HTTP (tls.yaml); "false,true" keeps the
+          # primary port, probes and chart URLs on HTTP
+          httpListenAddr: ":8429,:18429"
+          tls: "false,true"
+          tlsCertFile: ",/etc/vm/secrets/vmagent-tls/tls.crt"
+          tlsKeyFile: ",/etc/vm/secrets/vmagent-tls/tls.key"
         resources:
           limits:
             memory: 1Gi
