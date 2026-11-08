@@ -7,6 +7,8 @@ kind: ClusterSPIFFEID
 metadata:
   name: radarr
 spec:
+  # the controller manager only watches its own class (watchClassless: false)
+  className: spiffe-spire
   spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/media/sa/radarr"
   dnsNameTemplates:
     - radarr
