@@ -12,3 +12,4 @@ resources:
   - ./garage/ks.yaml
   - ./vernemq/ks.yaml
   - ./cloudnative-pg/ks.yaml
+  - ./pgadmin/ks.yaml

@@ -1,0 +1,40 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "postgres (shared)",
+      "Group": "CNPG",
+      "Host": "127.0.0.1",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "pgadmin",
+      "Shared": true,
+      "SharedUsername": "pgadmin",
+      "ConnectionParameters": { "sslmode": "disable", "connect_timeout": 10 },
+      "Comment": "postgres-rw.database.svc via the local db-bridge (SPIFFE SVID, CN=pgadmin)"
+    },
+    "2": {
+      "Name": "immich-postgres",
+      "Group": "CNPG",
+      "Host": "127.0.0.1",
+      "Port": 5433,
+      "MaintenanceDB": "postgres",
+      "Username": "pgadmin",
+      "Shared": true,
+      "SharedUsername": "pgadmin",
+      "ConnectionParameters": { "sslmode": "disable", "connect_timeout": 10 },
+      "Comment": "immich-postgres-rw.database.svc via the local db-bridge (SPIFFE SVID, CN=pgadmin)"
+    },
+    "3": {
+      "Name": "pg-memini",
+      "Group": "CNPG",
+      "Host": "127.0.0.1",
+      "Port": 5434,
+      "MaintenanceDB": "postgres",
+      "Username": "pgadmin",
+      "Shared": true,
+      "SharedUsername": "pgadmin",
+      "ConnectionParameters": { "sslmode": "disable", "connect_timeout": 10 },
+      "Comment": "pg-memini-rw.ai.svc via the local db-bridge (SPIFFE SVID, CN=pgadmin)"
+    }
+  }
+}

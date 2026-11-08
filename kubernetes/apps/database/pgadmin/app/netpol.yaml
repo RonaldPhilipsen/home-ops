@@ -1,0 +1,44 @@
+---
+# pgAdmin on top of the namespace policy (kubernetes/apps/database/netpol.yaml):
+# the internal gateway (HTTPRoute, Cilium "ingress" identity) reaches the UI,
+# the memini bridge reaches pg-memini in ai, and the OIDC token exchange
+# reaches auth.rphilipsen.nl (its LB IP resolves in-cluster to the external
+# gateway, which has its own identity).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: pgadmin
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pgadmin
+  ingress:
+    - fromEntities:
+        - ingress
+      toPorts:
+        - ports:
+            - port: "5050"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            cnpg.io/cluster: pg-memini
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:app.kubernetes.io/name: external
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toFQDNs:
+        - matchName: auth.rphilipsen.nl
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

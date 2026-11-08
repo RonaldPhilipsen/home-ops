@@ -1,0 +1,20 @@
+---
+# SPIFFE identity for the pgAdmin pod: SVID with CN=pgadmin (the superuser
+# role in all three CNPG clusters) and URI SAN
+# spiffe://spiffe.rphilipsen.nl/ns/database/sa/pgadmin.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: pgadmin
+spec:
+  # the controller manager only watches its own class (watchClassless: false)
+  className: spiffe-spire
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/database/sa/pgadmin"
+  dnsNameTemplates:
+    - pgadmin
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: database
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: pgadmin

@@ -1,0 +1,360 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# pgAdmin on the internal gateway (pgadmin.rphilipsen.nl) with all three
+# CNPG clusters preconfigured. Login: Authelia OIDC, two_factor, group
+# lldap_admin only. Database access: role pgadmin (superuser) by SPIFFE
+# SVID through three db-bridge sidecars; no database passwords anywhere.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app pgadmin
+spec:
+  interval: 30m
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
+  # app-template's schema allows neither pod.volumes nor container
+  # volumeMounts, so the bridge volumes and mounts are added here
+  # (strategic merge by name). The HTTPRoute patch sets X-Forwarded-Proto,
+  # so pgAdmin builds https OIDC redirect URLs.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: pgadmin
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: pgadmin
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      # SPIRE agent Workload API socket
+                      - name: spiffe
+                        csi:
+                          driver: csi.spiffe.io
+                          readOnly: true
+                      # SVID files of bridge-postgres (each spiffe-helper writes its own)
+                      - name: svid-postgres
+                        emptyDir: {}
+                      # server CA of its cluster (cert only, never the CA key)
+                      - name: ca-postgres
+                        secret:
+                          secretName: postgres-ca
+                          items:
+                            - key: ca.crt
+                              path: ca.crt
+                      # SVID files of bridge-immich (each spiffe-helper writes its own)
+                      - name: svid-immich
+                        emptyDir: {}
+                      # server CA of its cluster (cert only, never the CA key)
+                      - name: ca-immich
+                        secret:
+                          secretName: immich-postgres-ca
+                          items:
+                            - key: ca.crt
+                              path: ca.crt
+                      # SVID files of bridge-memini (each spiffe-helper writes its own)
+                      - name: svid-memini
+                        emptyDir: {}
+                      # server CA of its cluster (cert only, never the CA key)
+                      - name: ca-memini
+                        secret:
+                          secretName: pg-memini-server-ca
+                          items:
+                            - key: ca.crt
+                              path: ca.crt
+                    initContainers:
+                      - name: bridge-postgres
+                        volumeMounts:
+                          - name: spiffe
+                            mountPath: /run/spiffe
+                            readOnly: true
+                          - name: svid-postgres
+                            mountPath: /spiffe
+                          - name: ca-postgres
+                            mountPath: /cnpg-ca
+                            readOnly: true
+                      - name: bridge-immich
+                        volumeMounts:
+                          - name: spiffe
+                            mountPath: /run/spiffe
+                            readOnly: true
+                          - name: svid-immich
+                            mountPath: /spiffe
+                          - name: ca-immich
+                            mountPath: /cnpg-ca
+                            readOnly: true
+                      - name: bridge-memini
+                        volumeMounts:
+                          - name: spiffe
+                            mountPath: /run/spiffe
+                            readOnly: true
+                          - name: svid-memini
+                            mountPath: /spiffe
+                          - name: ca-memini
+                            mountPath: /cnpg-ca
+                            readOnly: true
+          - target:
+              group: gateway.networking.k8s.io
+              version: v1
+              kind: HTTPRoute
+              name: pgadmin
+            patch: |
+              - op: add
+                path: /spec/rules/0/filters
+                value:
+                  - type: RequestHeaderModifier
+                    requestHeaderModifier:
+                      set:
+                        - name: X-Forwarded-Proto
+                          value: https
+  values:
+    controllers:
+      pgadmin:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 5050
+            runAsGroup: 5050
+            fsGroup: 5050
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
+        initContainers:
+          # db-bridge to postgres-rw.database.svc:5432 on 127.0.0.1:5432 (native sidecar:
+          # pgAdmin starts only after all three bridges listen with an SVID)
+          bridge-postgres:
+            restartPolicy: Always
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.4.0@sha256:eae8ae4385aa065f0e4a2830587bc1a595a165a8b2acb88eeb2de0bfbb3f5772
+            env:
+              DB_BRIDGE_UPSTREAM: postgres-rw.database.svc:5432
+              DB_BRIDGE_LISTEN: 127.0.0.1:5432
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 2
+                  timeoutSeconds: 3
+                  failureThreshold: 45
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+          # db-bridge to immich-postgres-rw.database.svc:5432 on 127.0.0.1:5433 (native sidecar:
+          # pgAdmin starts only after all three bridges listen with an SVID)
+          bridge-immich:
+            restartPolicy: Always
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.4.0@sha256:eae8ae4385aa065f0e4a2830587bc1a595a165a8b2acb88eeb2de0bfbb3f5772
+            env:
+              DB_BRIDGE_UPSTREAM: immich-postgres-rw.database.svc:5432
+              DB_BRIDGE_LISTEN: 127.0.0.1:5433
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 2
+                  timeoutSeconds: 3
+                  failureThreshold: 45
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+          # db-bridge to pg-memini-rw.ai.svc:5432 on 127.0.0.1:5434 (native sidecar:
+          # pgAdmin starts only after all three bridges listen with an SVID)
+          bridge-memini:
+            restartPolicy: Always
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.4.0@sha256:eae8ae4385aa065f0e4a2830587bc1a595a165a8b2acb88eeb2de0bfbb3f5772
+            env:
+              DB_BRIDGE_UPSTREAM: pg-memini-rw.ai.svc:5432
+              DB_BRIDGE_LISTEN: 127.0.0.1:5434
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 2
+                  timeoutSeconds: 3
+                  failureThreshold: 45
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["db-bridge", "-health"]
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 5m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+        containers:
+          app:
+            image:
+              repository: docker.io/dpage/pgadmin4
+              tag: "9.19@sha256:3591b3d02910dcd817dec6fcaa681c278ba6966945283dd0ea0042731c330c83"
+            # list form: OAUTH_CLIENT_SECRET must be defined before the
+            # OAUTH2_CONFIG value that references it as $(OAUTH_CLIENT_SECRET)
+            env:
+              - name: PGADMIN_LISTEN_PORT
+                value: "5050"
+              - name: PGADMIN_DEFAULT_EMAIL
+                value: pgadmin-setup@rphilipsen.nl
+              - name: PGADMIN_DEFAULT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: pgadmin-default
+                    key: password
+              - name: PGADMIN_SERVER_JSON_FILE
+                value: /pgadmin4/servers.json
+              - name: PGADMIN_REPLACE_SERVERS_ON_STARTUP
+                value: "True"
+              - name: PGADMIN_DISABLE_POSTFIX
+                value: "true"
+              # PGADMIN_CONFIG_* values are Python literals
+              - name: PGADMIN_CONFIG_AUTHENTICATION_SOURCES
+                value: "['oauth2']"
+              - name: PGADMIN_CONFIG_OAUTH2_AUTO_CREATE_USER
+                value: "True"
+              - name: PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED
+                value: "False"
+              - name: PGADMIN_CONFIG_PROXY_X_PROTO_COUNT
+                value: "1"
+              - name: OAUTH_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: pgadmin-oidc
+                    key: PGADMIN_OAUTH_CLIENT_SECRET
+              - name: PGADMIN_CONFIG_OAUTH2_CONFIG
+                value: "[{'OAUTH2_NAME': 'authelia', 'OAUTH2_DISPLAY_NAME': 'Authelia', 'OAUTH2_CLIENT_ID': 'pgadmin', 'OAUTH2_CLIENT_SECRET': '$(OAUTH_CLIENT_SECRET)', 'OAUTH2_SERVER_METADATA_URL': 'https://auth.rphilipsen.nl/.well-known/openid-configuration', 'OAUTH2_TOKEN_URL': 'https://auth.rphilipsen.nl/api/oidc/token', 'OAUTH2_AUTHORIZATION_URL': 'https://auth.rphilipsen.nl/api/oidc/authorization', 'OAUTH2_API_BASE_URL': 'https://auth.rphilipsen.nl/', 'OAUTH2_USERINFO_ENDPOINT': 'https://auth.rphilipsen.nl/api/oidc/userinfo', 'OAUTH2_SCOPE': 'openid email profile groups', 'OAUTH2_USERNAME_CLAIM': 'email', 'OAUTH2_ADDITIONAL_CLAIMS': {'groups': ['lldap_admin']}, 'OAUTH2_ICON': 'fa-key', 'OAUTH2_BUTTON_COLOR': '#2c3e50', 'OAUTH2_SSL_CERT_VERIFY': True}]"
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /misc/ping
+                    port: &port 5050
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 60
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /misc/ping
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 20m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames: ["pgadmin.rphilipsen.nl"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      # pgAdmin's config DB; the server list is rebuilt from servers.json on
+      # every start (PGADMIN_REPLACE_SERVERS_ON_STARTUP)
+      data:
+        type: emptyDir
+        advancedMounts:
+          pgadmin:
+            app:
+              - path: /var/lib/pgadmin
+      servers:
+        type: configMap
+        name: pgadmin-servers
+        advancedMounts:
+          pgadmin:
+            app:
+              - path: /pgadmin4/servers.json
+                subPath: servers.json
+                readOnly: true
