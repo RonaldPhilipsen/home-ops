@@ -7,6 +7,11 @@
 theme: auto
 server:
   address: tcp://0.0.0.0:9091
+  # native HTTPS with a certificate from the internal CA (tls.yaml); the
+  # gateway and Trek's OIDC proxy verify it against the internal CA
+  tls:
+    certificate: /tls/tls.crt
+    key: /tls/tls.key
   disable_healthcheck: true
 log:
   level: debug

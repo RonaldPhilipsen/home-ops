@@ -23,6 +23,9 @@ spec:
   values:
     controllers:
       trek:
+        # restart when the proxy ConfigMap changes (it is mounted with subPath)
+        annotations:
+          reloader.stakater.com/auto: "true"
         type: deployment
         # TREK is a single-writer SQLite app on a RWO volume; RollingUpdate would
         # double-write travel.db, so tear down the old pod before the new one starts.
@@ -151,6 +154,14 @@ spec:
         existingClaim: trek-uploads
         globalMounts:
           - path: /app/uploads
+      internal-ca:
+        type: configMap
+        name: internal-ca
+        advancedMounts:
+          trek:
+            oidc-proxy:
+              - path: /etc/internal-ca
+                readOnly: true
       oidc-proxy-config:
         type: configMap
         name: trek-oidc-proxy

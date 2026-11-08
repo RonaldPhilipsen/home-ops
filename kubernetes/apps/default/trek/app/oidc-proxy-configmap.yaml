@@ -15,7 +15,13 @@ data:
       }
 
       location / {
-        proxy_pass http://authelia.security.svc.cluster.local:9091;
+        # Authelia serves HTTPS (internal CA); verify it
+        proxy_pass https://authelia.security.svc.cluster.local:9091;
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/internal-ca/ca.crt;
+        proxy_ssl_name authelia.security.svc.cluster.local;
+        proxy_ssl_server_name on;
+        proxy_ssl_protocols TLSv1.2 TLSv1.3;
         proxy_http_version 1.1;
         proxy_set_header Host auth.rphilipsen.nl;
         proxy_set_header X-Forwarded-Host auth.rphilipsen.nl;

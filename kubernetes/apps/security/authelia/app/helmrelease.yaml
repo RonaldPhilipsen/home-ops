@@ -166,7 +166,7 @@ spec:
       main:
         controller: authelia
         ports:
-          http:
+          https:
             port: 9091
     route:
       main:
@@ -182,6 +182,15 @@ spec:
               - name: authelia
                 port: 9091
     persistence:
+      tls:
+        type: secret
+        name: authelia-tls
+        defaultMode: 0440
+        advancedMounts:
+          authelia:
+            main:
+              - path: /tls
+                readOnly: true
       config:
         enabled: true
         type: secret
