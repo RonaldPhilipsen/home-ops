@@ -1,0 +1,47 @@
+---
+# Backend TLS for SABnzbd (served natively on 9090; enabled in
+# sabnzbd.ini by the ini-tls init container). Issued by the internal CA;
+# SABnzbd loads tls.crt/tls.key at startup, and Reloader restarts it when
+# cert-manager renews the secret.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sabnzbd-tls
+spec:
+  secretName: sabnzbd-tls
+  dnsNames:
+    - sabnzbd.media.svc.cluster.local
+    - sabnzbd.media.svc
+    - sabnzbd.media
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+# The gateway connects to SABnzbd's TLS port and verifies the certificate
+# against the internal CA (ConfigMap internal-ca from trust-manager; Cilium
+# accepts only ConfigMap CA refs).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: sabnzbd
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: sabnzbd
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: sabnzbd.media.svc.cluster.local

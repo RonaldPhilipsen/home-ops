@@ -29,7 +29,7 @@ spec:
               type: RuntimeDefault
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/home-operations/sabnzbd
               tag: 5.1.3@sha256:c89b0322721c3eba47221e5f916505e7e742684651f73c5215717340b6b5402f
             env:
@@ -76,12 +76,41 @@ spec:
               capabilities:
                 drop:
                   - ALL
+        # Enables SABnzbd's native HTTPS (9090, tls.yaml) in sabnzbd.ini on
+        # every start, so the setting lives in git; the image maps only a few
+        # SABNZBD__* keys. With https_port set, HTTP stays on 8080 for the
+        # probes and the Arr apps. On the very first boot the ini is created
+        # by the app itself.
+        initContainers:
+          ini-tls:
+            image: *image
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                f=/config/sabnzbd.ini
+                [ -f "$f" ] || { echo "no $f yet (first boot)"; exit 0; }
+                sed -i \
+                  -e 's|^enable_https *=.*$|enable_https = 1|' \
+                  -e 's|^https_port *=.*$|https_port = 9090|' \
+                  -e 's|^https_cert *=.*$|https_cert = /tls/tls.crt|' \
+                  -e 's|^https_key *=.*$|https_key = /tls/tls.key|' \
+                  "$f"
+                grep -E '^(enable_https|https_port|https_cert|https_key) ' "$f"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
     service:
       app:
         controller: *app
         ports:
           http:
             port: *port
+          https:
+            port: &tlsport 9090
     route:
       app:
         hostnames: ["sab.rphilipsen.nl", "sabnzbd.rphilipsen.nl"]
@@ -90,12 +119,22 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy sabnzbd (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
     persistence:
       config:
         existingClaim: *app
+      tls:
+        type: secret
+        name: sabnzbd-tls
+        defaultMode: 0440
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /tls
+                readOnly: true
       data:
         existingClaim: media-nfs
       incomplete:
