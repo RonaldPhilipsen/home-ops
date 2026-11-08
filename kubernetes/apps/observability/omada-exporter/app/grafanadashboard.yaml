@@ -475,7 +475,7 @@ spec:
                 "type": "prometheus",
                 "uid": "${Datasource}"
               },
-              "expr": "{__name__=\"omada.device.uptime\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "expr": "max by (\"device.name\") ({__name__=\"omada.device.uptime\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"})",
               "legendFormat": "",
               "refId": "A",
               "instant": true,
@@ -486,7 +486,7 @@ spec:
                 "type": "prometheus",
                 "uid": "${Datasource}"
               },
-              "expr": "{__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "expr": "max by (\"device.name\") ({__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"})",
               "legendFormat": "",
               "refId": "B",
               "instant": true,
@@ -497,7 +497,7 @@ spec:
                 "type": "prometheus",
                 "uid": "${Datasource}"
               },
-              "expr": "{__name__=\"omada.device.memory.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "expr": "max by (\"device.name\") ({__name__=\"omada.device.memory.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"})",
               "legendFormat": "",
               "refId": "C",
               "instant": true,
@@ -508,7 +508,7 @@ spec:
                 "type": "prometheus",
                 "uid": "${Datasource}"
               },
-              "expr": "{__name__=\"omada.device.upgrade.available\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "expr": "max by (\"device.name\") ({__name__=\"omada.device.upgrade.available\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"})",
               "legendFormat": "",
               "refId": "D",
               "instant": true,
@@ -519,7 +519,7 @@ spec:
             {
               "id": "joinByField",
               "options": {
-                "byField": "device.mac",
+                "byField": "device.name",
                 "mode": "outer"
               }
             },
@@ -527,7 +527,7 @@ spec:
               "id": "filterFieldsByName",
               "options": {
                 "include": {
-                  "pattern": "^(device\\.mac|device\\.name|Value #[A-D])$"
+                  "pattern": "^(device\\.name|Value #[A-D])$"
                 }
               }
             },
@@ -535,7 +535,6 @@ spec:
               "id": "organize",
               "options": {
                 "renameByName": {
-                  "device.mac": "MAC",
                   "device.name": "Device",
                   "Value #A": "Uptime",
                   "Value #B": "CPU",
