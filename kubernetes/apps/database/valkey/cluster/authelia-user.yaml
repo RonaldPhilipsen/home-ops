@@ -1,0 +1,62 @@
+---
+# Valkey ACL user for Authelia's session store. The password is generated
+# in-cluster once (refreshInterval "0"), so it is not in git or 1Password.
+# Authelia (namespace security) reads this one secret through the
+# valkey-database SecretStore, which the Role below allows.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: valkey-authelia
+spec:
+  length: 40
+  digits: 8
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: valkey-authelia
+spec:
+  refreshInterval: "0"
+  target:
+    name: valkey-authelia
+    template:
+      engineVersion: v2
+      data:
+        AUTHELIA_VALKEY_PASSWORD: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: valkey-authelia
+---
+# Lets Authelia's SecretStore read exactly this secret.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: authelia-valkey-reader
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["valkey-authelia"]
+    verbs: ["get"]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: authelia-valkey-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: authelia-valkey-reader
+subjects:
+  - kind: ServiceAccount
+    name: authelia-valkey-reader
+    namespace: security

@@ -14,6 +14,16 @@ spec:
     storageClassName: local-hostpath
   config:
     maxmemory: 512mb
+  # ACL users. The operator manages its own (_operator, _exporter,
+  # _replication) with their own passwords. authelia gets a generated
+  # password (authelia-user.yaml).
+  users:
+    - name: authelia
+      passwordSecret:
+        name: valkey-authelia
+        keys:
+          - AUTHELIA_VALKEY_PASSWORD
+      permissions: "~* &* +@all"
   resources:
     requests:
       cpu: 50m
