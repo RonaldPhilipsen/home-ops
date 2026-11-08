@@ -116,3 +116,24 @@ spec:
               protocol: TCP
             - port: "8443"
               protocol: TCP
+
+---
+# The internal gateway's postgres listener (TCPRoute postgres ->
+# pooler:5432, postgres.rphilipsen.nl) for admin tools such as pgAdmin.
+# Only the pooler pods, only 5432, only from the gateway (Cilium "ingress"
+# identity); world ingress to database stays closed.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-gateway-to-pooler
+spec:
+  endpointSelector:
+    matchLabels:
+      cnpg.io/poolerName: pooler
+  ingress:
+    - fromEntities:
+        - ingress
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
