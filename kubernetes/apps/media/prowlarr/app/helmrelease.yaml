@@ -139,6 +139,10 @@ spec:
               PROWLARR__SERVER__SSLPORT: &tlsport 6969
               PROWLARR__SERVER__SSLCERTPATH: /tls/keystore.p12
               PROWLARR__SERVER__SSLCERTPASSWORD: prowlarr
+              # trust store = public CAs + internal CA (ConfigMap internal-ca-bundle),
+              # so HTTPS to internal backends (SABnzbd 9090, the other Arr apps)
+              # verifies; .NET reads it once at startup
+              SSL_CERT_FILE: /etc/internal-ca-bundle/ca-certificates.crt
               PROWLARR__UPDATE__BRANCH: develop
             envFrom:
               - secretRef:
@@ -182,6 +186,14 @@ spec:
             port: *tlsport
 
     persistence:
+      internal-ca-bundle:
+        type: configMap
+        name: internal-ca-bundle
+        advancedMounts:
+          prowlarr:
+            app:
+              - path: /etc/internal-ca-bundle
+                readOnly: true
       tls:
         type: secret
         name: prowlarr-tls
