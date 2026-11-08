@@ -34,8 +34,17 @@ spec:
 
     valkey:
       enabled: true
+      # ACL auth for the default user. The password comes from the
+      # in-cluster generated secret in valkey-auth.yaml. passwordKey is set
+      # explicitly: the operator, the exporter and the init script use
+      # different defaults otherwise.
       auth:
-        enabled: false
+        enabled: true
+        usersExistingSecret: renovate-operator-valkey-users
+        aclUsers:
+          default:
+            passwordKey: default-password
+            permissions: "~* &* +@all"
       dataStorage:
         enabled: true
       metrics:

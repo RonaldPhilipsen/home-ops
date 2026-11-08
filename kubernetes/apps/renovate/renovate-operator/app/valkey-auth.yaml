@@ -1,0 +1,36 @@
+---
+# Password for the bundled Valkey's "default" ACL user. Generated in-cluster
+# once (refreshInterval "0": never regenerated), so it is not in git or
+# 1Password. The Valkey init script, its metrics exporter and the operator
+# all read the default-password key (helmrelease.yaml: valkey.auth).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: renovate-operator-valkey
+spec:
+  length: 40
+  digits: 8
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: renovate-operator-valkey-users
+spec:
+  refreshInterval: "0"
+  target:
+    name: renovate-operator-valkey-users
+    template:
+      engineVersion: v2
+      data:
+        default-password: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: renovate-operator-valkey
