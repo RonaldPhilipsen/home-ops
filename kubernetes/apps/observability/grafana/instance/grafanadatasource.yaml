@@ -8,14 +8,22 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
+  # internal CA for the HTTPS backend, filled in by the Grafana operator
+  valuesFrom:
+    - targetPath: secureJsonData.tlsCACert
+      valueFrom:
+        configMapKeyRef:
+          name: internal-ca
+          key: ca.crt
   datasource:
     type: prometheus
     orgId: 1
     name: prometheus
     access: proxy
     isDefault: true
-    url: http://vmsingle-vmetrics.observability.svc.cluster.local:8428
+    url: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428
     jsonData:
+      tlsAuthWithCACert: true
       timeInterval: 1s
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
@@ -45,6 +53,13 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
+  # internal CA for the HTTPS backend, filled in by the Grafana operator
+  valuesFrom:
+    - targetPath: secureJsonData.tlsCACert
+      valueFrom:
+        configMapKeyRef:
+          name: internal-ca
+          key: ca.crt
   datasource:
     # tempo type (not jaeger): VictoriaTraces serves the Tempo query API
     # under /select/tempo, which the Tempo datasource needs for TraceQL and
@@ -54,7 +69,10 @@ spec:
     uid: victoria-traces
     name: victoria-traces
     access: proxy
-    url: http://vtsingle-vmetrics.observability.svc.cluster.local:10428/select/tempo
+    url: https://vtsingle-vmetrics-tls.observability.svc.cluster.local:20428/select/tempo
+    jsonData:
+      tlsAuthWithCACert: true
+
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
@@ -65,10 +83,19 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
+  # internal CA for the HTTPS backend, filled in by the Grafana operator
+  valuesFrom:
+    - targetPath: secureJsonData.tlsCACert
+      valueFrom:
+        configMapKeyRef:
+          name: internal-ca
+          key: ca.crt
   datasource:
     type: victoriametrics-logs-datasource
     orgId: 1
     uid: victoria-logs
     name: victoria-logs
     access: proxy
-    url: http://vlsingle-vmetrics.observability.svc.cluster.local:9428
+    url: https://vlsingle-vmetrics-tls.observability.svc.cluster.local:19428
+    jsonData:
+      tlsAuthWithCACert: true
