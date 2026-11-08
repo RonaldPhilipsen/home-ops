@@ -39,12 +39,21 @@ spec:
         secretKeyRef:
           name: cloudnative-pg-secret
           key: AWS_REGION
+  certificates:
+    # Combined immich-postgres CA + SPIRE CA (kept current by the spire-ca-bridge
+    # CronJob in kubernetes/apps/database/cloudnative-pg/cluster/ca-bridge.yaml)
+    clientCASecret: immich-postgres-spiffe-client-ca
   postgresql:
     parameters:
       max_connections: "200"
       shared_buffers: 256MB
     shared_preload_libraries:
       - "vchord.so"
+    # SPIFFE cert auth for immich (user-defined section: precedes the
+    # default scram catch-all). SVID CN = role name. The matching
+    # "hostnossl ... reject" rule is added once the app uses db-bridge.
+    pg_hba:
+      - hostssl all immich all cert
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true

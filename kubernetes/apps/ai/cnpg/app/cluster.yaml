@@ -23,10 +23,19 @@ spec:
     resizeInUseVolumes: True
   superuserSecret:
     name: memini-cnpg-superuser
+  certificates:
+    # Combined pg-memini CA + SPIRE CA (kept current by the spire-ca-bridge
+    # CronJob in kubernetes/apps/database/cloudnative-pg/cluster/ca-bridge.yaml)
+    clientCASecret: pg-memini-spiffe-client-ca
   postgresql:
     # vchord (VectorChord) must be preloaded; the tensorchord image bundles it
     shared_preload_libraries:
       - vchord.so
+    # SPIFFE cert auth for memini (user-defined section: precedes the
+    # default scram catch-all). SVID CN = role name. The matching
+    # "hostnossl ... reject" rule is added once the app uses db-bridge.
+    pg_hba:
+      - hostssl all memini all cert
   bootstrap:
     initdb:
       postInitSQL:
