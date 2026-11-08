@@ -28,7 +28,7 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/home-operations/qbittorrent
               tag: 5.3.0@sha256:5a858e61f94cf2712391db32ed03556576c700858f3e62c4c6fcde262443ebd8
             env:
@@ -55,6 +55,29 @@ spec:
                 cpu: 100m
               limits:
                 memory: 4Gi
+        # Enables HTTPS for the Web UI (tls.yaml) in qBittorrent.conf on every
+        # start, so the setting lives in git: removes old HTTPS\ keys and
+        # writes them under [WebUI]. On the very first boot the file is
+        # created by the app itself.
+        initContainers:
+          webui-tls:
+            image: *image
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                f=/config/qBittorrent/qBittorrent.conf
+                [ -f "$f" ] || { echo "no $f yet (first boot)"; exit 0; }
+                grep -q '^\[WebUI\]' "$f" || printf '\n[WebUI]\n' >> "$f"
+                sed -i '/^HTTPS\\/d' "$f"
+                sed -i '/^\[WebUI\]$/a HTTPS\\Enabled=true\nHTTPS\\CertificatePath=/tls/tls.crt\nHTTPS\\KeyPath=/tls/tls.key' "$f"
+                sed -n '/^\[WebUI\]/,/^\[/p' "$f" | grep -E '^(\[WebUI\]|HTTPS)'
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -70,7 +93,7 @@ spec:
         controller: *app
         type: ClusterIP
         ports:
-          http:
+          https:
             port: *port
           bittorrent:
             enabled: true
@@ -84,6 +107,7 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy qbittorrent (tls.yaml) verifies it
           - backendRefs:
               - name: *app
                 port: *port
@@ -91,5 +115,14 @@ spec:
     persistence:
       config:
         existingClaim: *app
+      tls:
+        type: secret
+        name: qbittorrent-tls
+        defaultMode: 0440
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /tls
+                readOnly: true
       data:
         existingClaim: media-nfs
