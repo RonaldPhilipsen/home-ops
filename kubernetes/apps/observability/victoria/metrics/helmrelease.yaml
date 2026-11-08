@@ -138,6 +138,17 @@ spec:
       spec:
         disableNamespaceMatcher: true
         configSecret: alertmanager-config
+        # HTTPS only, with a certificate from the internal CA (tls.yaml). The
+        # chart then builds vmalert's notifier URL with https; vmalert
+        # verifies it through its SSL_CERT_FILE bundle.
+        webConfig:
+          tls_server_config:
+            cert_secret_ref:
+              name: vmalertmanager-tls
+              key: tls.crt
+            key_secret_ref:
+              name: vmalertmanager-tls
+              key: tls.key
         # Externally reachable base URL used in notification links (must match the HTTPRoute hostname)
         externalURL: "https://alertmanager.rphilipsen.nl"
         # Persist silences and notification state (emptyDir by default loses them on restart)

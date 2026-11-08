@@ -38,6 +38,13 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
+  # internal CA for the HTTPS backend, filled in by the Grafana operator
+  valuesFrom:
+    - targetPath: secureJsonData.tlsCACert
+      valueFrom:
+        configMapKeyRef:
+          name: internal-ca
+          key: ca.crt
   datasource:
     type: alertmanager
     orgId: 1
@@ -45,7 +52,11 @@ spec:
     access: proxy
     jsonData:
       implementation: prometheus
-    url: http://vmalertmanager-vmetrics.observability.svc.cluster.local:9093
+      tlsAuthWithCACert: true
+    secureJsonData:
+      # replaced by the operator with valuesFrom (key ca.crt)
+      tlsCACert: ${ca.crt}
+    url: https://vmalertmanager-vmetrics.observability.svc.cluster.local:9093
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1

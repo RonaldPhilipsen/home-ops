@@ -322,3 +322,55 @@ spec:
         kind: ConfigMap
         name: internal-ca
     hostname: vmalert-vmetrics-tls.observability.svc.cluster.local
+---
+# Alertmanager serves HTTPS only (webConfig.tls_server_config in
+# helmrelease.yaml): it cannot listen on HTTP and HTTPS at once. The names
+# cover the Service, the pod address vmalert's notifier uses, and loopback
+# for the config reloader.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vmalertmanager-tls
+spec:
+  secretName: vmalertmanager-tls
+  dnsNames:
+    - vmalertmanager-vmetrics.observability.svc.cluster.local
+    - vmalertmanager-vmetrics.observability.svc
+    - vmalertmanager-vmetrics.observability
+    - vmalertmanager-vmetrics-0.vmalertmanager-vmetrics.observability.svc.cluster.local
+    - vmalertmanager-vmetrics-0.vmalertmanager-vmetrics.observability.svc
+    - vmalertmanager-vmetrics-0.vmalertmanager-vmetrics.observability
+    - localhost
+  ipAddresses:
+    - 127.0.0.1
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+# The gateway connects to Alertmanager over HTTPS and verifies it against
+# the internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vmalertmanager-vmetrics
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vmalertmanager-vmetrics
+      sectionName: http
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vmalertmanager-vmetrics.observability.svc.cluster.local
