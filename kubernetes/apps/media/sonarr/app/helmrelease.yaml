@@ -142,6 +142,18 @@ spec:
                   name: sonarr-secret
 
             probes:
+              # startup: a slow boot (e.g. many pods restarting at once) must
+              # not trip the 1s liveness probe; liveness starts after this
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
               liveness: &probes
                 enabled: true
                 custom: true
