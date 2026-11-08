@@ -148,6 +148,12 @@ spec:
               LIDARR__LOG__DBENABLED: "False"
               LIDARR__LOG_LEVEL: info
               LIDARR__SERVER__PORT: &port 8686
+              # native TLS on 6868 (tls.yaml); the plain port stays for probes and
+              # in-cluster clients that do not use TLS yet
+              LIDARR__SERVER__ENABLESSL: "True"
+              LIDARR__SERVER__SSLPORT: &tlsport 6868
+              LIDARR__SERVER__SSLCERTPATH: /tls/keystore.p12
+              LIDARR__SERVER__SSLCERTPASSWORD: lidarr
             envFrom:
               - secretRef:
                   name: lidarr-secret
@@ -175,6 +181,8 @@ spec:
         ports:
           http:
             port: *port
+          https:
+            port: *tlsport
     route:
       app:
         hostnames: ["lidarr.rphilipsen.nl"]
@@ -183,11 +191,21 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy lidarr (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
 
     persistence:
+      tls:
+        type: secret
+        name: lidarr-tls
+        defaultMode: 0440
+        advancedMounts:
+          lidarr:
+            app:
+              - path: /tls
+                readOnly: true
       # advancedMounts: without them, app-template mounts every persistence
       # item into every container; scope app data to the app container only
       config:

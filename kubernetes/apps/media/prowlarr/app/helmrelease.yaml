@@ -133,6 +133,12 @@ spec:
               PROWLARR__LOG__DBENABLED: "False"
               PROWLARR__LOG__LEVEL: info
               PROWLARR__SERVER__PORT: &port 9696
+              # native TLS on 6969 (tls.yaml); the plain port stays for probes and
+              # in-cluster clients that do not use TLS yet
+              PROWLARR__SERVER__ENABLESSL: "True"
+              PROWLARR__SERVER__SSLPORT: &tlsport 6969
+              PROWLARR__SERVER__SSLCERTPATH: /tls/keystore.p12
+              PROWLARR__SERVER__SSLCERTPASSWORD: prowlarr
               PROWLARR__UPDATE__BRANCH: develop
             envFrom:
               - secretRef:
@@ -172,8 +178,19 @@ spec:
         ports:
           http:
             port: *port
+          https:
+            port: *tlsport
 
     persistence:
+      tls:
+        type: secret
+        name: prowlarr-tls
+        defaultMode: 0440
+        advancedMounts:
+          prowlarr:
+            app:
+              - path: /tls
+                readOnly: true
       # advancedMounts: without them, app-template mounts every persistence
       # item into every container; scope app data to the app container only
       config:
@@ -195,9 +212,10 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy prowlarr (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
 
     PodAnnotations:
       secret.reloader.stakater.com/reload: prowlarr-secret

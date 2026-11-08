@@ -136,6 +136,12 @@ spec:
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 8989
+              # native TLS on 9898 (tls.yaml); the plain port stays for probes and
+              # in-cluster clients that do not use TLS yet
+              SONARR__SERVER__ENABLESSL: "True"
+              SONARR__SERVER__SSLPORT: &tlsport 9898
+              SONARR__SERVER__SSLCERTPATH: /tls/keystore.p12
+              SONARR__SERVER__SSLCERTPASSWORD: sonarr
               SONARR__UPDATE__BRANCH: develop
             envFrom:
               - secretRef:
@@ -185,6 +191,8 @@ spec:
         ports:
           http:
             port: *port
+          https:
+            port: *tlsport
 
     route:
       app:
@@ -194,11 +202,21 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy sonarr (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
 
     persistence:
+      tls:
+        type: secret
+        name: sonarr-tls
+        defaultMode: 0440
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /tls
+                readOnly: true
       # advancedMounts: without them, app-template mounts every persistence
       # item into every container; scope app data to the app container only
       config:
