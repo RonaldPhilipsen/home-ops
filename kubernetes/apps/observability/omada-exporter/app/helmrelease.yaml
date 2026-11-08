@@ -35,10 +35,11 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/charlie-haley/omada_exporter
-              tag: 0.13.1
+              repository: ghcr.io/ronaldphilipsen/omada-exporter
+              tag: v0.1.0
             env:
-              OMADA_REQUEST_TIMEOUT: 60
+              OTEL_EXPORTER_OTLP_ENDPOINT: http://gateway-collector.observability.svc.cluster.local:4318
+              OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
             envFrom:
               - secretRef:
                   name: omada-exporter-secret
@@ -50,19 +51,4 @@ spec:
               requests:
                 cpu: 15m
               limits:
-                memory: 120M
-    service:
-      app:
-        controller: omada-exporter
-        ports:
-          http:
-            port: 9202
-    serviceMonitor:
-      app:
-        serviceName: omada-exporter
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 60s
-            scrapeTimeout: 1m
+                memory: 256M

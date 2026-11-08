@@ -9,4 +9,803 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
-  url: https://grafana.com/api/dashboards/20854/revisions/1/download
+  # VictoriaMetrics stores OTLP names with dots and without unit suffixes.
+  json: |
+    {
+      "title": "Omada",
+      "uid": "omada-exporter",
+      "tags": [
+        "omada"
+      ],
+      "timezone": "browser",
+      "editable": true,
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "1m",
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "annotations": {
+        "list": []
+      },
+      "templating": {
+        "list": [
+          {
+            "name": "Datasource",
+            "label": "Datasource",
+            "type": "datasource",
+            "query": "prometheus",
+            "current": {},
+            "hide": 0,
+            "refresh": 1,
+            "options": [],
+            "regex": ""
+          },
+          {
+            "name": "Site",
+            "label": "Site",
+            "type": "query",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${Datasource}"
+            },
+            "query": {
+              "query": "query_result(count by (\"omada.site.name\") ({__name__=\"omada.device.cpu.utilization\"}))",
+              "refId": "Site"
+            },
+            "definition": "query_result(count by (\"omada.site.name\") ({__name__=\"omada.device.cpu.utilization\"}))",
+            "refresh": 2,
+            "sort": 1,
+            "multi": false,
+            "includeAll": false,
+            "current": {},
+            "regex": "/omada\\.site\\.name=\"([^\"]+)\"/"
+          },
+          {
+            "name": "Device",
+            "label": "Device",
+            "type": "query",
+            "datasource": {
+              "type": "prometheus",
+              "uid": "${Datasource}"
+            },
+            "query": {
+              "query": "query_result(count by (\"device.name\") ({__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\"}))",
+              "refId": "Device"
+            },
+            "definition": "query_result(count by (\"device.name\") ({__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\"}))",
+            "refresh": 2,
+            "sort": 1,
+            "multi": true,
+            "includeAll": true,
+            "allValue": ".*",
+            "current": {},
+            "regex": "/device\\.name=\"([^\"]+)\"/"
+          }
+        ]
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "row",
+          "title": "Site overview",
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "panels": []
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "PoE power",
+          "description": "Total PoE power that all switch ports of the site deliver.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 0,
+            "y": 1
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "sum({__name__=\"omada.switch.port.poe.power\",\"omada.site.name\"=\"$Site\"})",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto"
+          }
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Clients",
+          "description": "Active clients of the site.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 6,
+            "y": 1
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "sum({__name__=\"omada.site.clients\",\"omada.site.name\"=\"$Site\"})",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto"
+          }
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Controller uptime",
+          "description": "The controller metrics have no site label.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 12,
+            "y": 1
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "max({__name__=\"omada.controller.uptime\"})",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto"
+          }
+        },
+        {
+          "id": 5,
+          "type": "stat",
+          "title": "Controller storage free",
+          "description": "Shows no data if the controller does not report hwcStorage.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 6,
+            "x": 18,
+            "y": 1
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "sum({__name__=\"omada.controller.storage.capacity\"}) - sum({__name__=\"omada.controller.storage.used\"})",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "auto"
+          }
+        },
+        {
+          "id": 6,
+          "type": "row",
+          "title": "Devices",
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 5
+          },
+          "panels": []
+        },
+        {
+          "id": 7,
+          "type": "timeseries",
+          "title": "CPU use",
+          "description": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\"}",
+              "legendFormat": "{{device.name}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "min": 0,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 8,
+          "type": "timeseries",
+          "title": "Memory use",
+          "description": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.memory.utilization\",\"omada.site.name\"=\"$Site\"}",
+              "legendFormat": "{{device.name}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": false
+              },
+              "min": 0,
+              "max": 1
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 9,
+          "type": "table",
+          "title": "Device detail",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "description": "Uptime has coarse resolution because the Omada API reports it as text.",
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 14
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.uptime\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "format": "table"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.cpu.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "legendFormat": "",
+              "refId": "B",
+              "instant": true,
+              "format": "table"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.memory.utilization\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "legendFormat": "",
+              "refId": "C",
+              "instant": true,
+              "format": "table"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.device.upgrade.available\",\"omada.site.name\"=\"$Site\",\"device.name\"=~\"$Device\"}",
+              "legendFormat": "",
+              "refId": "D",
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {
+                "byField": "device.mac",
+                "mode": "outer"
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "pattern": "^(device\\.mac|device\\.name|Value #[A-D])$"
+                }
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "renameByName": {
+                  "device.mac": "MAC",
+                  "device.name": "Device",
+                  "Value #A": "Uptime",
+                  "Value #B": "CPU",
+                  "Value #C": "Memory",
+                  "Value #D": "Upgrade available"
+                }
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Uptime"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CPU"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percentunit"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Memory"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "percentunit"
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Upgrade available"
+                },
+                "properties": [
+                  {
+                    "id": "mappings",
+                    "value": [
+                      {
+                        "type": "value",
+                        "options": {
+                          "0": {
+                            "text": "No",
+                            "color": "green"
+                          },
+                          "1": {
+                            "text": "Yes",
+                            "color": "orange"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true
+          }
+        },
+        {
+          "id": 10,
+          "type": "row",
+          "title": "Switch ports",
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 22
+          },
+          "panels": []
+        },
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "Port speed",
+          "description": "Link speed of each port. A disconnected port has no value.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 23
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.switch.port.speed\",\"omada.site.name\"=\"$Site\",\"switch.name\"=~\"$Device\"}",
+              "legendFormat": "{{switch.name}} port {{port.number}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Mbits",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": false
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Port PoE power",
+          "description": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 23
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "{__name__=\"omada.switch.port.poe.power\",\"omada.site.name\"=\"$Site\",\"switch.name\"=~\"$Device\"}",
+              "legendFormat": "{{switch.name}} port {{port.number}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "watt",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": false
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "id": 13,
+          "type": "row",
+          "title": "Clients",
+          "collapsed": false,
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 31
+          },
+          "panels": []
+        },
+        {
+          "id": 14,
+          "type": "timeseries",
+          "title": "Client activity, top 10",
+          "description": "Needs OMADA_CLIENT_METRICS=true.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${Datasource}"
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 32
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${Datasource}"
+              },
+              "expr": "topk(10, {__name__=\"omada.client.activity\",\"omada.site.name\"=\"$Site\"})",
+              "legendFormat": "{{client.name}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Bps",
+              "custom": {
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": false
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "bottom",
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        }
+      ]
+    }
