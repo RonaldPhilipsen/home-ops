@@ -16,8 +16,12 @@ spec:
     maxmemory: 512mb
   # ACL users. The operator manages its own (_operator, _exporter,
   # _replication) with their own passwords. authelia gets a generated
-  # password (authelia-user.yaml).
+  # password (authelia-user.yaml). default is disabled.
   users:
+    # Off: clients must log in as a named user. The operator's probes and
+    # the exporter use _operator and _exporter, not default.
+    - name: default
+      enabled: false
     - name: authelia
       passwordSecret:
         name: valkey-authelia
