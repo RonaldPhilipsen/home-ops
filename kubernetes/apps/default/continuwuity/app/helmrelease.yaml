@@ -41,6 +41,10 @@ spec:
                     apiVersion: v1
                     fieldPath: status.podIP
               CONDUWUIT_PORT: &port 8443
+              # native TLS on the same port (tls.yaml): HTTPS only
+              CONDUWUIT_TLS__CERTS: /tls/tls.crt
+              CONDUWUIT_TLS__KEY: /tls/tls.key
+              CONDUWUIT_TLS__DUAL_PROTOCOL: "false"
               CONDUWUIT_CONFIG: "/config/conduit.toml"
               CONDUWUIT_WELL_KNOWN__CLIENT: "https://matrix.rphilipsen.nl"
               CONDUWUIT_WELL_KNOWN__SERVER: "matrix.rphilipsen.nl:443"
@@ -67,7 +71,7 @@ spec:
       app:
         controller: continuwuity
         ports:
-          http:
+          https:
             port: *port
 
     route:
@@ -131,6 +135,15 @@ spec:
                 port: *port
 
     persistence:
+      tls:
+        type: secret
+        name: continuwuity-tls
+        defaultMode: 0440
+        advancedMounts:
+          continuwuity:
+            app:
+              - path: /tls
+                readOnly: true
       data:
         enabled: true
         type: persistentVolumeClaim
