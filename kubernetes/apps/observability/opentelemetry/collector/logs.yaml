@@ -12,20 +12,20 @@ spec:
       memory: 128Mi
     limits:
       memory: 512Mi
+  # Pod log files are readable only by root. Added capabilities are not
+  # effective for a non-root process, so this collector must run as UID 0.
   securityContext:
-    allowPrivilegeEscalation: true
-    privileged: true
+    allowPrivilegeEscalation: false
     capabilities:
+      drop:
+        - ALL
       add:
-        - CAP_DAC_READ_SEARCH
-        - CAP_SYS_ADMIN
+        - DAC_READ_SEARCH
     readOnlyRootFilesystem: true
   podSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-    fsGroupChangePolicy: OnRootMismatch
-    runAsNonRoot: true
+    runAsUser: 0
+    runAsGroup: 0
+    runAsNonRoot: false
     seccompProfile:
       type: RuntimeDefault
   volumeMounts:
