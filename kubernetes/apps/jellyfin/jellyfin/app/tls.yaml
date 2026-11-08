@@ -1,0 +1,53 @@
+---
+# Backend TLS for Jellyfin (served natively on 8920; enabled in
+# network.xml by the network-tls init container). Issued by the internal
+# CA; Jellyfin loads the PKCS#12 keystore at startup, and Reloader restarts
+# it when cert-manager renews the secret. The keystore password is not a
+# secret: the secret also holds the key in clear.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jellyfin-tls
+spec:
+  secretName: jellyfin-tls
+  dnsNames:
+    - jellyfin.jellyfin.svc.cluster.local
+    - jellyfin.jellyfin.svc
+    - jellyfin.jellyfin
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  keystores:
+    pkcs12:
+      create: true
+      password: jellyfin
+      profile: Modern2023
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca
+---
+# The gateway connects to Jellyfin's TLS port and verifies the certificate
+# against the internal CA (ConfigMap internal-ca from trust-manager; Cilium
+# accepts only ConfigMap CA refs).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: jellyfin
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: jellyfin
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: jellyfin.jellyfin.svc.cluster.local

@@ -56,7 +56,7 @@ spec:
         strategy: Recreate
         containers:
           main:
-            image:
+            image: &image
               repository:  ghcr.io/jellyfin/jellyfin
               tag: 12.0.20260908-012347@sha256:74f4d87d9cf262c52d62be6be265c0355c6a7e21d0477ab6c654a49a4f8b1fd4
               pullPolicy: IfNotPresent
@@ -107,12 +107,42 @@ spec:
             #     gpu.intel.com/i915: 1
             #     # memory: 8Gi
 
+        # Enables Jellyfin's native HTTPS (8920, tls.yaml) in network.xml on
+        # every start, so the setting lives in git. HTTP 8096 stays for
+        # probes. On the very first boot network.xml does not exist yet.
+        initContainers:
+          network-tls:
+            image: *image
+            command:
+              - /bin/sh
+              - -c
+              - |
+                set -eu
+                f=/config/config/network.xml
+                [ -f "$f" ] || { echo "no $f yet (first boot)"; exit 0; }
+                sed -i \
+                  -e 's|<EnableHttps>[^<]*</EnableHttps>|<EnableHttps>true</EnableHttps>|' \
+                  -e 's|<RequireHttps>[^<]*</RequireHttps>|<RequireHttps>false</RequireHttps>|' \
+                  -e 's|<InternalHttpsPort>[^<]*</InternalHttpsPort>|<InternalHttpsPort>8920</InternalHttpsPort>|' \
+                  -e 's|<CertificatePath */>|<CertificatePath>/tls/keystore.p12</CertificatePath>|' \
+                  -e 's|<CertificatePath>[^<]*</CertificatePath>|<CertificatePath>/tls/keystore.p12</CertificatePath>|' \
+                  -e 's|<CertificatePassword */>|<CertificatePassword>jellyfin</CertificatePassword>|' \
+                  -e 's|<CertificatePassword>[^<]*</CertificatePassword>|<CertificatePassword>jellyfin</CertificatePassword>|' \
+                  "$f"
+                grep -E 'EnableHttps|CertificatePath|InternalHttpsPort' "$f"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
     service:
       app:
         controller: jellyfin
         ports:
           http:
             port: *port
+          https:
+            port: &tlsport 8920
 
     route:
       app:
@@ -124,13 +154,24 @@ spec:
             namespace: kube-system
             sectionName: https
         rules:
+          # HTTPS backend; BackendTLSPolicy jellyfin (tls.yaml) verifies it
           - backendRefs:
               - name: *app
-                port: *port
+                port: *tlsport
 
     persistence:
       config:
         existingClaim: *app
+
+      tls:
+        type: secret
+        name: jellyfin-tls
+        defaultMode: 0440
+        advancedMounts:
+          jellyfin:
+            main:
+              - path: /tls
+                readOnly: true
 
       data:
         existingClaim: jellyfin-nfs
