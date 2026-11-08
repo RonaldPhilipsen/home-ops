@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/omada-exporter
-              tag: v0.1.0
+              tag: v0.1.2
             env:
               OTEL_EXPORTER_OTLP_ENDPOINT: http://gateway-collector.observability.svc.cluster.local:4318
               OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
