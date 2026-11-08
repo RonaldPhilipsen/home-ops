@@ -7,9 +7,10 @@ INI="${PGBOUNCER_INI:-/etc/db-bridge/pgbouncer.ini}"
 CERT_DIR="${CERT_DIR:-/spiffe}"
 
 # 1. spiffe-helper in the background: fetches the SVID for this pod's identity
-#    and renews it. On every update it runs CMD (SIGHUP to pgbouncer); the
-#    first run happens before pgbouncer exists and fails harmlessly.
-spiffe-helper &
+#    and renews it. On every update it fires the configured cmd (SIGHUP to
+#    pgbouncer); the first firing happens before pgbouncer exists and fails
+#    harmlessly.
+spiffe-helper -config /etc/db-bridge/helper.conf &
 HELPER_PID=$!
 
 # 2. Wait for the initial SVID before starting pgbouncer (pgbouncer needs the

@@ -5,4 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./spiffeid.yaml
+  - ./db-bridge-config.yaml
   - ../../media-nfs.yaml

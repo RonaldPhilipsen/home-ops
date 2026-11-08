@@ -1,0 +1,21 @@
+---
+# pgbouncer config for the Sonarr db-bridge sidecar: loopback trust listener,
+# upstream to the CNPG rw service presenting the SVID (CN=sonarr).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarr-db-bridge
+  namespace: media
+data:
+  pgbouncer.ini: |
+    [databases]
+    sonarr = host=postgres-rw.database.svc port=5432 dbname=sonarr
+
+    [pgbouncer]
+    listen_addr = 127.0.0.1
+    listen_port = 5432
+    auth_type = trust
+    pidfile = /tmp/pgbouncer.pid
+    client_cert_file = /spiffe/svid.crt
+    client_key_file = /spiffe/svid.key
+    client_root_cert_file = /cnpg-ca/ca.crt

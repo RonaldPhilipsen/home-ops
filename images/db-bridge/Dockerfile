@@ -22,6 +22,7 @@ RUN apt-get update \
  && chmod 0755 /usr/local/bin/spiffe-helper
 
 COPY entrypoint.sh /entrypoint.sh
+COPY helper.conf /etc/db-bridge/helper.conf
 RUN chmod 0755 /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

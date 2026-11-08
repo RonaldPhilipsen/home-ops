@@ -128,13 +128,10 @@ spec:
           db-bridge:
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
-              tag: 1.0.0@sha256:ade0e8dba67232d89201c470f85a2955287ac19e6318908fa2dea7aca7a83043
+              tag: 1.0.1@sha256:33cc99d64add512aa34e28bd7adfaffbdf839bbcf436631f4c914e22062bcb56
             env:
-              SPIFFE_ENDPOINT_SOCKET: unix:///run/spiffe/agent.sock
               CERT_DIR: /spiffe
               PGBOUNCER_INI: /etc/db-bridge/pgbouncer.ini
-              # fired by spiffe-helper on every SVID renewal
-              CMD: "kill -HUP $(cat /tmp/pgbouncer.pid) 2>/dev/null || true"
             probes:
               # pgbouncer listens on loopback only, so a kubelet tcpSocket probe
               # (which dials the pod IP) can never work; check the process instead

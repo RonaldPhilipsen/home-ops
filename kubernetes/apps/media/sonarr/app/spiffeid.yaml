@@ -1,0 +1,18 @@
+---
+# SPIFFE identity for the Sonarr pod: SVID with CN=sonarr (the Postgres role)
+# and URI SAN spiffe://spiffe.rphilipsen.nl/ns/media/sa/sonarr.
+# Cluster-scoped: the hardened chart only ships the ClusterSPIFFEID CRD.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: sonarr
+spec:
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/media/sa/sonarr"
+  dnsNameTemplates:
+    - sonarr
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: media
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: sonarr
