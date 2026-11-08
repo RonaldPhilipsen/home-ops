@@ -21,8 +21,10 @@ RUN apt-get update \
       | tar xz -C /usr/local/bin \
  && chmod 0755 /usr/local/bin/spiffe-helper
 
+# NOTE: /etc/db-bridge is mounted by the per-app pgbouncer ConfigMap, so the
+# helper config lives outside it.
 COPY entrypoint.sh /entrypoint.sh
-COPY helper.conf /etc/db-bridge/helper.conf
+COPY helper.conf /etc/spiffe-helper/helper.conf
 RUN chmod 0755 /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

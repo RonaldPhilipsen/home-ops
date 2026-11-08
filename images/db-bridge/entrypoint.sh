@@ -10,7 +10,7 @@ CERT_DIR="${CERT_DIR:-/spiffe}"
 #    and renews it. On every update it fires the configured cmd (SIGHUP to
 #    pgbouncer); the first firing happens before pgbouncer exists and fails
 #    harmlessly.
-spiffe-helper -config /etc/db-bridge/helper.conf &
+spiffe-helper -config /etc/spiffe-helper/helper.conf &
 HELPER_PID=$!
 
 # 2. Wait for the initial SVID before starting pgbouncer (pgbouncer needs the
