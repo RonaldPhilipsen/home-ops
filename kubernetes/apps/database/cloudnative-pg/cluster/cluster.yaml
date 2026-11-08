@@ -71,36 +71,39 @@ spec:
         serverName: postgres
   managed:
     roles:
-      # radarr/sonarr/lidarr/prowlarr authenticate with SPIFFE SVIDs
-      # (pg_hba "cert"); no password, by design.
+      # Every app role authenticates with its SPIFFE SVID (pg_hba "cert",
+      # CN = role). disablePassword clears any old password in the database:
+      # without it, removing passwordSecret leaves the password unchanged.
       - name: radarr
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
       - name: sonarr
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
       - name: lidarr
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
       - name: prowlarr
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
       - name: lldap
         login: true
         superuser: false
         createdb: false
-        passwordSecret:
-          name: lldap-db-credentials
+        disablePassword: true
       - name: authelia
         login: true
         superuser: false
         createdb: false
-        passwordSecret:
-          name: authelia-db-credentials
+        disablePassword: true
 
   bootstrap:
     recovery:
