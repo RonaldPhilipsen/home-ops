@@ -16,6 +16,8 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/binary"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -69,8 +71,54 @@ func main() {
 	}
 }
 
+// Postgres pre-startup request codes (sent by the client in an 8-byte
+// message before its StartupMessage).
+const (
+	codeSSLRequest    = 80877103
+	codeGSSENCRequest = 80877104
+)
+
+// readStartup answers the client's own SSLRequest/GSSENCRequest with 'N'
+// (loopback stays plaintext) and returns the first real startup-phase
+// message (StartupMessage or CancelRequest), to be replayed upstream inside
+// the TLS session. Without this, the client's SSLRequest would be forwarded
+// into the already-encrypted upstream session and Postgres would answer 'E'.
+func readStartup(client net.Conn) ([]byte, error) {
+	for {
+		var hdr [8]byte
+		if _, err := io.ReadFull(client, hdr[:]); err != nil {
+			return nil, err
+		}
+		length := binary.BigEndian.Uint32(hdr[0:4])
+		code := binary.BigEndian.Uint32(hdr[4:8])
+		if length == 8 && (code == codeSSLRequest || code == codeGSSENCRequest) {
+			if _, err := client.Write([]byte{'N'}); err != nil {
+				return nil, err
+			}
+			continue
+		}
+		if length < 8 || length > 10000 {
+			return nil, fmt.Errorf("invalid startup message length %d", length)
+		}
+		msg := make([]byte, length)
+		copy(msg, hdr[:])
+		if _, err := io.ReadFull(client, msg[8:]); err != nil {
+			return nil, err
+		}
+		return msg, nil
+	}
+}
+
 func handle(client net.Conn) {
 	defer client.Close()
+
+	startup, err := readStartup(client)
+	if err != nil {
+		if err != io.EOF { // EOF: the -health probe connects and closes
+			log.Printf("client startup: %v", err)
+		}
+		return
+	}
 
 	server, err := net.Dial("tcp", upstream)
 	if err != nil {
@@ -99,6 +147,10 @@ func handle(client net.Conn) {
 	tlsConn := tls.Client(server, tlsCfg)
 	if err := tlsConn.Handshake(); err != nil {
 		log.Printf("tls handshake: %v", err)
+		return
+	}
+	if _, err := tlsConn.Write(startup); err != nil {
+		log.Printf("startup replay: %v", err)
 		return
 	}
 	log.Printf("upstream connection established (%s)", server.RemoteAddr())
