@@ -52,6 +52,8 @@ spec:
     pg_hba:
       - hostssl all radarr all cert
       - hostnossl all radarr all reject
+      - hostssl all sonarr all cert
+      - hostnossl all sonarr all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
