@@ -78,6 +78,23 @@ spec:
                 drop: ["ALL"]
     valkey:
       enabled: true
+      # Require a password (generated secret, valkey-auth.yaml). valkey-cli
+      # reads REDISCLI_AUTH, so the chart's "valkey-cli ping" probes keep
+      # working unchanged.
+      controllers:
+        main:
+          containers:
+            main:
+              args:
+                - valkey-server
+                - --requirepass
+                - $(REDISCLI_AUTH)
+              env:
+                REDISCLI_AUTH:
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-valkey-auth
+                      key: password
 
     # Server-only values. The top-level controllers block is shared by
     # every Immich component (server, machine-learning, valkey), so the
@@ -86,6 +103,13 @@ spec:
       controllers:
         main:
           containers:
+            main:
+              env:
+                REDIS_PASSWORD:
+                  valueFrom:
+                    secretKeyRef:
+                      name: immich-valkey-auth
+                      key: password
             # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
             # SVID (CN=immich); the bridge serves the app on loopback and presents
             # the SVID to immich-postgres-rw.database.svc:5432 (pg_hba "cert"). No DB password involved.
