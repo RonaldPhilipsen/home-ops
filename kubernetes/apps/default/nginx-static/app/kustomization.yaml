@@ -6,3 +6,4 @@ namespace: default
 resources:
   - helmrelease.yaml
   - nginx-configmap.yaml
+  - tls.yaml

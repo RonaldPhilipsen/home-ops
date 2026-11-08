@@ -40,6 +40,12 @@ data:
       server {
         listen	8080;
         listen	[::]:8080;
+        # native HTTPS for the gateway (tls.yaml, BackendTLSPolicy)
+        listen	8443 ssl;
+        listen	[::]:8443 ssl;
+        ssl_certificate     /tls/tls.crt;
+        ssl_certificate_key /tls/tls.key;
+        ssl_protocols       TLSv1.2 TLSv1.3;
         server_name www.rphilipsen.nl rphilipsen.nl;
 
         proxy_read_timeout 10;
