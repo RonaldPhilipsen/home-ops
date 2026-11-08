@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: omada-controller
+spec:
+  secretName: omada-controller-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames: ["omada.rphilipsen.nl"]
+  # The controller accepts only RSA keys in PEM format.
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
