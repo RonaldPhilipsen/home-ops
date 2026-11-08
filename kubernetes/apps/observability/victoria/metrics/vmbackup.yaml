@@ -54,8 +54,12 @@ spec:
                     -credsFilePath=/creds/credentials \
                     -customS3Endpoint=https://s3.rphilipsen.nl \
                     -storageDataPath=/victoria-metrics-data \
-                    -snapshot.createURL=http://vmsingle-vmetrics:8428/snapshot/create \
+                    -snapshot.createURL=https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428/snapshot/create \
                     -concurrency=4
+              # public CAs (s3.rphilipsen.nl) + internal CA (vmsingle-tls)
+              env:
+                - name: SSL_CERT_FILE
+                  value: /etc/internal-ca-bundle/ca-certificates.crt
               resources:
                 requests:
                   cpu: 50m
@@ -72,6 +76,9 @@ spec:
                 - name: vmsingle-data
                   mountPath: /victoria-metrics-data
                   readOnly: true
+                - name: internal-ca-bundle
+                  mountPath: /etc/internal-ca-bundle
+                  readOnly: true
           volumes:
             - name: creds
               secret:
@@ -80,3 +87,6 @@ spec:
               persistentVolumeClaim:
                 claimName: vmsingle-vmetrics
                 readOnly: true
+            - name: internal-ca-bundle
+              configMap:
+                name: internal-ca-bundle

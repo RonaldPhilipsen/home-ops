@@ -32,7 +32,10 @@ spec:
             env:
               GAGGIUINO_BASE_URL: http://172.16.10.32:80
               OTLP_ENABLED: "true"
-              OTLP_ENDPOINT: "http://vmsingle-vmetrics.observability.svc.cluster.local:8428/opentelemetry/v1/metrics"
+              OTLP_ENDPOINT: "https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428/opentelemetry/v1/metrics"
+              # public CAs + internal CA (ConfigMap internal-ca-bundle), for the
+              # HTTPS OTLP endpoint
+              SSL_CERT_FILE: /etc/internal-ca-bundle/ca-certificates.crt
               OTLP_INTERVAL: "1s"
               OTLP_TIMEOUT: "0.5s"
               # DEBUG: "true"
@@ -45,6 +48,13 @@ spec:
                 cpu: 15m
               limits:
                 memory: 120M
+    persistence:
+      internal-ca-bundle:
+        type: configMap
+        name: internal-ca-bundle
+        globalMounts:
+          - path: /etc/internal-ca-bundle
+            readOnly: true
     service:
       app:
         controller: *app

@@ -10,9 +10,13 @@ spec:
   groupRef:
     name: ai-tools
   env:
+    # public CAs + internal CA (ConfigMap internal-ca-bundle, mounted below)
+    # for the HTTPS backend; Go reads SSL_CERT_FILE
+    - name: SSL_CERT_FILE
+      value: /etc/internal-ca-bundle/ca-certificates.crt
     # In-cluster VictoriaLogs endpoint; no auth required.
     - name: VL_INSTANCE_ENTRYPOINT
-      value: http://vlsingle-vmetrics.observability.svc:9428
+      value: https://vlsingle-vmetrics-tls.observability.svc.cluster.local:19428
     # The embedded docs corpus is exposed as thousands of MCP resources, which
     # makes the ToolHive virtual server's resources/list health check time out.
     # Disabling the documentation tool also skips registering the doc resources
@@ -25,3 +29,15 @@ spec:
       memory: 128Mi
     limits:
       memory: 512Mi
+  podTemplateSpec:
+    spec:
+      volumes:
+        - name: internal-ca-bundle
+          configMap:
+            name: internal-ca-bundle
+      containers:
+        - name: mcp
+          volumeMounts:
+            - name: internal-ca-bundle
+              mountPath: /etc/internal-ca-bundle
+              readOnly: true
