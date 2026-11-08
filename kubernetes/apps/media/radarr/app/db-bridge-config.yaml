@@ -8,14 +8,14 @@ metadata:
   namespace: media
 data:
   pgbouncer.ini: |
+    # upstream connection is libpq: the SVID (CN=radarr) is presented as the
+    # client cert; pgbouncer has no cert options of its own, so the ssl*
+    # keywords live in the connection string.
     [databases]
-    radarr = host=postgres-rw.database.svc port=5432 dbname=radarr
+    radarr = host=postgres-rw.database.svc port=5432 dbname=radarr user=radarr sslmode=require sslcert=/spiffe/svid.crt sslkey=/spiffe/svid.key sslrootcert=/cnpg-ca/ca.crt
 
     [pgbouncer]
     listen_addr = 127.0.0.1
     listen_port = 5432
     auth_type = trust
     pidfile = /tmp/pgbouncer.pid
-    client_cert_file = /spiffe/svid.crt
-    client_key_file = /spiffe/svid.key
-    client_root_cert_file = /cnpg-ca/ca.crt
