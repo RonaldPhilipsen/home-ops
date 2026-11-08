@@ -13,9 +13,6 @@ spec:
     # ToolHive runs the container and speaks MCP over stdio.
     - name: OMADA_TRANSPORT
       value: stdio
-    # The on-prem controller serves a self-signed certificate.
-    - name: OMADA_INSECURE_TLS
-      value: "true"
     # Explicitly read-only; set to "false" to unlock the write tools.
     - name: OMADA_READ_ONLY
       value: "false"
