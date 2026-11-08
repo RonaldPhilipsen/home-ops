@@ -1,0 +1,21 @@
+---
+# SPIFFE identity for the memini pod: SVID with CN=memini (the Postgres role)
+# and URI SAN spiffe://spiffe.rphilipsen.nl/ns/ai/sa/memini.
+# Cluster-scoped: the hardened chart only ships the ClusterSPIFFEID CRD.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: memini
+spec:
+  # the controller manager only watches its own class (watchClassless: false)
+  className: spiffe-spire
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/ai/sa/memini"
+  dnsNameTemplates:
+    - memini
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: ai
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: memini
+      app.kubernetes.io/name: memini

@@ -1,0 +1,21 @@
+---
+# SPIFFE identity for the Immich server pod: SVID with CN=immich (the Postgres role)
+# and URI SAN spiffe://spiffe.rphilipsen.nl/ns/immich/sa/immich.
+# Cluster-scoped: the hardened chart only ships the ClusterSPIFFEID CRD.
+apiVersion: spire.spiffe.io/v1alpha1
+kind: ClusterSPIFFEID
+metadata:
+  name: immich
+spec:
+  # the controller manager only watches its own class (watchClassless: false)
+  className: spiffe-spire
+  spiffeIDTemplate: "spiffe://spiffe.rphilipsen.nl/ns/immich/sa/immich"
+  dnsNameTemplates:
+    - immich
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: immich
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: immich
+      app.kubernetes.io/name: server
