@@ -26,6 +26,33 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  # The chart writes these URLs last (values cannot override them), so they
+  # are patched in the generated CRs: HTTPS to the components' TLS ports.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: operator.victoriametrics.com
+              kind: VMAlert
+              name: vmetrics
+            patch: |
+              - op: replace
+                path: /spec/datasource/url
+                value: https://vmauth-vmetrics-internal-tls.observability.svc.cluster.local:18427
+              - op: replace
+                path: /spec/remoteRead/url
+                value: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428
+              - op: replace
+                path: /spec/remoteWrite/url
+                value: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428/api/v1/write
+          - target:
+              group: operator.victoriametrics.com
+              kind: VMSingle
+              name: vmetrics
+            patch: |
+              - op: replace
+                path: /spec/extraArgs/vmalert.proxyURL
+                value: https://vmalert-vmetrics-tls.observability.svc.cluster.local:18080
   values:
     global:
       cluster:
@@ -73,6 +100,13 @@ spec:
     vmalert:
       enabled: true
       spec:
+        # trust store = public CAs + internal CA, for HTTPS to the other
+        # components (Go reads SSL_CERT_FILE)
+        configMaps:
+          - internal-ca-bundle
+        extraEnvs:
+          - name: SSL_CERT_FILE
+            value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
         # certificate for the HTTPS listener, at /etc/vm/secrets/vmalert-tls/
         secrets:
           - vmalert-tls
@@ -99,6 +133,13 @@ spec:
     vmsingle:
       enabled: true
       spec:
+        # trust store = public CAs + internal CA, for HTTPS to the other
+        # components (Go reads SSL_CERT_FILE)
+        configMaps:
+          - internal-ca-bundle
+        extraEnvs:
+          - name: SSL_CERT_FILE
+            value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
         # certificate for the HTTPS listener, at /etc/vm/secrets/vmsingle-tls/
         secrets:
           - vmsingle-tls
@@ -141,6 +182,13 @@ spec:
     vlsingle:
       enabled: true
       spec:
+        # trust store = public CAs + internal CA, for HTTPS to the other
+        # components (Go reads SSL_CERT_FILE)
+        configMaps:
+          - internal-ca-bundle
+        extraEnvs:
+          - name: SSL_CERT_FILE
+            value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
         # certificate for the HTTPS listener, at /etc/vm/secrets/vlsingle-tls/
         secrets:
           - vlsingle-tls
@@ -206,6 +254,13 @@ spec:
     vtsingle:
       enabled: true
       spec:
+        # trust store = public CAs + internal CA, for HTTPS to the other
+        # components (Go reads SSL_CERT_FILE)
+        configMaps:
+          - internal-ca-bundle
+        extraEnvs:
+          - name: SSL_CERT_FILE
+            value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
         # certificate for the HTTPS listener, at /etc/vm/secrets/vtsingle-tls/
         secrets:
           - vtsingle-tls
@@ -259,6 +314,21 @@ spec:
     internal:
       vmauth:
         spec:
+          # trust store = public CAs + internal CA, for HTTPS to the other
+          # components (Go reads SSL_CERT_FILE)
+          configMaps:
+            - internal-ca-bundle
+          extraEnvs:
+            - name: SSL_CERT_FILE
+              value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
+          # explicit routing over HTTPS (replaces the chart's targetRefs, which
+          # resolve to the HTTP ports)
+          unauthorizedUserAccessSpec:
+            url_map:
+              - src_paths: ["/select/logsql/.*"]
+                url_prefix: ["https://vlsingle-vmetrics-tls.observability.svc.cluster.local:19428"]
+              - src_paths: ["/.*"]
+                url_prefix: ["https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428"]
           # certificate for the HTTPS listener, at /etc/vm/secrets/vmauth-tls/
           secrets:
             - vmauth-tls
@@ -272,6 +342,16 @@ spec:
     vmagent:
       enabled: true
       spec:
+        # HTTPS to vmsingle (merged over the chart's generated remote write)
+        remoteWrite:
+          - url: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428/api/v1/write
+        # trust store = public CAs + internal CA, for HTTPS to the other
+        # components (Go reads SSL_CERT_FILE)
+        configMaps:
+          - internal-ca-bundle
+        extraEnvs:
+          - name: SSL_CERT_FILE
+            value: /etc/vm/configs/internal-ca-bundle/ca-certificates.crt
         # certificate for the HTTPS listener, at /etc/vm/secrets/vmagent-tls/
         secrets:
           - vmagent-tls
