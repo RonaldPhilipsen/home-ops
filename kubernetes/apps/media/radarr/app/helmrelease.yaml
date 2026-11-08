@@ -121,7 +121,7 @@ spec:
           db-bridge:
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
-              tag: 1.1.0@sha256:9c9e8b2ae4b997977ba6706608bf8c0ac374ec64b8e285f384830e89a11339cd
+              tag: 1.1.1@sha256:8af70b46262e114c7d1d6bf886249c25c24e17e085199a06d9f1f7372973515a
             probes:
               # the bridge listens on loopback only, so a kubelet tcpSocket
               # probe (which dials the pod IP) can never work; ask the binary
