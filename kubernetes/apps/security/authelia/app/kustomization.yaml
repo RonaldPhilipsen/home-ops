@@ -8,6 +8,7 @@ resources:
   - ./helmrelease.yaml
   - ./referencegrant.yaml
   - ./spiffeid.yaml
+  - ./valkey-secretstore.yaml
 configMapGenerator:
   - name: authelia-config-tpl
     files:
