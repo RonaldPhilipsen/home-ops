@@ -24,10 +24,10 @@ spec:
     url: https://vmsingle-vmetrics-tls.observability.svc.cluster.local:18428
     jsonData:
       tlsAuthWithCACert: true
+      timeInterval: 1s
     secureJsonData:
       # replaced by the operator with valuesFrom (key ca.crt)
       tlsCACert: ${ca.crt}
-      timeInterval: 1s
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
