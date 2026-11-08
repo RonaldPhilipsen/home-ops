@@ -82,7 +82,7 @@ spec:
             restartPolicy: Always
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
-              tag: 1.2.0@sha256:7e2b6a81e7f08d2a3f351c4b2e89b022d54f98305f28d1844b4efa070d9e930b
+              tag: 1.3.0@sha256:a56fc5a98e33f767227541f99c441728b42a08bee4a1b940c1a93fcb344fa1f0
             probes:
               startup:
                 enabled: true
