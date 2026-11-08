@@ -31,7 +31,8 @@ spec:
     name: internal-ca
 ---
 # The gateway connects to Radarr's TLS port and verifies the certificate
-# against the internal CA (ca.crt of the issued secret).
+# against the internal CA (ConfigMap internal-ca from trust-manager; Cilium
+# accepts only ConfigMap CA refs).
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: BackendTLSPolicy
@@ -46,6 +47,6 @@ spec:
   validation:
     caCertificateRefs:
       - group: ""
-        kind: Secret
-        name: radarr-tls
+        kind: ConfigMap
+        name: internal-ca
     hostname: radarr.media.svc.cluster.local

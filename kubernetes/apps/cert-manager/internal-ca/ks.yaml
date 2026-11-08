@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: cert-manager
+    - name: trust-manager
   healthChecks:
     - apiVersion: cert-manager.io/v1
       kind: ClusterIssuer

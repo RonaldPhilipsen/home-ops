@@ -43,3 +43,21 @@ metadata:
 spec:
   ca:
     secretName: internal-root-ca
+---
+# Copies the internal CA certificate (only tls.crt, never the key) as
+# ConfigMap internal-ca (key ca.crt) into every namespace. Cilium's
+# BackendTLSPolicy accepts only ConfigMap CA refs, so cert-manager's ca.crt
+# in the issued secrets is not enough for the gateway.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/trust.cert-manager.io/bundle_v1alpha1.json
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: internal-ca
+spec:
+  sources:
+    - secret:
+        name: internal-root-ca
+        key: tls.crt
+  target:
+    configMap:
+      key: ca.crt
