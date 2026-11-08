@@ -29,6 +29,9 @@ spec:
     seccompProfile:
       type: RuntimeDefault
   volumeMounts:
+    - name: internal-ca
+      mountPath: /etc/internal-ca
+      readOnly: true
     - name: varlogpods
       mountPath: /var/log/pods
       readOnly: true
@@ -36,6 +39,9 @@ spec:
       mountPath: /var/log/containers
       readOnly: true
   volumes:
+    - name: internal-ca
+      configMap:
+        name: internal-ca
     - name: varlogpods
       hostPath:
         path: /var/log/pods
@@ -67,7 +73,10 @@ spec:
             action: upsert
     exporters:
       otlphttp/victoriametrics:
-        logs_endpoint: http://vlsingle-vmetrics.observability.svc.cluster.local:9428/insert/opentelemetry/v1/logs
+        # HTTPS backends: verify against the internal CA
+        tls:
+          ca_file: /etc/internal-ca/ca.crt
+        logs_endpoint: https://vlsingle-vmetrics-tls.observability.svc.cluster.local:19428/insert/opentelemetry/v1/logs
         headers:
           VL-Stream-Fields: k8s.cluster.name,k8s.namespace.name,k8s.pod.name,k8s.container.name,service.name,service.namespace
         retry_on_failure:
