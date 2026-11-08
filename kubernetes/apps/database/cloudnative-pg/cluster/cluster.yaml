@@ -64,6 +64,8 @@ spec:
       - hostnossl all authelia all reject
       - hostssl all seerr all cert
       - hostnossl all seerr all reject
+      - hostssl all pgadmin all cert
+      - hostnossl all pgadmin all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
@@ -110,6 +112,13 @@ spec:
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
+      # pgAdmin (database/pgadmin) logs in with its SPIFFE SVID (CN=pgadmin)
+      # through db-bridge; superuser by decision, its UI is behind Authelia
+      # 2FA (group lldap_admin).
+      - name: pgadmin
+        login: true
+        superuser: true
         disablePassword: true
 
   bootstrap:

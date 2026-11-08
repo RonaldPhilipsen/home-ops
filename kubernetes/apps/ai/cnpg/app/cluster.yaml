@@ -36,6 +36,8 @@ spec:
     pg_hba:
       - hostssl all memini all cert
       - hostnossl all memini all reject
+      - hostssl all pgadmin all cert
+      - hostnossl all pgadmin all reject
   bootstrap:
     initdb:
       postInitSQL:
@@ -48,6 +50,13 @@ spec:
         login: true
         superuser: false
         createdb: false
+        disablePassword: true
+      # pgAdmin (database/pgadmin) logs in with its SPIFFE SVID (CN=pgadmin)
+      # through db-bridge; superuser by decision, its UI is behind Authelia
+      # 2FA (group lldap_admin).
+      - name: pgadmin
+        login: true
+        superuser: true
         disablePassword: true
   monitoring:
     enablePodMonitor: true

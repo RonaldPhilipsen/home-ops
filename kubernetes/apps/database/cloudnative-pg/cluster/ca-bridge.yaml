@@ -25,7 +25,7 @@ rules:
     verbs: ["create"]
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["postgres-spipe-client-ca", "immich-postgres-spiffe-client-ca"]
+    resourceNames: ["postgres-spipe-client-ca", "immich-postgres-spiffe-client-ca", "pg-memini-server-ca"]
     verbs: ["get", "update", "patch"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
@@ -61,6 +61,7 @@ subjects:
 # cluster's own, where db-bridge sidecars mount it to verify Postgres:
 #   postgres        -> cnpg-server-ca in media, security
 #   immich-postgres -> immich-postgres-server-ca in immich
+#   pg-memini       -> pg-memini-server-ca in database (for pgAdmin)
 # (memini runs in ai next to pg-memini and mounts pg-memini-ca's ca.crt.)
 # The SPIRE half is fetched live from the server (spire-server bundle show),
 # so a CA rotation is picked up on the next run.
@@ -148,7 +149,7 @@ spec:
                   RC=0
                   bridge database postgres-ca postgres-spipe-client-ca cnpg-server-ca media security || RC=1
                   bridge database immich-postgres-ca immich-postgres-spiffe-client-ca immich-postgres-server-ca immich || RC=1
-                  bridge ai pg-memini-ca pg-memini-spiffe-client-ca || RC=1
+                  bridge ai pg-memini-ca pg-memini-spiffe-client-ca pg-memini-server-ca database || RC=1
                   exit "$RC"
               resources:
                 requests:
