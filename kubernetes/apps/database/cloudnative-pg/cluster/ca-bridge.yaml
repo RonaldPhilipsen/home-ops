@@ -6,8 +6,8 @@ metadata:
   name: spiffe-ca-bridge
   namespace: database
 ---
-# Reads the fixed CNPG CA (postgres-ca) and writes the combined
-# postgres-spipe-client-ca secret.
+# Reads the fixed CNPG CAs of the clusters in this namespace (postgres,
+# immich-postgres) and writes their combined client-CA secrets.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -17,7 +17,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["postgres-ca"]
+    resourceNames: ["postgres-ca", "immich-postgres-ca"]
     verbs: ["get"]
   # create cannot be restricted by resourceNames in RBAC
   - apiGroups: [""]
@@ -25,7 +25,7 @@ rules:
     verbs: ["create"]
   - apiGroups: [""]
     resources: ["secrets"]
-    resourceNames: ["postgres-spipe-client-ca"]
+    resourceNames: ["postgres-spipe-client-ca", "immich-postgres-spiffe-client-ca"]
     verbs: ["get", "update", "patch"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
@@ -48,13 +48,20 @@ subjects:
 # the cluster Kustomization's targetNamespace would relocate it to database.
 # The RoleBinding here references the database-namespace service account.
 ---
-# Keeps postgres-spipe-client-ca current:
-#   ca.crt = <postgres-ca.ca.crt> + <SPIRE X.509 bundle (PEM)>
-#   ca.key = <postgres-ca.ca.key>
-# CNPG uses this secret as clientCASecret (ssl_ca_file), so Postgres trusts
-# both its own CA (replication/pooler certs) and the SPIRE CA (app SVIDs).
-# It also publishes the CNPG server CA as cnpg-server-ca into the app
-# namespaces (media), where db-bridge sidecars mount it to verify Postgres.
+# For every CNPG cluster whose apps use SPIFFE SVIDs, keeps a combined
+# client-CA secret current:
+#   ca.crt = <cluster CA ca.crt> + <SPIRE X.509 bundle (PEM)>
+#   ca.key = <cluster CA ca.key>
+# CNPG uses it as clientCASecret (ssl_ca_file), so Postgres trusts both its
+# own CA (replication/pooler certs) and the SPIRE CA (app SVIDs).
+#   postgres        (database): postgres-ca        -> postgres-spipe-client-ca
+#   immich-postgres (database): immich-postgres-ca -> immich-postgres-spiffe-client-ca
+#   pg-memini       (ai)      : pg-memini-ca       -> pg-memini-spiffe-client-ca
+# It also publishes a cluster's server CA into app namespaces other than the
+# cluster's own, where db-bridge sidecars mount it to verify Postgres:
+#   postgres        -> cnpg-server-ca in media, security
+#   immich-postgres -> immich-postgres-server-ca in immich
+# (memini runs in ai next to pg-memini and mounts pg-memini-ca's ca.crt.)
 # The SPIRE half is fetched live from the server (spire-server bundle show),
 # so a CA rotation is picked up on the next run.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/cronjob.json
@@ -97,37 +104,52 @@ spec:
                 - -c
                 - |
                   set -eu
-                  # 1. Fixed CNPG CA (server + signing key for internal certs)
-                  CA_CRT=$(kubectl -n database get secret postgres-ca -o jsonpath='{.data.ca\.crt}' | base64 -d)
-                  CA_KEY=$(kubectl -n database get secret postgres-ca -o jsonpath='{.data.ca\.key}' | base64 -d)
-                  [ -n "$CA_CRT" ] || { echo "ERROR: postgres-ca ca.crt is empty" >&2; exit 1; }
-                  [ -n "$CA_KEY" ] || { echo "ERROR: postgres-ca ca.key is empty" >&2; exit 1; }
-                  # 2. Current SPIRE X.509 bundle (PEM) straight from the server
+                  # Current SPIRE X.509 bundle (PEM) straight from the server
                   SPIRE_BUNDLE=$(kubectl -n spiffe exec spire-server-0 -c spire-server -- spire-server bundle show -socketPath /tmp/spire-server/private/api.sock)
                   [ -n "$SPIRE_BUNDLE" ] || { echo "ERROR: spire-server bundle show returned empty" >&2; exit 1; }
                   case "$SPIRE_BUNDLE" in *BEGIN\ CERTIFICATE*) ;; *) echo "ERROR: bundle is not PEM" >&2; exit 1;; esac
-                  # 3. Combined bundle; apply only when it changed
-                  COMBINED="${CA_CRT}
+
+                  # bridge NS CA_SECRET OUT_SECRET [PUBLISH_NAME PUBLISH_NS...]
+                  # Writes OUT_SECRET (cluster CA + SPIRE bundle, cluster CA key)
+                  # in NS, only when it changed. Then publishes the cluster's
+                  # server CA as PUBLISH_NAME into each PUBLISH_NS.
+                  bridge() {
+                    NS=$1; SRC=$2; OUT=$3; shift 3
+                    CA_CRT=$(kubectl -n "$NS" get secret "$SRC" -o jsonpath='{.data.ca\.crt}' | base64 -d)
+                    CA_KEY=$(kubectl -n "$NS" get secret "$SRC" -o jsonpath='{.data.ca\.key}' | base64 -d)
+                    [ -n "$CA_CRT" ] || { echo "ERROR: $NS/$SRC ca.crt is empty" >&2; return 1; }
+                    [ -n "$CA_KEY" ] || { echo "ERROR: $NS/$SRC ca.key is empty" >&2; return 1; }
+                    COMBINED="${CA_CRT}
                   ${SPIRE_BUNDLE}"
-                  EXISTING=$(kubectl -n database get secret postgres-spipe-client-ca -o jsonpath='{.data.ca\.crt}' 2>/dev/null | base64 -d || true)
-                  if [ "$EXISTING" = "$COMBINED" ]; then
-                    echo "postgres-spipe-client-ca unchanged"
-                  else
-                    kubectl -n database create secret generic postgres-spipe-client-ca \
-                      --from-literal=ca.crt="$COMBINED" \
-                      --from-literal=ca.key="$CA_KEY" \
-                      --dry-run=client -o yaml | kubectl apply -f -
-                    echo "postgres-spipe-client-ca updated"
-                  fi
-                  # 5. Publish the CNPG server CA to app namespaces so db-bridge
-                  #    sidecars can verify the Postgres server (cross-namespace
-                  #    secret mounts are not allowed by the k8s API).
-                  for NS in media security; do
-                    kubectl -n "$NS" create secret generic cnpg-server-ca \
-                      --from-literal=ca.crt="$CA_CRT" \
-                      --dry-run=client -o yaml | kubectl apply -f -
-                    echo "cnpg-server-ca updated in $NS"
-                  done
+                    EXISTING=$(kubectl -n "$NS" get secret "$OUT" -o jsonpath='{.data.ca\.crt}' 2>/dev/null | base64 -d || true)
+                    if [ "$EXISTING" = "$COMBINED" ]; then
+                      echo "$NS/$OUT unchanged"
+                    else
+                      kubectl -n "$NS" create secret generic "$OUT" \
+                        --from-literal=ca.crt="$COMBINED" \
+                        --from-literal=ca.key="$CA_KEY" \
+                        --dry-run=client -o yaml | kubectl apply -f -
+                      echo "$NS/$OUT updated"
+                    fi
+                    [ "$#" -gt 0 ] || return 0
+                    # Cross-namespace secret mounts are not allowed by the
+                    # k8s API, so copy the server CA (cert only) to the apps.
+                    PUB=$1; shift
+                    for APP_NS in "$@"; do
+                      kubectl -n "$APP_NS" create secret generic "$PUB" \
+                        --from-literal=ca.crt="$CA_CRT" \
+                        --dry-run=client -o yaml | kubectl apply -f -
+                      echo "$APP_NS/$PUB updated"
+                    done
+                  }
+
+                  # One cluster failing must not stop the others; the job
+                  # still fails at the end so the error is visible.
+                  RC=0
+                  bridge database postgres-ca postgres-spipe-client-ca cnpg-server-ca media security || RC=1
+                  bridge database immich-postgres-ca immich-postgres-spiffe-client-ca immich-postgres-server-ca immich || RC=1
+                  bridge ai pg-memini-ca pg-memini-spiffe-client-ca || RC=1
+                  exit "$RC"
               resources:
                 requests:
                   cpu: 10m

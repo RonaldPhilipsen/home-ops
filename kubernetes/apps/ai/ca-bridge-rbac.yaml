@@ -1,0 +1,38 @@
+---
+# Lets the database-namespace CA bridge (spire-ca-bridge CronJob in
+# kubernetes/apps/database/cloudnative-pg/cluster/ca-bridge.yaml) read the pg-memini
+# CA and write its combined client CA (pg-memini-spiffe-client-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: spiffe-ca-bridge
+  namespace: ai
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["pg-memini-ca"]
+    verbs: ["get"]
+  # create cannot be restricted by resourceNames in RBAC
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["pg-memini-spiffe-client-ca"]
+    verbs: ["get", "update", "patch"]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spiffe-ca-bridge
+  namespace: ai
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: spiffe-ca-bridge
+subjects:
+  - kind: ServiceAccount
+    name: spiffe-ca-bridge
+    namespace: database

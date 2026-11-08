@@ -1,0 +1,34 @@
+---
+# Lets the database-namespace CA bridge (spire-ca-bridge CronJob in
+# kubernetes/apps/database/cloudnative-pg/cluster/ca-bridge.yaml) publish the
+# immich-postgres server CA (immich-postgres-server-ca) for db-bridge.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: spiffe-ca-bridge
+  namespace: immich
+rules:
+  # create cannot be restricted by resourceNames in RBAC
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["immich-postgres-server-ca"]
+    verbs: ["get", "update", "patch"]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: spiffe-ca-bridge
+  namespace: immich
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: spiffe-ca-bridge
+subjects:
+  - kind: ServiceAccount
+    name: spiffe-ca-bridge
+    namespace: database

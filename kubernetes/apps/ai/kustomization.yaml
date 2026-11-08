@@ -8,6 +8,7 @@ components:
 resources:
   - ./namespace.yaml
   - ./netpol.yaml
+  - ./ca-bridge-rbac.yaml
   - ./cnpg/ks.yaml
   - ./rerank/ks.yaml
   - ./memini/ks.yaml
