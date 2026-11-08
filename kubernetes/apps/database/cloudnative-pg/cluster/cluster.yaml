@@ -63,18 +63,16 @@ spec:
         serverName: postgres
   managed:
     roles:
+      # radarr + sonarr authenticate with SPIFFE SVIDs (pg_hba "cert");
+      # no password, by design.
       - name: radarr
         login: true
         superuser: false
         createdb: false
-        passwordSecret:
-          name: radarr-db-credentials
       - name: sonarr
         login: true
         superuser: false
         createdb: false
-        passwordSecret:
-          name: sonarr-db-credentials
       - name: lidarr
         login: true
         superuser: false
