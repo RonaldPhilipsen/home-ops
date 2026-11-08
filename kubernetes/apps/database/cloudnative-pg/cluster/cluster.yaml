@@ -62,6 +62,8 @@ spec:
       - hostnossl all lldap all reject
       - hostssl all authelia all cert
       - hostnossl all authelia all reject
+      - hostssl all seerr all cert
+      - hostnossl all seerr all reject
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
@@ -100,6 +102,11 @@ spec:
         createdb: false
         disablePassword: true
       - name: authelia
+        login: true
+        superuser: false
+        createdb: false
+        disablePassword: true
+      - name: seerr
         login: true
         superuser: false
         createdb: false

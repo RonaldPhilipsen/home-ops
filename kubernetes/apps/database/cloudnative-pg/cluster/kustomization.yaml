@@ -19,3 +19,4 @@ resources:
   - ./databases/prowlarr.yaml
   - ./databases/lldap.yaml
   - ./databases/authelia.yaml
+  - ./databases/seerr.yaml

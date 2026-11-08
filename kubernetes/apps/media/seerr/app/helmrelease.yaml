@@ -34,12 +34,15 @@ spec:
               TZ: "Europe/Amsterdam"
               PORT: &port 5055
             probes:
+              # TCP checks, not /api/v1/status: that endpoint asks the GitHub
+              # releases API for the latest version and blocks past the probe
+              # timeout when GitHub is slow or down (503/504), which made
+              # the kubelet restart Seerr in a loop.
               startup:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /api/v1/status
+                  tcpSocket:
                     port: *port
                   periodSeconds: 5
                   failureThreshold: 36
@@ -47,8 +50,7 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /api/v1/status
+                  tcpSocket:
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
