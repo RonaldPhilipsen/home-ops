@@ -9,3 +9,4 @@ resources:
   - ./namespace.yaml
   - ./netpol.yaml
   - ./cert-manager/ks.yaml
+  - ./trust-manager/ks.yaml

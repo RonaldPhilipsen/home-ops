@@ -1,0 +1,31 @@
+---
+# trust-manager copies the internal CA certificate (kubernetes/apps/
+# cert-manager/internal-ca) as a ConfigMap into the namespaces, where
+# BackendTLSPolicy (gateway -> backend HTTPS) and clients reference it.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trust-manager
+spec:
+  interval: 1h
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: v0.26.0
+      url: oci://quay.io/jetstack/charts/trust-manager
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    crds:
+      enabled: true
+    app:
+      trust:
+        namespace: cert-manager
