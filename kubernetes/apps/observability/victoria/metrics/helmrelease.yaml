@@ -53,6 +53,63 @@ spec:
               - op: replace
                 path: /spec/extraArgs/vmalert.proxyURL
                 value: https://vmalert-vmetrics-tls.observability.svc.cluster.local:18080
+          # UI routes: HTTPS backends (the -tls Services, verified by the
+          # BackendTLSPolicies in tls.yaml)
+          - target:
+              group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: vmsingle-vmetrics
+            patch: |
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/name
+                value: vmsingle-vmetrics-tls
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/port
+                value: 18428
+          - target:
+              group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: vlsingle-vmetrics
+            patch: |
+              - op: replace
+                path: /spec/rules/1/backendRefs/0/name
+                value: vlsingle-vmetrics-tls
+              - op: replace
+                path: /spec/rules/1/backendRefs/0/port
+                value: 19428
+          - target:
+              group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: vtsingle-vmetrics
+            patch: |
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/name
+                value: vtsingle-vmetrics-tls
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/port
+                value: 20428
+          - target:
+              group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: vmagent-vmetrics
+            patch: |
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/name
+                value: vmagent-vmetrics-tls
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/port
+                value: 18429
+          - target:
+              group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: vmalert-vmetrics
+            patch: |
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/name
+                value: vmalert-vmetrics-tls
+              - op: replace
+                path: /spec/rules/0/backendRefs/0/port
+                value: 18080
   values:
     global:
       cluster:

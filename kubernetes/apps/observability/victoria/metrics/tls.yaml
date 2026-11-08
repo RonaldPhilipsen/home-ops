@@ -222,3 +222,103 @@ spec:
       port: 18427
       targetPort: 18427
       protocol: TCP
+---
+# The gateway connects to the vmsingle-vmetrics-tls HTTPS port and verifies it against the
+# internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vmsingle-vmetrics-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vmsingle-vmetrics-tls
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vmsingle-vmetrics-tls.observability.svc.cluster.local
+---
+# The gateway connects to the vlsingle-vmetrics-tls HTTPS port and verifies it against the
+# internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vlsingle-vmetrics-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vlsingle-vmetrics-tls
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vlsingle-vmetrics-tls.observability.svc.cluster.local
+---
+# The gateway connects to the vtsingle-vmetrics-tls HTTPS port and verifies it against the
+# internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vtsingle-vmetrics-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vtsingle-vmetrics-tls
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vtsingle-vmetrics-tls.observability.svc.cluster.local
+---
+# The gateway connects to the vmagent-vmetrics-tls HTTPS port and verifies it against the
+# internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vmagent-vmetrics-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vmagent-vmetrics-tls
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vmagent-vmetrics-tls.observability.svc.cluster.local
+---
+# The gateway connects to the vmalert-vmetrics-tls HTTPS port and verifies it against the
+# internal CA (ConfigMap internal-ca).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/backendtlspolicy_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: vmalert-vmetrics-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: vmalert-vmetrics-tls
+      sectionName: https
+  validation:
+    caCertificateRefs:
+      - group: ""
+        kind: ConfigMap
+        name: internal-ca
+    hostname: vmalert-vmetrics-tls.observability.svc.cluster.local
