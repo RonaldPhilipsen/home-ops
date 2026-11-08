@@ -64,6 +64,9 @@ spec:
         - ports:
             - port: "3890"
               protocol: TCP
+            # Authelia to its standalone Valkey
+            - port: "6379"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
@@ -87,4 +90,7 @@ spec:
       toPorts:
         - ports:
             - port: "443"
+              protocol: TCP
+            # SMTP submission (Authelia notifications)
+            - port: "587"
               protocol: TCP

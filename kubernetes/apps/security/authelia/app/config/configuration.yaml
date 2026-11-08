@@ -107,9 +107,9 @@ session:
       authelia_url: https://auth.rphilipsen.nl
       default_redirection_url: https://rphilipsen.nl
   redis:
-    host: valkey.database.svc.cluster.local
-    # ACL user (kubernetes/apps/database/valkey/cluster/authelia-user.yaml)
-    username: authelia
+    # Standalone Valkey (../valkey.yaml), because cluster mode rejects the
+    # RENAME that regenerates a session at login
+    host: authelia-valkey.security.svc.cluster.local
     password: "{{ .AUTHELIA_VALKEY_PASSWORD }}"
 regulation:
   max_retries: 3
