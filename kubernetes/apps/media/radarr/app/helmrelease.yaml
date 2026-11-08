@@ -38,17 +38,13 @@ spec:
                         csi:
                           driver: csi.spiffe.io
                           readOnly: true
-                      # SVID files written by spiffe-helper, read by pgbouncer
+                      # SVID files written by spiffe-helper, read by the bridge
                       - name: svid
                         emptyDir: {}
                       # CNPG server CA (published by the spire-ca-bridge CronJob)
                       - name: cnpg-ca
                         secret:
                           secretName: cnpg-server-ca
-                      # pgbouncer config for this app
-                      - name: db-bridge-config
-                        configMap:
-                          name: radarr-db-bridge
                     containers:
                       - name: db-bridge
                         volumeMounts:
@@ -59,9 +55,6 @@ spec:
                             mountPath: /spiffe
                           - name: cnpg-ca
                             mountPath: /cnpg-ca
-                            readOnly: true
-                          - name: db-bridge-config
-                            mountPath: /etc/db-bridge
                             readOnly: true
   values:
     controllers:
@@ -121,30 +114,26 @@ spec:
                 drop:
                   - ALL
           # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
-          # SVID (CN=radarr), pgbouncer presents it to the CNPG rw service and
-          # serves Radarr on loopback with trust auth. No DB password involved.
-          # (volumeMounts are added by the postRenderer: the chart schema
-          # does not allow them in values)
+          # SVID (CN=radarr); the bridge serves Radarr on loopback and presents
+          # the SVID to the CNPG rw service (pg_hba "cert"). No DB password
+          # involved. (volumeMounts are added by the postRenderer: the chart
+          # schema does not allow them in values)
           db-bridge:
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
-              tag: 1.0.4@sha256:7523280c33ff879a5c7b334a1e8174c18e741415e0fb8552fea1a0f03a298a1d
-            env:
-              CERT_DIR: /spiffe
-              PGBOUNCER_INI: /etc/db-bridge/pgbouncer.ini
+              tag: 1.1.0@sha256:9c9e8b2ae4b997977ba6706608bf8c0ac374ec64b8e285f384830e89a11339cd
             probes:
-              # pgbouncer listens on loopback only, so a kubelet tcpSocket probe
-              # (which dials the pod IP) can never work; check the process instead
+              # the bridge listens on loopback only, so a kubelet tcpSocket
+              # probe (which dials the pod IP) can never work; ask the binary
               liveness:
                 enabled: true
                 custom: true
                 spec:
                   exec:
                     command:
-                      - /bin/sh
-                      - -c
-                      - test -f /tmp/pgbouncer.pid && kill -0 "$(cat /tmp/pgbouncer.pid)"
-                  initialDelaySeconds: 30
+                      - db-bridge
+                      - -health
+                  initialDelaySeconds: 15
                   periodSeconds: 15
                   timeoutSeconds: 3
                   failureThreshold: 3
