@@ -46,6 +46,10 @@ data:
     # booting, exactly as it did before. Group 2000 is shared with the kopiur
     # backup mover, so the data dirs must stay group-readable by it.
     chown -R node:2000 /app/data /app/uploads 2>/dev/null || true
+    # TREK creates some files as 0600 (.trek-install-id since 5.1.1), and the
+    # mover cannot read those. Do not exclude that file from the backup: TREK
+    # drops its storage reclaim state if a restore loses the id.
+    chmod -R g+rX /app/data /app/uploads 2>/dev/null || true
 
     # cd into server/ so tsconfig-paths/register finds tsconfig.json and
     # ../node_modules resolves correctly.
