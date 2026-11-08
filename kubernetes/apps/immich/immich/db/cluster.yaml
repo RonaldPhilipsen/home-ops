@@ -50,10 +50,10 @@ spec:
     shared_preload_libraries:
       - "vchord.so"
     # SPIFFE cert auth for immich (user-defined section: precedes the
-    # default scram catch-all). SVID CN = role name. The matching
-    # "hostnossl ... reject" rule is added once the app uses db-bridge.
+    # default scram catch-all). SVID CN = role name.
     pg_hba:
       - hostssl all immich all cert
+      - hostnossl all immich all reject
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
@@ -62,12 +62,13 @@ spec:
         serverName: immich-postgres
   managed:
     roles:
+      # immich authenticates with its SPIFFE SVID (pg_hba "cert", CN=immich).
+      # disablePassword clears the old password in the database.
       - name: immich
         login: true
         superuser: false
         createdb: true
-        passwordSecret:
-          name: immich-db-credentials
+        disablePassword: true
 
   bootstrap:
     recovery:

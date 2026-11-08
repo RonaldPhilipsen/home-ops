@@ -32,22 +32,23 @@ spec:
     shared_preload_libraries:
       - vchord.so
     # SPIFFE cert auth for memini (user-defined section: precedes the
-    # default scram catch-all). SVID CN = role name. The matching
-    # "hostnossl ... reject" rule is added once the app uses db-bridge.
+    # default scram catch-all). SVID CN = role name.
     pg_hba:
       - hostssl all memini all cert
+      - hostnossl all memini all reject
   bootstrap:
     initdb:
       postInitSQL:
         - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
   managed:
     roles:
+      # memini authenticates with its SPIFFE SVID (pg_hba "cert", CN=memini).
+      # disablePassword clears the old password in the database.
       - name: memini
         login: true
         superuser: false
         createdb: false
-        passwordSecret:
-          name: memini-db-credentials
+        disablePassword: true
   monitoring:
     enablePodMonitor: true
   resources:
