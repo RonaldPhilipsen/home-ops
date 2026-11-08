@@ -1,9 +1,9 @@
 ---
 # pgAdmin on top of the namespace policy (kubernetes/apps/database/netpol.yaml):
 # the internal gateway (HTTPRoute, Cilium "ingress" identity) reaches the UI,
-# the memini bridge reaches pg-memini in ai, and the OIDC token exchange
-# reaches auth.rphilipsen.nl (its LB IP resolves in-cluster to the external
-# gateway, which has its own identity).
+# the memini bridge reaches pg-memini in ai, and the OIDC calls reach
+# auth.rphilipsen.nl (its LB IP resolves in-cluster to the external
+# gateway, which has its own identity) and, behind it, Authelia.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -27,6 +27,17 @@ spec:
       toPorts:
         - ports:
             - port: "5432"
+              protocol: TCP
+    # Cilium checks gateway traffic with the original identities on both
+    # sides: pgAdmin -> Authelia (9091) must be allowed here as well as in
+    # the security namespace policy
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+            k8s:app.kubernetes.io/name: authelia
+      toPorts:
+        - ports:
+            - port: "9091"
               protocol: TCP
     - toEndpoints:
         - matchLabels:
