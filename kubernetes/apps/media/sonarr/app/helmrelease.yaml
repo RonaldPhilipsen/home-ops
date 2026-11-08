@@ -129,7 +129,7 @@ spec:
           db-bridge:
             image:
               repository: ghcr.io/ronaldphilipsen/db-bridge
-              tag: 1.0.4@sha256:7523280c33ff879a5c7b334a1e8174c18e741415e0fb8552fea1a0f03a298a1d7a
+              tag: 1.0.4@sha256:7523280c33ff879a5c7b334a1e8174c18e741415e0fb8552fea1a0f03a298a1d
             env:
               CERT_DIR: /spiffe
               PGBOUNCER_INI: /etc/db-bridge/pgbouncer.ini
