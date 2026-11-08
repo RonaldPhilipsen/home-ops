@@ -50,11 +50,6 @@ spec:
               secretKeyRef:
                 name: *secret
                 key: OMADA_SITE_NAME
-          - name: OMADA_TLS_SKIP_VERIFY
-            valueFrom:
-              secretKeyRef:
-                name: *secret
-                key: OMADA_TLS_SKIP_VERIFY
           # Attach managed entries to these LAN networks only, so local
           # services stay invisible from the Guest network.
           - name: OMADA_NETWORKS
