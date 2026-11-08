@@ -20,6 +20,49 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 5
+  # app-template's schema allows neither pod.volumes nor container
+  # volumeMounts, so the db-bridge volumes and their mounts are added here
+  # (strategic merge: containers merge by name, volumes by name).
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: lldap
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: lldap
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      # SPIRE agent Workload API socket
+                      - name: spiffe
+                        csi:
+                          driver: csi.spiffe.io
+                          readOnly: true
+                      # SVID files written by spiffe-helper, read by the bridge
+                      - name: svid
+                        emptyDir: {}
+                      # CNPG server CA (published by the spire-ca-bridge CronJob)
+                      - name: cnpg-ca
+                        secret:
+                          secretName: cnpg-server-ca
+                    containers:
+                      - name: db-bridge
+                        volumeMounts:
+                          - name: spiffe
+                            mountPath: /run/spiffe
+                            readOnly: true
+                          - name: svid
+                            mountPath: /spiffe
+                          - name: cnpg-ca
+                            mountPath: /cnpg-ca
+                            readOnly: true
   values:
     controllers:
       lldap:
@@ -60,6 +103,41 @@ spec:
             env:
               UID: "2000"
               GID: "2000"
+          # SPIFFE-aware Postgres bridge: spiffe-helper fetches/rotates the
+          # SVID (CN=lldap); the bridge serves LLDAP on loopback and presents
+          # the SVID to the CNPG rw service (pg_hba "cert"). No DB password
+          # involved. (volumeMounts are added by the postRenderer: the chart
+          # schema does not allow them in values)
+          db-bridge:
+            image:
+              repository: ghcr.io/ronaldphilipsen/db-bridge
+              tag: 1.1.3@sha256:79ffd2dbeaa69bd28693da3c757c2b36ab38f122a9159417ecbae0b46c842dce
+            probes:
+              # the bridge listens on loopback only, so a kubelet tcpSocket
+              # probe (which dials the pod IP) can never work; ask the binary
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - db-bridge
+                      - -health
+                  initialDelaySeconds: 15
+                  periodSeconds: 15
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
     service:
       main:
         controller: lldap
@@ -84,5 +162,8 @@ spec:
     persistence:
       config:
         existingClaim: lldap
-        globalMounts:
-          - path: /data
+        # advancedMounts: scope the LLDAP data to the main container only
+        advancedMounts:
+          lldap:
+            main:
+              - path: /data
