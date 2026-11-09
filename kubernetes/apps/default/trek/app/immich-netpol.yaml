@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-trek-oidc-egress
+  name: allow-trek-immich-egress
   namespace: default
 spec:
   endpointSelector:
