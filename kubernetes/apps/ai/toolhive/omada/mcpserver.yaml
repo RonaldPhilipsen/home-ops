@@ -5,7 +5,7 @@ kind: MCPServer
 metadata:
   name: omada
 spec:
-  image: ghcr.io/ronaldphilipsen/omada-mcp:v0.2.1
+  image: ghcr.io/ronaldphilipsen/omada-mcp:v0.2.2
   transport: stdio
   groupRef:
     name: ai-tools
