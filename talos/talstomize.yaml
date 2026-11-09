@@ -71,7 +71,7 @@ nodes:
             diskSelector:
               serial: "I258060859"
             extensions:
-              - image: ghcr.io/jgarr/seatd:v0.9.3
+              - image: ghcr.io/rothgar/seatd@sha256:3a0a8003e92917dd896709e156e1a51a2060656c7d805264c33b94603b6d47e0
             wipe: false
             grubUseUKICmdline: true
           network:
