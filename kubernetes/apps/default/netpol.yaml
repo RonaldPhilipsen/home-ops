@@ -44,9 +44,6 @@ spec:
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: security
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: immich
       toPorts:
         - ports:
             - port: "3890"

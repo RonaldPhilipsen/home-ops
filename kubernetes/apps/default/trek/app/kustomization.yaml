@@ -9,6 +9,7 @@ resources:
   - ./oidc-proxy-netpol.yaml
   - ./pvc.yaml
   - ./secret.sops.yaml
+  - ./immich-netpol.yaml
 patches:
   # The shared kopiur component only backs up the PVC named after the app;
   # trek's uploads live on a second PVC, so add it as a source.
