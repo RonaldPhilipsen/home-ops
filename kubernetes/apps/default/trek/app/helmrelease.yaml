@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: mauriceboe/trek
-              tag: 5.1.1
+              tag: 5.1.2@sha256:6ee086badda34c62f692a74f606c4a52f3d8226427c7ec62881a709350f52546
             # Use the local entrypoint variant (ConfigMap trek-entrypoint)
             # instead of the image's /usr/local/bin/trek-entrypoint: the
             # upstream chown forces group 1000 on the data dirs, which breaks
