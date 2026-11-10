@@ -164,6 +164,16 @@ spec:
                     secretKeyRef:
                       name: immich-valkey-auth
                       key: password
+              # Observed: ~0.006 cores / 1.3Gi idle, ~0.5 cores / 1.5Gi
+              # during the nightly jobs. No CPU limit, so large imports and
+              # thumbnail runs can burst; the memory limit leaves headroom
+              # for those.
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 1536Mi
+                limits:
+                  memory: 4Gi
     immich:
       metrics:
         enabled: true
