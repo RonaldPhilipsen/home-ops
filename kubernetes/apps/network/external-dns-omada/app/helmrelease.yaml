@@ -23,7 +23,7 @@ spec:
         image:
           repository: ghcr.io/ronaldphilipsen/external-dns-omada
           # Bump when a new release is published.
-          tag: v0.1.5
+          tag: v0.1.6@sha256:e0d7126821a88cbebed14d5810076888b13349f466e360dbb877aa753dfbaf8c
         env:
           - name: OMADA_SERVER
             valueFrom:
