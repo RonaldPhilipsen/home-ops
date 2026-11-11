@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ronaldphilipsen/gaggiuino-exporter
-              tag: v1.3.5
+              tag: v1.3.6@sha256:c3caa821c8955f45f0e548b05c9e1cb7d9fc50a6193c27c6936a880a0c3fe90a
             env:
               GAGGIUINO_BASE_URL: http://172.16.10.32:80
               OTLP_ENABLED: "true"
