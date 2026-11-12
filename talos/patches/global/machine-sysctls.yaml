@@ -4,6 +4,7 @@ kind: SysctlConfig
 params:
   fs.inotify.max_user_watches: "1048576" # Watchdog
   fs.inotify.max_user_instances: "8192" # Watchdog
+  kernel.kptr_restrict: "1" # Pyroscope eBPF profiler reads /proc/kallsyms with CAP_SYSLOG
   net.core.rmem_max: 67108864 # 10Gb/s | Cloudflared / QUIC
   net.core.wmem_max: 67108864 # 10Gb/s | Cloudflared / QUIC
   net.ipv4.tcp_congestion_control: bbr # 10Gb/s
