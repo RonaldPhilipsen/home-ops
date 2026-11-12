@@ -1,0 +1,18 @@
+---
+# Discus nodes in the benchmark namespace push their CPU profiles here.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-pyroscope-push
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: pyroscope
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: discus-bench
+      toPorts:
+        - ports:
+            - port: "4040"
+              protocol: TCP

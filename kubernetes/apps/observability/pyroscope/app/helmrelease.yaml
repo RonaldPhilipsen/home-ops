@@ -57,6 +57,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
-    # The bundled Alloy only scrapes Pyroscope itself. alloy.yaml runs the eBPF profiler.
+    # The bundled Alloy only scrapes Pyroscope itself. Discus pushes its own profiles.
     alloy:
       enabled: false
