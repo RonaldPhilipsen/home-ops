@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./helmrepository.yaml
+  - ./helmrelease.yaml
+  - ./alloy.yaml
+configMapGenerator:
+  - name: alloy-ebpf-config
+    files:
+      - config.alloy=./config.alloy
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,62 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pyroscope
+spec:
+  interval: 1h
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 15m
+      ref:
+        tag: 2.4.3
+      url: oci://ghcr.io/grafana/helm-charts/pyroscope
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: pyroscope
+    pyroscope:
+      extraArgs:
+        log.level: info
+      # Profiles stay on the volume: one replica, no object store.
+      structuredConfig:
+        storage:
+          backend: filesystem
+          filesystem:
+            dir: /data/shared
+      persistence:
+        enabled: true
+        storageClassName: local-hostpath
+        size: 20Gi
+      podDisruptionBudget:
+        enabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    # The bundled Alloy only scrapes Pyroscope itself. alloy.yaml runs the eBPF profiler.
+    alloy:
+      enabled: false

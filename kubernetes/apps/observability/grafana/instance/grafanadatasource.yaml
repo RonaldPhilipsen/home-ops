@@ -119,3 +119,20 @@ spec:
     secureJsonData:
       # replaced by the operator with valuesFrom (key ca.crt)
       tlsCACert: ${ca.crt}
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: pyroscope
+spec:
+  instanceSelector:
+    matchLabels:
+      grafana.internal/instance: grafana
+  datasource:
+    type: grafana-pyroscope-datasource
+    orgId: 1
+    uid: pyroscope
+    name: pyroscope
+    access: proxy
+    url: http://pyroscope.observability.svc.cluster.local:4040
