@@ -89,3 +89,12 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+
+    persistence:
+      config:
+        type: configMap
+        name: sable-config
+        globalMounts:
+          - path: /app/config.json
+            subPath: config.json
+            readOnly: true

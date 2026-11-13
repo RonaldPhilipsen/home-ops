@@ -5,3 +5,10 @@ kind: Kustomization
 namespace: default
 resources:
   - ./helmrelease.yaml
+configMapGenerator:
+  # The image's config.json with rphilipsen.nl as the only homeserver
+  - name: sable-config
+    files:
+      - config.json=resources/config.json
+generatorOptions:
+  disableNameSuffixHash: true
