@@ -1,0 +1,91 @@
+---
+# Node-to-node mTLS for the Discus cluster of Authelia. Every certificate from
+# this CA is a cluster member, so the CA serves only this release. The nodes
+# also require the URI SAN below (discus.yaml: cluster.san.enabled).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/issuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: authelia-discus-selfsigned
+spec:
+  selfSigned: {}
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authelia-discus-ca
+spec:
+  isCA: true
+  commonName: authelia-discus cluster CA
+  secretName: authelia-discus-ca
+  duration: 87600h # 10y
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Never
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: authelia-discus-selfsigned
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/issuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: authelia-discus-ca
+spec:
+  ca:
+    secretName: authelia-discus-ca
+---
+# One certificate for every node. The nodes reload it within 10 s of a
+# renewal, so no restart is needed.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authelia-discus-cluster
+spec:
+  secretName: authelia-discus-cluster
+  commonName: authelia-discus
+  uris:
+    - spiffe://cluster.local/ns/security/sa/authelia-discus
+  usages:
+    - digital signature
+    - server auth
+    - client auth
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: authelia-discus-ca
+---
+# Client TLS. Authelia verifies it against the internal CA
+# (config/configuration.yaml: certificates_directory).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authelia-discus-client
+spec:
+  secretName: authelia-discus-client
+  dnsNames:
+    - authelia-discus.security.svc.cluster.local
+    - authelia-discus.security.svc
+    - authelia-discus.security
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca

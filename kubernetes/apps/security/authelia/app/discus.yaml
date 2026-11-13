@@ -1,0 +1,81 @@
+---
+# Discus cluster for Authelia's sessions: three nodes, every session on three
+# owners, so a node loss keeps users signed in. Sessions are in memory only, so
+# a restart of all three nodes signs out every user.
+#
+# The shared token is the generated secret valkey-authelia (database
+# namespace), read through the valkey-database SecretStore. Authelia reads the
+# same secret (externalsecret.yaml).
+# yaml-language-server: $schema=https://schemas.budimanjojo.com/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: authelia-discus-token
+spec:
+  target:
+    name: authelia-discus-token
+  dataFrom:
+    - extract:
+        key: valkey-authelia
+      sourceRef:
+        storeRef:
+          kind: SecretStore
+          name: valkey-database
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authelia-discus
+spec:
+  interval: 1h
+  timeout: 10m
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.5.0-rc0
+      url: oci://ghcr.io/ronaldphilipsen/charts/discus
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  values:
+    replicaCount: 3
+    # Authelia uses the Service on 6379 and needs no cluster client port.
+    clusterClients:
+      enabled: false
+    cluster:
+      tls:
+        secretName: authelia-discus-cluster
+      san:
+        enabled: true
+    clientTls:
+      secretName: authelia-discus-client
+    authPolicy: all:tls,shared_token
+    extraEnv:
+      - name: DISCUS_SHARED_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: authelia-discus-token
+            key: AUTHELIA_VALKEY_PASSWORD
+    # The session flags follow "Run Authelia on Discus" in the Discus cluster
+    # guide: session reads go to the primary, and a write hold stays below the
+    # 3 s read timeout of Authelia.
+    extraArgs:
+      - --shared-token=$(DISCUS_SHARED_TOKEN)
+      - --primary-read-prefix=authelia-session
+      - --hold-budget-ms=1500
+      - --forward-read-timeout-ms=200
+    # The store budget is 75% of the memory limit. One CPU gives one worker.
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+      limits:
+        cpu: "1"
+        memory: 256Mi

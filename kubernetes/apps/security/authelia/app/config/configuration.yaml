@@ -5,6 +5,9 @@
 # It will be deployed as `ConfigMap` then used as template by `external-secrets` to create a `Secret`.
 # Flux and External Secrets both substitute values during deployment.
 theme: auto
+# Extra trusted CAs: the internal CA, which issues the Discus client
+# certificate (helmrelease.yaml: persistence internal-ca)
+certificates_directory: /internal-ca
 server:
   address: tcp://0.0.0.0:9091
   # native HTTPS with a certificate from the internal CA (tls.yaml); the
@@ -107,10 +110,15 @@ session:
       authelia_url: https://auth.rphilipsen.nl
       default_redirection_url: https://rphilipsen.nl
   redis:
-    # Standalone Valkey (../valkey.yaml), because cluster mode rejects the
-    # RENAME that regenerates a session at login
-    host: authelia-valkey.security.svc.cluster.local
+    # Discus cluster (../discus.yaml). Any node serves any key, so the RENAME
+    # that regenerates a session at login works across slots.
+    host: authelia-discus.security.svc.cluster.local
+    port: 6379
     password: "{{ .AUTHELIA_VALKEY_PASSWORD }}"
+    database_index: 0
+    tls:
+      server_name: authelia-discus.security.svc.cluster.local
+      minimum_version: TLS1.2
 regulation:
   max_retries: 3
   find_time: 2m

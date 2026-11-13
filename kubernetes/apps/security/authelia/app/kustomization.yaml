@@ -10,7 +10,8 @@ resources:
   - ./referencegrant.yaml
   - ./spiffeid.yaml
   - ./tls.yaml
-  - ./valkey.yaml
+  - ./discus.yaml
+  - ./discus-tls.yaml
   - ./valkey-secretstore.yaml
 configMapGenerator:
   - name: authelia-config-tpl

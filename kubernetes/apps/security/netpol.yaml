@@ -67,9 +67,14 @@ spec:
         - ports:
             - port: "3890"
               protocol: TCP
-            # Authelia to its standalone Valkey
+            # Authelia to its Discus cluster (authelia/app/discus.yaml)
             - port: "6379"
               protocol: TCP
+            # Discus node-to-node traffic: gossip and requests over QUIC
+            - port: "7379"
+              protocol: UDP
+            - port: "7380"
+              protocol: UDP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: kube-system
