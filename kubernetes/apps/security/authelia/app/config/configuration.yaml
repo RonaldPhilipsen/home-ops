@@ -212,6 +212,29 @@ identity_providers:
           - "https://pgadmin.rphilipsen.nl/oauth2/authorize"
         token_endpoint_auth_method: client_secret_basic
         userinfo_signed_response_alg: none
+      # continuwuity (default/continuwuity). It reads the claims from the ID
+      # token only, so this client needs the default claims policy.
+      - client_id: continuwuity
+        client_name: Matrix
+        client_secret: "{{ .CONTINUWUITY_OAUTH_CLIENT_SECRET }}"
+        public: false
+        authorization_policy: two_factor
+        pre_configured_consent_duration: 1y
+        claims_policy: default
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        scopes:
+          - "openid"
+          - "profile"
+          - "email"
+        redirect_uris:
+          - "https://matrix.rphilipsen.nl/_continuwuity/oidc/complete"
+        response_types:
+          - "code"
+        grant_types:
+          - "authorization_code"
+        id_token_signed_response_alg: "RS256"
+        token_endpoint_auth_method: client_secret_basic
       - client_id: "{{ .TREK_OAUTH_CLIENT_ID }}"
         client_name: "TREK"
         client_secret: "{{ .TREK_OAUTH_CLIENT_SECRET }}"

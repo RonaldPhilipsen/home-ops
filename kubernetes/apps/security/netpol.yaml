@@ -31,14 +31,17 @@ spec:
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: default
+            k8s:app.kubernetes.io/name: trek
       toPorts:
         - ports:
-            - port: "3890"
+            - port: "9091"
               protocol: TCP
+    # continuwuity's OIDC calls (discovery, token) to Authelia via the
+    # external gateway; Cilium checks them with continuwuity's own identity
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: default
-            k8s:app.kubernetes.io/name: trek
+            k8s:app.kubernetes.io/name: continuwuity
       toPorts:
         - ports:
             - port: "9091"

@@ -41,13 +41,6 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: security
-      toPorts:
-        - ports:
-            - port: "3890"
-              protocol: TCP
     - toEntities:
         - world
       toPorts:

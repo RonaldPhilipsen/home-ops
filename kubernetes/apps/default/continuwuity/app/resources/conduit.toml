@@ -38,29 +38,26 @@ lockdown_public_room_directory = true
 require_auth_for_profile_requests = true
 trusted_servers = ["codestorm.net", "starstruck.systems", "unredacted.org", "matrix.org"]
 query_trusted_key_servers_first = true
-query_trusted_key_servers_first_on_join = false
-
-[global.ldap]
-enable = true
-ldap_only = false
-disable_tls_verification = true
-uri = "ldap://lldap.security.svc.cluster.local:3890"
-base_dn = "dc=rphilipsen,dc=nl"
-bind_dn = "uid=continuwuity_bind,ou=people,dc=rphilipsen,dc=nl"
-bind_password_file = "/secrets/ldap-bind-password"
-ldap_filter = "(cn={username})"
-uid_attribute = "cn"
-name_attribute = "displayname"
 
 # Additional config
 [global.well_known]
 client = "https://matrix.rphilipsen.nl"
 server = "matrix.rphilipsen.nl:443"
-# rtc_focus_server_urls = [
-#     { type = "livekit", livekit_service_url = "https://livekit.rphilipsen.nl" },
-# ]
 
 #support_page =
 #support_role =
 #support_email =
 #support_mxid =
+
+# Login through Authelia (client "continuwuity" in
+# kubernetes/apps/security/authelia/app/config/configuration.yaml). With OIDC
+# set, only clients that support Matrix OAuth login can log in. The Authelia
+# username becomes the Matrix localpart, so accounts that used the old LDAP
+# login link automatically.
+[global.oauth.oidc]
+discovery_url = "https://auth.rphilipsen.nl"
+client_id = "continuwuity"
+client_secret_file = "/secrets/oidc-client-secret"
+additional_scopes = ["profile", "email"]
+provider_name = "Authelia"
+prompt_for_localpart = false

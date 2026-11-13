@@ -1,0 +1,83 @@
+---
+# OIDC client secret for continuwuity's Authelia login, generated in-cluster
+# once (refreshInterval "0"), so it is not in git or 1Password.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: continuwuity-oidc
+spec:
+  length: 48
+  digits: 10
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: continuwuity-oidc
+spec:
+  refreshInterval: "0"
+  target:
+    name: continuwuity-oidc
+    template:
+      engineVersion: v2
+      data:
+        CONTINUWUITY_OAUTH_CLIENT_SECRET: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: continuwuity-oidc
+---
+# Lets Authelia's SecretStore continuwuity-default (namespace security) read
+# this one secret for its client list.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/role.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: authelia-continuwuity-oidc-reader
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["continuwuity-oidc"]
+    verbs: ["get"]
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/rbac.v1/rolebinding.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: authelia-continuwuity-oidc-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: authelia-continuwuity-oidc-reader
+subjects:
+  - kind: ServiceAccount
+    name: authelia-valkey-reader
+    namespace: security
+---
+# continuwuity's OIDC calls (discovery, token) to Authelia via
+# auth.rphilipsen.nl; Cilium checks them with continuwuity's own identity, so
+# kubernetes/apps/security/netpol.yaml has the matching ingress rule.
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cilium.io/ciliumnetworkpolicy_v2.json
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-continuwuity-oidc-egress
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/name: continuwuity
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+            k8s:app.kubernetes.io/name: authelia
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP

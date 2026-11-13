@@ -5,8 +5,6 @@ kind: HelmRelease
 metadata:
   name: &app continuwuity
   namespace: default
-  annotations:
-    reloader.stakater.com/auto: "true"
 spec:
   interval: 1h
   chart:
@@ -27,6 +25,9 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     controllers:
       continuwuity:
+        # restart on changes to conduit-configmap and the mounted secrets
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -169,13 +170,13 @@ spec:
         globalMounts:
           - path: /config/conduit.toml
             subPath: conduit.toml
-      secrets:
+      oidc:
         type: secret
-        name: continuwuity
+        name: continuwuity-oidc
         defaultMode: 0400
         advancedMounts:
           continuwuity:
             app:
-              - path: /secrets/ldap-bind-password
-                subPath: CONDUWUIT_LDAP__BIND_PASSWORD
+              - path: /secrets/oidc-client-secret
+                subPath: CONTINUWUITY_OAUTH_CLIENT_SECRET
                 readOnly: true
