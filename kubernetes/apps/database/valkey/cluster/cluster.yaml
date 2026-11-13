@@ -6,7 +6,7 @@ metadata:
 spec:
   image: ghcr.io/valkey-io/valkey:9.1.3@sha256:3add1a336a920ea54770a001ab6feb3da5fceea96a40373a3a2cd469b815f0b7
   shards: 1
-  replicas: 0
+  replicasPerShard: 0
   exporter:
     image: ghcr.io/oliver006/redis_exporter:v1.97.0@sha256:f5f903fbe77571d455ede0453b084d6840bc62fc105efac001034421cab83b99
   persistence:
@@ -17,17 +17,20 @@ spec:
   # ACL users. The operator manages its own (_operator, _exporter,
   # _replication) with their own passwords. authelia gets a generated
   # password (authelia-user.yaml). default is disabled.
-  users:
-    # Off: clients must log in as a named user. The operator's probes and
-    # the exporter use _operator and _exporter, not default.
-    - name: default
-      enabled: false
-    - name: authelia
-      passwordSecret:
-        name: valkey-authelia
-        keys:
-          - AUTHELIA_VALKEY_PASSWORD
-      permissions: "~* &* +@all"
+  acl:
+    users:
+      # Off: clients must log in as a named user. The operator's probes and
+      # the exporter use _operator and _exporter, not default.
+      - name: default
+        state: Disabled
+      - name: authelia
+        password:
+          type: Secret
+          secret:
+            name: valkey-authelia
+            keys:
+              - AUTHELIA_VALKEY_PASSWORD
+        permissions: "~* &* +@all"
   resources:
     requests:
       cpu: 50m

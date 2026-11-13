@@ -38,4 +38,29 @@
       '/\\.yaml(?:\\.j2)?$/',
     ],
   },
+  customManagers: [
+    {
+      // Kustomize resources pinned to a GitHub release tag, such as CRDs
+      customType: 'regex',
+      description: ['GitHub raw URLs pinned to a release tag'],
+      managerFilePatterns: [
+        '/(^|/)kustomization\\.yaml$/',
+      ],
+      matchStrings: [
+        'https://raw\\.githubusercontent\\.com/(?<depName>[^/\\s]+/[^/\\s]+)/(?<currentValue>v\\d[^/\\s]*)/',
+      ],
+      datasourceTemplate: 'github-releases',
+    },
+  ],
+  packageRules: [
+    {
+      // the CRDs and the operator image must change together
+      description: ['valkey-operator image and CRDs in one PR'],
+      matchPackageNames: [
+        'valkey-io/valkey-operator',
+        'ghcr.io/valkey-io/valkey-operator',
+      ],
+      groupName: 'valkey-operator',
+    },
+  ],
 }

@@ -49,6 +49,10 @@ spec:
               # disable secure serving so the plain-HTTP ServiceMonitor can scrape it
               - --metrics-secure=false
               - --watch-namespace=database
+              # required since v0.9.0; used only by clusters without
+              # spec.image or spec.exporter.image (ours set both)
+              - --default-valkey-image=ghcr.io/valkey-io/valkey:9.1.3
+              - --default-exporter-image=ghcr.io/oliver006/redis_exporter:v1.97.0
             probes:
               liveness:
                 enabled: true

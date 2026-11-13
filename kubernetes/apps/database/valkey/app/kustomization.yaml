@@ -3,8 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # renovate: datasource=github-releases depName=valkey-io/valkey-operator
-  - https://raw.githubusercontent.com/valkey-io/valkey-operator/v0.8.0/config/crd/bases/valkey.io_valkeyclusters.yaml
-  - https://raw.githubusercontent.com/valkey-io/valkey-operator/v0.8.0/config/crd/bases/valkey.io_valkeynodes.yaml
+  # CRDs must match the operator image (helmrelease.yaml); Renovate updates
+  # both in one PR (customManagers and packageRules in renovate.json5)
+  - https://raw.githubusercontent.com/valkey-io/valkey-operator/v0.9.0/config/crd/bases/valkey.io_valkeyclusters.yaml
+  - https://raw.githubusercontent.com/valkey-io/valkey-operator/v0.9.0/config/crd/bases/valkey.io_valkeynodes.yaml
   - ./helmrelease.yaml
   - ./rbac.yaml
