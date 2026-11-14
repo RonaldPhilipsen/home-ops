@@ -1,0 +1,91 @@
+---
+# Node-to-node mTLS for the Discus cluster of the operator. Every certificate from
+# this CA is a cluster member, so the CA serves only this release. The nodes
+# also require the URI SAN below (discus.yaml: cluster.san.enabled).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/issuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: renovate-discus-selfsigned
+spec:
+  selfSigned: {}
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: renovate-discus-ca
+spec:
+  isCA: true
+  commonName: renovate-discus cluster CA
+  secretName: renovate-discus-ca
+  duration: 87600h # 10y
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Never
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: renovate-discus-selfsigned
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/issuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: renovate-discus-ca
+spec:
+  ca:
+    secretName: renovate-discus-ca
+---
+# One certificate for every node. The nodes reload it within 10 s of a
+# renewal, so no restart is needed.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: renovate-discus-cluster
+spec:
+  secretName: renovate-discus-cluster
+  commonName: renovate-discus
+  uris:
+    - spiffe://cluster.local/ns/renovate/sa/renovate-discus
+  usages:
+    - digital signature
+    - server auth
+    - client auth
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: renovate-discus-ca
+---
+# Client TLS. The operator and the Renovate jobs verify it against the
+# internal CA (helmrelease.yaml and ../config/renovate.yaml).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: renovate-discus-client
+spec:
+  secretName: renovate-discus-client
+  dnsNames:
+    - renovate-discus.renovate.svc.cluster.local
+    - renovate-discus.renovate.svc
+    - renovate-discus.renovate
+  duration: 2160h # 90d
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: internal-ca

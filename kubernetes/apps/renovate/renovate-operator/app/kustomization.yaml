@@ -7,7 +7,9 @@ resources:
   - ./httproute.yaml
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  - ./valkey-auth.yaml
+  - ./discus-token.yaml
+  - ./discus.yaml
+  - ./discus-tls.yaml
   - ./serviceaccount.yaml
 patches:
   - path: patch-role.yaml

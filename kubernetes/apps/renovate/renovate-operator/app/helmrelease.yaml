@@ -9,6 +9,9 @@ metadata:
     secret.reloader.stakater.com/reload: "renovate-s3"
 spec:
   interval: 1h
+  # The operator stops at startup when its key-value store is down.
+  dependsOn:
+    - name: renovate-discus
   chart:
     kind: OCIRepository
     spec:
@@ -32,25 +35,29 @@ spec:
     webhook:
       enabled: true
 
-    valkey:
-      enabled: true
-      # ACL auth for the default user. The password comes from the
-      # in-cluster generated secret in valkey-auth.yaml. passwordKey is set
-      # explicitly: the operator, the exporter and the init script use
-      # different defaults otherwise.
-      auth:
-        enabled: true
-        usersExistingSecret: renovate-operator-valkey-users
-        aclUsers:
-          default:
-            passwordKey: default-password
-            permissions: "~* &* +@all"
-      dataStorage:
-        enabled: true
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: true
+    # The Discus cluster in discus.yaml. With a host, the operator uses
+    # database 0 for sessions, 1 for the Renovate cache, and 2 for logs, and
+    # forwards a rediss:// URL for database 1 to the jobs.
+    externalKeyValueStore:
+      host: renovate-discus.renovate.svc.cluster.local
+      port: 6379
+      useTls: true
+      existingSecret:
+        name: renovate-discus-token
+        passwordKey: token
+    # Go reads its whole trust store from SSL_CERT_FILE. The bundle holds the
+    # public CAs and the internal CA that signs the Discus certificate.
+    extraEnv:
+      - name: SSL_CERT_FILE
+        value: /etc/ssl/internal/ca-certificates.crt
+    extraVolumes:
+      - name: internal-ca-bundle
+        configMap:
+          name: internal-ca-bundle
+    extraVolumeMounts:
+      - name: internal-ca-bundle
+        mountPath: /etc/ssl/internal
+        readOnly: true
     s3:
       bucket: "renovate"
       endpoint: "http://172.16.20.7:3900/"

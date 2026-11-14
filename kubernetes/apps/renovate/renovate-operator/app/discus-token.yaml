@@ -1,13 +1,13 @@
 ---
-# Password for the bundled Valkey's "default" ACL user. Generated in-cluster
+# The shared token of the Discus cluster (discus.yaml). Generated in-cluster
 # once (refreshInterval "0": never regenerated), so it is not in git or
-# 1Password. The Valkey init script, its metrics exporter and the operator
-# all read the default-password key (helmrelease.yaml: valkey.auth).
+# 1Password. The Discus nodes and the operator read the token key. The
+# operator passes the token to the Renovate jobs in their cache URL.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
 metadata:
-  name: renovate-operator-valkey
+  name: renovate-discus-token
 spec:
   length: 40
   digits: 8
@@ -19,18 +19,18 @@ spec:
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: renovate-operator-valkey-users
+  name: renovate-discus-token
 spec:
   refreshInterval: "0"
   target:
-    name: renovate-operator-valkey-users
+    name: renovate-discus-token
     template:
       engineVersion: v2
       data:
-        default-password: "{{ .password }}"
+        token: "{{ .password }}"
   dataFrom:
     - sourceRef:
         generatorRef:
           apiVersion: generators.external-secrets.io/v1alpha1
           kind: Password
-          name: renovate-operator-valkey
+          name: renovate-discus-token
