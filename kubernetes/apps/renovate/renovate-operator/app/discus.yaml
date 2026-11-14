@@ -1,0 +1,64 @@
+---
+# Discus cluster for the operator: three nodes, every key on three owners.
+# The operator uses three numbered databases: 0 for UI sessions, 1 for the
+# Renovate cache that it forwards to the jobs, and 2 for the logs of finished
+# runs. The data is in memory only, so a restart of all three nodes loses it.
+# Renovate then rebuilds its cache on the next run.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: renovate-discus
+spec:
+  interval: 1h
+  timeout: 10m
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: 0.6.0
+      url: oci://ghcr.io/ronaldphilipsen/charts/discus
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  values:
+    replicaCount: 3
+    # The operator and the jobs use the Service on 6379. A cluster client
+    # port would switch valkey-go to cluster mode, which has only database 0.
+    clusterClients:
+      enabled: false
+    databases: 3
+    cluster:
+      tls:
+        secretName: renovate-discus-cluster
+      san:
+        enabled: true
+    clientTls:
+      secretName: renovate-discus-client
+    authPolicy: all:tls,shared_token
+    settings:
+      reads:
+        # A login writes a session and the next request reads it, maybe on
+        # another node. Reads from the primary always see that write.
+        fromReplicas: false
+    extraEnv:
+      - name: DISCUS_SHARED_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: renovate-discus-token
+            key: token
+    extraArgs:
+      - --shared-token=$(DISCUS_SHARED_TOKEN)
+    # The store budget is 75% of the memory limit. One CPU gives one worker.
+    resources:
+      requests:
+        cpu: 20m
+        memory: 128Mi
+      limits:
+        cpu: "1"
+        memory: 512Mi

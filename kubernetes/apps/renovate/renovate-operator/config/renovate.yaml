@@ -51,3 +51,15 @@ spec:
         secretKeyRef:
           name: renovate-secret
           key: AWS_SECRET_ACCESS_KEY
+    # Node adds this CA to its trust store, so the jobs accept the Discus
+    # certificate behind the forwarded cache URL (../app/discus-tls.yaml).
+    - name: NODE_EXTRA_CA_CERTS
+      value: /etc/ssl/internal/ca.crt
+  extraVolumes:
+    - name: internal-ca
+      configMap:
+        name: internal-ca
+  extraVolumeMounts:
+    - name: internal-ca
+      mountPath: /etc/ssl/internal
+      readOnly: true

@@ -39,8 +39,14 @@ spec:
             k8s:io.kubernetes.pod.namespace: renovate
       toPorts:
         - ports:
+            # The operator and the jobs to Discus (renovate-operator/app/discus.yaml)
             - port: "6379"
               protocol: TCP
+            # Discus node-to-node traffic: gossip and requests over QUIC
+            - port: "7379"
+              protocol: UDP
+            - port: "7380"
+              protocol: UDP
     - toEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: observability
