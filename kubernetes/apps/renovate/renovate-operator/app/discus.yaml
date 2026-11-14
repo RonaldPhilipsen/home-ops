@@ -46,6 +46,18 @@ spec:
         # A login writes a session and the next request reads it, maybe on
         # another node. Reads from the primary always see that write.
         fromReplicas: false
+    # Metrics and traces go to the gateway collector, which forwards them to
+    # VictoriaMetrics. The dashboard reads these metrics.
+    otel:
+      enabled: true
+      endpoint: http://gateway-collector.observability.svc.cluster.local:4317
+    # The dashboard has a namespace variable, so this one copy also shows
+    # other Discus clusters that export metrics.
+    grafanaDashboard:
+      enabled: true
+      instanceSelector:
+        matchLabels:
+          grafana.internal/instance: grafana
     extraEnv:
       - name: DISCUS_SHARED_TOKEN
         valueFrom:
