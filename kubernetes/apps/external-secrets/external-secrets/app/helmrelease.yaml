@@ -10,7 +10,7 @@ spec:
     spec:
       interval: 15m
       ref:
-        tag: 2.14.0
+        tag: 2.15.0
       url: oci://ghcr.io/external-secrets/charts/external-secrets
   interval: 30m
   values:

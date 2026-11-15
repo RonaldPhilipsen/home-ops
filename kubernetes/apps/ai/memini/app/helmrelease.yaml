@@ -12,7 +12,7 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: v0.7.37
+        tag: v0.7.39
       url: oci://ghcr.io/eleboucher/charts/memini
   upgrade:
     force: true

@@ -9,7 +9,7 @@ spec:
     spec:
       interval: 15m
       ref:
-        tag: 0.10.16
+        tag: 0.10.21
       url: oci://ghcr.io/home-operations/charts/kopiur
   interval: 30m
   values:
