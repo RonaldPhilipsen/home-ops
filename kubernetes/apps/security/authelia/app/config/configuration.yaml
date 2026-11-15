@@ -114,7 +114,7 @@ session:
     # that regenerates a session at login works across slots.
     host: authelia-discus.security.svc.cluster.local
     port: 6379
-    # The password is the Discus shared token. Authelia reads it from the file
+    # The password of the Discus user "default". Authelia reads it from the file
     # in AUTHELIA_SESSION_REDIS_PASSWORD_FILE (../helmrelease.yaml).
     database_index: 0
     tls:

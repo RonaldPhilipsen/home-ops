@@ -18,7 +18,7 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: 0.6.2
+        tag: 0.7.0
       url: oci://ghcr.io/ronaldphilipsen/charts/discus
   install:
     remediation:
@@ -47,7 +47,13 @@ spec:
         enabled: true
     clientTls:
       secretName: renovate-discus-client
-    authPolicy: all:tls,shared_token
+    # One password for every client: the user "default" of the ACL file
+    # (discus-token.yaml). The node reads the file again after the Secret
+    # changes.
+    authPolicy: all:password
+    aclFile:
+      secretName: renovate-discus-token
+      key: users.acl
     settings:
       reads:
         # A login writes a session and the next request reads it, maybe on
@@ -65,14 +71,6 @@ spec:
       instanceSelector:
         matchLabels:
           grafana.internal/instance: grafana
-    extraEnv:
-      - name: DISCUS_SHARED_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: renovate-discus-token
-            key: token
-    extraArgs:
-      - --shared-token=$(DISCUS_SHARED_TOKEN)
     # The store budget is 75% of the memory limit. One CPU gives one worker.
     resources:
       requests:

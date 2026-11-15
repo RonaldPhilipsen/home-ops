@@ -3,8 +3,9 @@
 # owners, so a node loss keeps users signed in. Sessions are in memory only, so
 # a restart of all three nodes signs out every user.
 #
-# The shared token is the generated secret authelia-discus-token
-# (discus-token.yaml). Authelia reads the same secret (helmrelease.yaml).
+# The password is in the generated secret authelia-discus-token
+# (discus-token.yaml). The nodes read its ACL file, and Authelia reads the
+# password from the same secret (helmrelease.yaml).
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -18,7 +19,7 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: 0.6.2
+        tag: 0.7.0
       url: oci://ghcr.io/ronaldphilipsen/charts/discus
   install:
     remediation:
@@ -39,7 +40,13 @@ spec:
         enabled: true
     clientTls:
       secretName: authelia-discus-client
-    authPolicy: all:tls,shared_token
+    # One password for every client: the user "default" of the ACL file
+    # (discus-token.yaml). The node reads the file again after the Secret
+    # changes.
+    authPolicy: all:password
+    aclFile:
+      secretName: authelia-discus-token
+      key: users.acl
     # The budgets follow "Run Authelia on Discus" in the Discus cluster guide.
     settings:
       budget:
@@ -54,16 +61,9 @@ spec:
     otel:
       enabled: true
       endpoint: http://gateway-collector.observability.svc.cluster.local:4317
-    extraEnv:
-      - name: DISCUS_SHARED_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: authelia-discus-token
-            key: token
     # Authelia names each session key with this prefix. A read of a session
     # goes to the primary and returns the latest write.
     extraArgs:
-      - --shared-token=$(DISCUS_SHARED_TOKEN)
       - --primary-read-prefix=authelia-session
     # The store budget is 75% of the memory limit. One CPU gives one worker.
     resources:
