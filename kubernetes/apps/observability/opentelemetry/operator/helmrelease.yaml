@@ -11,7 +11,7 @@ spec:
     spec:
       interval: 15m
       ref:
-        tag: 0.126.2
+        tag: 0.129.0
       url: oci://ghcr.io/open-telemetry/opentelemetry-helm-charts/opentelemetry-operator
   values:
     manager:
