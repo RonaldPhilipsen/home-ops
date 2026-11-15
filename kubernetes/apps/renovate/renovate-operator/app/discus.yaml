@@ -1,9 +1,10 @@
 ---
 # Discus cluster for the operator: three nodes, every key on three owners.
-# The operator and the Renovate jobs are cluster clients on port 6380. A
-# cluster has only database 0, so the sessions, the Renovate cache, and the
-# logs of finished runs share it. The data is in memory only, so a restart of
-# all three nodes loses it. Renovate then rebuilds its cache on the next run.
+# The operator is a cluster client on port 6380 and keeps its sessions and the
+# logs of finished runs in database 0. The Renovate jobs use the Service on
+# 6379 and keep their cache in database 1. The data is in memory only, so a
+# restart of all three nodes loses it. Renovate then rebuilds its cache on the
+# next run.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -35,9 +36,9 @@ spec:
     clusterClients:
       enabled: true
       port: 6380
-    # Databases 1 and 2 held the cache and the logs before the clients used
-    # cluster mode. Nothing reads them now. A lower count needs the steps in
-    # the Discus docs/cluster.md, so the count stays at 3.
+    # Database 2 held the operator logs before the operator became a cluster
+    # client. Nothing reads it now. A lower count needs the steps in the
+    # Discus docs/cluster.md, so the count stays at 3.
     databases: 3
     cluster:
       tls:

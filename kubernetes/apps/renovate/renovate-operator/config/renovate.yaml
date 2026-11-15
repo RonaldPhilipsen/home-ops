@@ -51,8 +51,19 @@ spec:
         secretKeyRef:
           name: renovate-secret
           key: AWS_SECRET_ACCESS_KEY
+    # The package cache: database 1 of the Discus cluster, through the Service.
+    # Renovate does not use TLS to the nodes that a cluster names, so the URL
+    # is not rediss+cluster://. Kubernetes puts the token into the URL. The
+    # token has only letters and digits, so it needs no URL encoding.
+    - name: DISCUS_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: renovate-discus-token
+          key: token
+    - name: RENOVATE_REDIS_URL
+      value: rediss://:$(DISCUS_TOKEN)@renovate-discus.renovate.svc.cluster.local:6379/1
     # Node adds this CA to its trust store, so the jobs accept the Discus
-    # certificate behind the forwarded cache URL (../app/discus-tls.yaml).
+    # certificate (../app/discus-tls.yaml).
     - name: NODE_EXTRA_CA_CERTS
       value: /etc/ssl/internal/ca.crt
   extraVolumes:

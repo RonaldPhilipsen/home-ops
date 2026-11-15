@@ -25,9 +25,10 @@ spec:
     authorization:
       enabled: false
     config:
-      # The jobs get the same cluster URL as the operator: rediss+cluster://
-      # on port 6380, database 0.
-      forwardCacheToJobs: true
+      # The forwarded URL would be rediss+cluster://. Renovate 44.239.1 does
+      # not use TLS to the nodes that a cluster names, and a job then stops
+      # at its start. The jobs get their own URL in ../config/renovate.yaml.
+      forwardCacheToJobs: false
       forwardS3CacheToJobs: true
     rbac:
       ownNamespaceOnly: true
