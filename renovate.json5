@@ -38,6 +38,18 @@
       '/\\.yaml(?:\\.j2)?$/',
     ],
   },
+  packageRules: [
+    {
+      description: ['Auto-merge all updates from my own and home-operations packages'],
+      matchPackageNames: [
+        'ghcr.io/ronaldphilipsen/**',
+        'ronaldphilipsen/**',
+        'ghcr.io/home-operations/**',
+        'home-operations/**',
+      ],
+      automerge: true,
+    },
+  ],
   customManagers: [
     {
       // Kustomize resources pinned to a GitHub release tag, such as CRDs
