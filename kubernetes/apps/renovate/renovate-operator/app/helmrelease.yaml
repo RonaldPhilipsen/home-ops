@@ -25,6 +25,8 @@ spec:
     authorization:
       enabled: false
     config:
+      # The jobs get the same cluster URL as the operator: rediss+cluster://
+      # on port 6380, database 0.
       forwardCacheToJobs: true
       forwardS3CacheToJobs: true
     rbac:
@@ -35,13 +37,14 @@ spec:
     webhook:
       enabled: true
 
-    # The Discus cluster in discus.yaml. With a host, the operator uses
-    # database 0 for sessions, 1 for the Renovate cache, and 2 for logs, and
-    # forwards a rediss:// URL for database 1 to the jobs.
+    # The Discus cluster in discus.yaml. The operator connects to the cluster
+    # client port, reads the slot table, and then talks to each node directly.
+    # A cluster has only database 0, so the sessions and the logs share it.
     externalKeyValueStore:
       host: renovate-discus.renovate.svc.cluster.local
-      port: 6379
+      port: 6380
       useTls: true
+      cluster: true
       existingSecret:
         name: renovate-discus-token
         passwordKey: token

@@ -39,8 +39,11 @@ spec:
             k8s:io.kubernetes.pod.namespace: renovate
       toPorts:
         - ports:
-            # The operator and the jobs to Discus (renovate-operator/app/discus.yaml)
+            # The Discus Service port (renovate-operator/app/discus.yaml)
             - port: "6379"
+              protocol: TCP
+            # The operator and the jobs as cluster clients to each Discus node
+            - port: "6380"
               protocol: TCP
             # Discus node-to-node traffic: gossip and requests over QUIC
             - port: "7379"

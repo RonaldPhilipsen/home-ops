@@ -1,9 +1,9 @@
 ---
 # Discus cluster for the operator: three nodes, every key on three owners.
-# The operator uses three numbered databases: 0 for UI sessions, 1 for the
-# Renovate cache that it forwards to the jobs, and 2 for the logs of finished
-# runs. The data is in memory only, so a restart of all three nodes loses it.
-# Renovate then rebuilds its cache on the next run.
+# The operator and the Renovate jobs are cluster clients on port 6380. A
+# cluster has only database 0, so the sessions, the Renovate cache, and the
+# logs of finished runs share it. The data is in memory only, so a restart of
+# all three nodes loses it. Renovate then rebuilds its cache on the next run.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -28,10 +28,16 @@ spec:
       retries: 5
   values:
     replicaCount: 3
-    # The operator and the jobs use the Service on 6379. A cluster client
-    # port would switch valkey-go to cluster mode, which has only database 0.
+    # The cluster client port. A client reads the slot table from it and
+    # sends each command to the node that owns the key. The replies name each
+    # pod as <pod IP with dashes>.renovate-discus-peers.renovate.svc.cluster.local,
+    # which the wildcard name of the client certificate covers (discus-tls.yaml).
     clusterClients:
-      enabled: false
+      enabled: true
+      port: 6380
+    # Databases 1 and 2 held the cache and the logs before the clients used
+    # cluster mode. Nothing reads them now. A lower count needs the steps in
+    # the Discus docs/cluster.md, so the count stays at 3.
     databases: 3
     cluster:
       tls:
