@@ -1,8 +1,10 @@
 ---
-# The shared token of the Discus cluster (discus.yaml). Generated in-cluster
+# The password of the Discus cluster (discus.yaml). Generated in-cluster
 # once (refreshInterval "0": never regenerated), so it is not in git or
-# 1Password. The Discus nodes and the operator read the token key. The
-# operator passes the token to the Renovate jobs in their cache URL.
+# 1Password. The operator reads the token key and passes the password to the
+# Renovate jobs in their cache URL. The Discus nodes read the users.acl key:
+# an ACL file that gives the user "default" this password, as a SHA-256
+# hash, and every right. A client sends the password without a username.
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
 apiVersion: generators.external-secrets.io/v1alpha1
 kind: Password
@@ -28,6 +30,8 @@ spec:
       engineVersion: v2
       data:
         token: "{{ .password }}"
+        users.acl: |
+          user default on allkeys +@all #{{ .password | sha256sum }}
   dataFrom:
     - sourceRef:
         generatorRef:
