@@ -19,7 +19,7 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: 0.7.0
+        tag: 0.8.0
       url: oci://ghcr.io/ronaldphilipsen/charts/discus
   install:
     remediation:
