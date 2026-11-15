@@ -56,6 +56,13 @@
       ],
       automerge: true,
     },
+    {
+      // Helm rejects "version: x@sha256:..." and Renovate cannot read the digest back,
+      // which fails the whole pin-dependencies branch
+      description: ['Do not pin digests of helmfile OCI charts'],
+      matchManagers: ['helmfile'],
+      pinDigests: false,
+    },
   ],
   customManagers: [
     {

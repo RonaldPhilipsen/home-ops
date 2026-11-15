@@ -27,7 +27,7 @@ spec:
       containers:
         - name: llama-server
           # renovate: datasource=docker depName=ghcr.io/ggml-org/llama.cpp
-          image: ghcr.io/ggml-org/llama.cpp:server-b11804
+          image: ghcr.io/ggml-org/llama.cpp:server-b11804@sha256:8c74db29f1a2bef3f0a331b52c4d6214601dfceed4bee0b94cc48b3b23ff257d
           args:
             - -hf
             - ggml-org/Qwen3-Reranker-0.6B-Q8_0-GGUF

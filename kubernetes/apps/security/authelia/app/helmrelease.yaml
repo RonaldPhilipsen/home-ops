@@ -147,7 +147,7 @@ spec:
           main:
             image:
               repository: ghcr.io/authelia/authelia
-              tag: 4.39.28
+              tag: 4.39.28@sha256:bd97cff4fcbf715b5ff1f9ae286afbe6033afce385302520b0368122d43a6f54
             env:
               # The password of the Discus cluster (discus-token.yaml)
               AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /secrets/discus/token

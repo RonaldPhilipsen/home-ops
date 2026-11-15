@@ -28,7 +28,7 @@ spec:
             enabled: true
             image:
               repository: ghcr.io/m00nwtchr/pipewire
-              tag: rolling
+              tag: rolling@sha256:a665d64a1ac819dc5ed61cc0d7cde619eb5cb10b3eb844476da223dc0d9ed74b
             securityContext:
               runAsUser: 1000
               runAsGroup: 100
@@ -39,7 +39,7 @@ spec:
             enabled: true
             image:
               repository: ghcr.io/m00nwtchr/weston
-              tag: rolling
+              tag: rolling@sha256:f4f38f6992c1dc855bd17f1cf913b85343ae3bd4d211618ab62304e0e20c6d09
             env:
               - name: WAYLAND_DISPLAY
                 value: wayland-1
@@ -57,7 +57,7 @@ spec:
             enabled: true
             image:
               repository: ghcr.io/m00nwtchr/kodi
-              tag: rolling
+              tag: rolling@sha256:5ba40afacbfe5bfc57dadac1c71f0bdf9b5519f6ef19b7ff3529b9bb6e378495
             env:
               - name: WAYLAND_DISPLAY
                 value: wayland-1

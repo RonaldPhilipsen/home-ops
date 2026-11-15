@@ -5,7 +5,7 @@ kind: MCPServer
 metadata:
   name: victoriatraces
 spec:
-  image: ghcr.io/victoriametrics-community/mcp-victoriatraces:v1.5.0
+  image: ghcr.io/victoriametrics-community/mcp-victoriatraces:v1.5.0@sha256:72b3227c03856048e0adcbf5d247e3ae0b6cf8ab1bc27df6fe10ed0cacdcd07c
   transport: stdio
   groupRef:
     name: ai-tools

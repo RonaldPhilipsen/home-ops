@@ -94,7 +94,7 @@ spec:
           containers:
             - name: bridge
               # renovate: image=fhoekstra/kubectl-shell
-              image: ghcr.io/fhoekstra/kubectl-shell:v1.36.1-1
+              image: ghcr.io/fhoekstra/kubectl-shell:v1.36.1-1@sha256:757ed4306cd3ee058be8693849a5474766f3eaf4d453350b9b27926758f0e13f
               imagePullPolicy: IfNotPresent
               securityContext:
                 allowPrivilegeEscalation: false

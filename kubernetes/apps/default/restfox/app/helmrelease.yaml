@@ -35,7 +35,7 @@ spec:
           main:
             image:
               repository: flawiddsouza/restfox
-              tag: 0.42.0
+              tag: 0.42.0@sha256:cb049a5555ecc26f0f95926a868d2ed7a679cfbc205a1c74cbe856c20a983968
               pullPolicy: IfNotPresent
             env:
               CUSTOM_PORT_ON_HOST: "4004" # default, but here for future reference
