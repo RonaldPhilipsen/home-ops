@@ -10,8 +10,8 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: 0.34.1
-      url: oci://ghcr.io/home-operations/charts-mirror/intel-device-plugins-gpu
+        tag: 0.37.1
+      url: oci://ghcr.io/intel/helm-charts/intel-device-plugins-gpu
   install:
     remediation:
       retries: -1
