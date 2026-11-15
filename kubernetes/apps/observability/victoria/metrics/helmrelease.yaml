@@ -228,6 +228,13 @@ spec:
           search.maxUniqueTimeseries: "600000"
           search.minStalenessInterval: 5m
         retentionPeriod: "6w"
+        # the chart default (1500Mi) is too small for the index of 6w of data
+        resources:
+          requests:
+            cpu: 150m
+            memory: 1Gi
+          limits:
+            memory: 2560Mi
         storage:
           accessModes:
             - ReadWriteOnce

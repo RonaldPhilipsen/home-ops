@@ -75,6 +75,14 @@ spec:
           - key: k8s.cluster.name
             value: k8s-neo-alpha
             action: upsert
+      # Span metrics only: Renovate has ~2000 span names (one per repository
+      # and per manager) and releases several times a day, and each new
+      # service.version started a full new set of series in vmsingle.
+      filter/spanmetrics:
+        error_mode: ignore
+        traces:
+          span:
+            - resource.attributes["service.name"] == "renovate"
       resourcedetection:
         detectors:
           - env
@@ -89,6 +97,9 @@ spec:
       spanmetrics:
         exclude_dimensions:
           - collector.instance.id
+        # Stop sending series that got no spans for 5m (the default 0 keeps
+        # them forever, so every old label set stays active in vmsingle).
+        metrics_expiration: 5m
     exporters:
       otlphttp/victoriametrics:
         # HTTPS backends: verify against the internal CA
@@ -146,6 +157,15 @@ spec:
             - batch
           exporters:
             - otlphttp/victoriametrics
+        # Separate pipeline so that Renovate gets no span metrics, but its
+        # traces are still stored.
+        traces/spanmetrics:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - filter/spanmetrics
+          exporters:
             - spanmetrics
       telemetry:
         metrics:
