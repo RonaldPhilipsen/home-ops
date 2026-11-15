@@ -1,6 +1,6 @@
 ---
 # The password of the Discus cluster (discus.yaml). Generated in-cluster
-# once (refreshInterval "0": never regenerated), so it is not in git or
+# (a new one only after a change of this file), so it is not in git or
 # 1Password. Authelia reads the token key as a file (helmrelease.yaml). The
 # Discus nodes read the users.acl key: an ACL file that gives the user
 # "default" this password, as a SHA-256 hash, and every right. A client
@@ -23,6 +23,11 @@ kind: ExternalSecret
 metadata:
   name: authelia-discus-token
 spec:
+  # External Secrets renders the Secret again after this manifest changes,
+  # and only then. Each render makes a new password. With the default policy
+  # and refreshInterval "0", a new key in the template never reaches the
+  # Secret.
+  refreshPolicy: OnChange
   refreshInterval: "0"
   target:
     name: authelia-discus-token
