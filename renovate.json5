@@ -52,15 +52,4 @@
       datasourceTemplate: 'github-releases',
     },
   ],
-  packageRules: [
-    {
-      // the CRDs and the operator image must change together
-      description: ['valkey-operator image and CRDs in one PR'],
-      matchPackageNames: [
-        'valkey-io/valkey-operator',
-        'ghcr.io/valkey-io/valkey-operator',
-      ],
-      groupName: 'valkey-operator',
-    },
-  ],
 }

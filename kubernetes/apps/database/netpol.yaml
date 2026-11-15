@@ -39,15 +39,6 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-            - port: "6379"
-              protocol: TCP
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: renovate
-      toPorts:
-        - ports:
-            - port: "6379"
-              protocol: TCP
     - fromEntities:
         - ingress
       toPorts:

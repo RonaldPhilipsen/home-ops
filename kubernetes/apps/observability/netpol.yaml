@@ -89,6 +89,15 @@ spec:
               protocol: TCP
             - port: "5514"
               protocol: UDP
+    # The Discus cluster of Authelia sends its metrics and traces
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+            k8s:app.kubernetes.io/name: discus
+      toPorts:
+        - ports:
+            - port: "4317"
+              protocol: TCP
     - fromEntities:
         - ingress
         - world

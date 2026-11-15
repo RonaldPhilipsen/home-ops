@@ -91,7 +91,14 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-            - port: "6379"
+    # Discus metrics and traces to the gateway collector (authelia/app/discus.yaml)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: observability
+            k8s:app.kubernetes.io/name: opentelemetry-collector
+      toPorts:
+        - ports:
+            - port: "4317"
               protocol: TCP
     - toEntities:
         - world

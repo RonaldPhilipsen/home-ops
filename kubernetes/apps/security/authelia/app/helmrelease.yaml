@@ -148,6 +148,9 @@ spec:
             image:
               repository: ghcr.io/authelia/authelia
               tag: 4.39.28
+            env:
+              # The shared token of the Discus cluster (discus-token.yaml)
+              AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /secrets/discus/token
             resources:
               requests:
                 cpu: 1m
@@ -201,6 +204,14 @@ spec:
           authelia:
             main:
               - path: /tls
+                readOnly: true
+      discus-token:
+        type: secret
+        name: authelia-discus-token
+        advancedMounts:
+          authelia:
+            main:
+              - path: /secrets/discus
                 readOnly: true
       config:
         enabled: true

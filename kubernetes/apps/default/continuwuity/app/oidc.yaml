@@ -57,7 +57,7 @@ roleRef:
   name: authelia-continuwuity-oidc-reader
 subjects:
   - kind: ServiceAccount
-    name: authelia-valkey-reader
+    name: authelia-secret-reader
     namespace: security
 ---
 # continuwuity's OIDC calls (discovery, token) to Authelia via

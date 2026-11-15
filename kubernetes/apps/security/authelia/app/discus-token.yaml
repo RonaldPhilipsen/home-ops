@@ -1,0 +1,36 @@
+---
+# The shared token of the Discus cluster (discus.yaml). Generated in-cluster
+# once (refreshInterval "0": never regenerated), so it is not in git or
+# 1Password. The Discus nodes read the token key from their environment.
+# Authelia reads it as a file (helmrelease.yaml).
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: authelia-discus-token
+spec:
+  length: 40
+  digits: 8
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: authelia-discus-token
+spec:
+  refreshInterval: "0"
+  target:
+    name: authelia-discus-token
+    template:
+      engineVersion: v2
+      data:
+        token: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: authelia-discus-token
