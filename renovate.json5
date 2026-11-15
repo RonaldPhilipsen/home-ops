@@ -40,12 +40,19 @@
   },
   packageRules: [
     {
-      description: ['Auto-merge all updates from my own and home-operations packages'],
+      description: ['Auto-merge non-major updates from my own and home-operations packages'],
       matchPackageNames: [
         'ghcr.io/ronaldphilipsen/**',
         'ronaldphilipsen/**',
         'ghcr.io/home-operations/**',
         'home-operations/**',
+      ],
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+        'digest',
+        'pin',
+        'pinDigest',
       ],
       automerge: true,
     },
