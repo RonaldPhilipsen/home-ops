@@ -46,6 +46,7 @@
         'ronaldphilipsen/**',
         'ghcr.io/home-operations/**',
         'home-operations/**',
+        'ghcr.io/renovatebot/renovate',
       ],
       matchUpdateTypes: [
         'minor',
