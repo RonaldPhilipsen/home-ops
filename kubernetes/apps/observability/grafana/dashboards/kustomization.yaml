@@ -6,4 +6,5 @@ resources:
   - ./etcd.yaml
   - ./k8s.yaml
   - ./grafanadashboard.yaml
+  - ./roast-my-setup.yaml
   - ./syslog.yaml
