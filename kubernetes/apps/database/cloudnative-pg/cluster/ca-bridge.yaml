@@ -126,10 +126,15 @@ spec:
                     if [ "$EXISTING" = "$COMBINED" ]; then
                       echo "$NS/$OUT unchanged"
                     else
+                      # cnpg.io/reload: without it CNPG never re-reads a
+                      # user-supplied clientCASecret, so Postgres keeps the old
+                      # SPIRE CAs and rejects SVIDs after a CA rotation.
                       kubectl -n "$NS" create secret generic "$OUT" \
                         --from-literal=ca.crt="$COMBINED" \
                         --from-literal=ca.key="$CA_KEY" \
-                        --dry-run=client -o yaml | kubectl apply -f -
+                        --dry-run=client -o yaml \
+                        | kubectl label --local -f - cnpg.io/reload=true -o yaml \
+                        | kubectl apply -f -
                       echo "$NS/$OUT updated"
                     fi
                     [ "$#" -gt 0 ] || return 0
