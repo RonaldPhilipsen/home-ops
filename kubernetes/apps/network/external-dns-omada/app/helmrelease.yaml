@@ -11,7 +11,7 @@ spec:
     spec:
       interval: 5m
       ref:
-        tag: 1.23.0
+        tag: 1.24.0
       url: oci://ghcr.io/home-operations/charts-mirror/external-dns
   values:
     fullnameOverride: *app
