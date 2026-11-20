@@ -5,7 +5,6 @@
     'abandonments:recommended',
     'docker:enableMajor',
     'helpers:pinGitHubActionDigests',
-    ':automergeBranch',
     ':disableRateLimiting',
     ':dependencyDashboard',
     ':semanticCommits',
@@ -62,6 +61,14 @@
       // which fails the whole pin-dependencies branch
       description: ['Do not pin digests of helmfile OCI charts'],
       matchManagers: ['helmfile'],
+      pinDigests: false,
+    },
+    {
+      // The inline OCIRepository regex has no currentDigest group, so Renovate cannot
+      // write a digest ("Digest is not updated") and the whole pin-dependencies branch fails
+      description: ['Do not pin digests of inline HelmRelease OCI charts'],
+      matchManagers: ['custom.regex'],
+      matchDepTypes: ['HelmChart'],
       pinDigests: false,
     },
   ],
