@@ -9,9 +9,8 @@ spec:
   instanceSelector:
     matchLabels:
       grafana.internal/instance: grafana
-  datasources:
-    - datasourceName: prometheus
-      inputName: DS_PROMETHEUS
+  # Public dashboards resolve datasources by UID only, so the UID of the
+  # "prometheus" GrafanaDatasource is set directly in the panels below.
   # VictoriaMetrics stores OTLP names with dots, so Omada metrics use {__name__="..."}.
   json: |
     {
@@ -46,7 +45,7 @@ spec:
           "description": "Wired plus wireless clients, according to the Omada controller.",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -58,7 +57,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "sum({__name__=\"omada.site.clients\"})",
               "refId": "A",
@@ -109,7 +108,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -121,7 +120,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(max by (\"client.mac\") ({__name__=\"omada.client.uptime\", \"client.ssid\"=~\".*_IOT\"}))",
               "refId": "A",
@@ -172,7 +171,7 @@ spec:
           "description": "The README says 3.",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -184,7 +183,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(kube_node_info)",
               "refId": "A",
@@ -239,7 +238,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -251,7 +250,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(kube_pod_info{node=\"k8s-neo-alpha\"})",
               "refId": "A",
@@ -302,7 +301,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -314,7 +313,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(kube_pod_info{node=\"k8s-neo-beta\"})",
               "refId": "A",
@@ -365,7 +364,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -377,7 +376,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "sum(increase({__name__=\"renovate_operator.pull_requests.created\"}[7d]))",
               "refId": "A",
@@ -428,7 +427,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -440,7 +439,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "sum({__name__=\"omada.switch.port.poe.power\"})",
               "refId": "A",
@@ -491,7 +490,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 5,
@@ -503,7 +502,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "max(gaggiuino_up) or vector(0)",
               "refId": "A",
@@ -570,7 +569,7 @@ spec:
           "description": "Red: rebooted in the last hour. Orange: in the last day.",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 10,
@@ -582,7 +581,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "min by (\"device.name\") ({__name__=\"omada.device.uptime\"})",
               "refId": "A",
@@ -640,7 +639,7 @@ spec:
           "title": "Wi-Fi clients per access point",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 10,
@@ -652,7 +651,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count by (\"client.ap.name\") (max by (\"client.mac\", \"client.ap.name\") ({__name__=\"omada.client.uptime\", \"client.connection\"=\"wireless\"}))",
               "refId": "A",
@@ -701,7 +700,7 @@ spec:
           "title": "Clients by network",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 10,
@@ -713,7 +712,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(max by (\"client.mac\") ({__name__=\"omada.client.uptime\", \"client.ssid\"=~\".*_IOT\"}))",
               "refId": "A",
@@ -724,7 +723,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(max by (\"client.mac\") ({__name__=\"omada.client.uptime\", \"client.connection\"=\"wireless\", \"client.ssid\"!~\".*_IOT\"}))",
               "refId": "B",
@@ -735,7 +734,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "count(max by (\"client.mac\") ({__name__=\"omada.client.uptime\", \"client.connection\"=\"wired\"}))",
               "refId": "C",
@@ -828,7 +827,7 @@ spec:
           "description": "",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 10,
@@ -840,7 +839,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\", instance=~\"172.16.20.6:.*\"}[5m])) / count(node_cpu_seconds_total{mode=\"idle\", instance=~\"172.16.20.6:.*\"})",
               "refId": "A",
@@ -849,7 +848,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "sum(rate(node_cpu_seconds_total{mode!=\"idle\", instance=~\"172.16.20.5:.*\"}[5m])) / count(node_cpu_seconds_total{mode=\"idle\", instance=~\"172.16.20.5:.*\"})",
               "refId": "B",
@@ -891,7 +890,7 @@ spec:
           "description": "Only wired clients, so device names from the rest of the house stay off a public dashboard.",
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
           },
           "gridPos": {
             "h": 10,
@@ -903,7 +902,7 @@ spec:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "658f7554-74f9-4bc4-817e-659f389c1093"
               },
               "expr": "topk(6, sum by (\"client.name\") ({__name__=\"omada.client.activity\", \"client.connection\"=\"wired\"}))",
               "refId": "A",
