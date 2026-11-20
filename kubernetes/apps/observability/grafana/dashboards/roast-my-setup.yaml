@@ -104,7 +104,7 @@ spec:
         {
           "id": 2,
           "type": "stat",
-          "title": "Smart home on Wi-Fi",
+          "title": "IoT on Wi-Fi",
           "description": "",
           "datasource": {
             "type": "prometheus",
@@ -167,7 +167,7 @@ spec:
         {
           "id": 3,
           "type": "stat",
-          "title": "Kubernetes nodes",
+          "title": "Nodes",
           "description": "The README says 3.",
           "datasource": {
             "type": "prometheus",
@@ -234,7 +234,7 @@ spec:
         {
           "id": 4,
           "type": "stat",
-          "title": "Pods on the control plane",
+          "title": "Pods: control plane",
           "description": "",
           "datasource": {
             "type": "prometheus",
@@ -297,7 +297,7 @@ spec:
         {
           "id": 5,
           "type": "stat",
-          "title": "Pods on the worker",
+          "title": "Pods: worker",
           "description": "",
           "datasource": {
             "type": "prometheus",
@@ -360,7 +360,7 @@ spec:
         {
           "id": 6,
           "type": "stat",
-          "title": "Renovate PRs (7 days)",
+          "title": "Renovate PRs, 7d",
           "description": "",
           "datasource": {
             "type": "prometheus",
@@ -662,10 +662,10 @@ spec:
           ],
           "options": {
             "orientation": "horizontal",
-            "displayMode": "gradient",
+            "displayMode": "basic",
             "showUnfilled": true,
             "valueMode": "color",
-            "namePlacement": "left",
+            "namePlacement": "top",
             "reduceOptions": {
               "calcs": [
                 "lastNotNull"
@@ -679,14 +679,22 @@ spec:
               "unit": "none",
               "min": 0,
               "color": {
-                "mode": "continuous-BlYlRd"
+                "mode": "thresholds"
               },
               "thresholds": {
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green",
+                    "color": "#0284c7",
                     "value": null
+                  },
+                  {
+                    "color": "#f97316",
+                    "value": 20
+                  },
+                  {
+                    "color": "red",
+                    "value": 40
                   }
                 ]
               }
