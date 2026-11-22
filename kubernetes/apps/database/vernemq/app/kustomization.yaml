@@ -6,4 +6,5 @@ namespace: database
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+  - ./externalsecret-victron.yaml
   - ./gateway-l4.yaml
