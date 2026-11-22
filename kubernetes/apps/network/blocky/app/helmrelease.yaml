@@ -1,0 +1,116 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app blocky
+spec:
+  interval: 1h
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    defaultPodOptions:
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 100
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+    controllers:
+      blocky:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/0xerr0r/blocky
+              tag: v0.36.0@sha256:191c0f1e688aa37698297ef4059e11a2b080299a878f5b31d6d32ace9d0c54b2
+            env:
+              TZ: Europe/Amsterdam
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /metrics
+                    port: &http 4000
+                  periodSeconds: 30
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &dns 5353
+                  periodSeconds: 10
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *dns
+                  failureThreshold: 30
+                  periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 20m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    service:
+      app:
+        controller: blocky
+        ports:
+          http:
+            port: *http
+      dns:
+        controller: blocky
+        type: LoadBalancer
+        # Cluster, because the L2 announcement node can differ from the
+        # pod node. The pods then see a node IP as the client address.
+        externalTrafficPolicy: Cluster
+        annotations:
+          lbipam.cilium.io/ips: 172.16.20.53
+          external-dns.kubernetes.io/hostname: blocky.rphilipsen.nl
+        ports:
+          dns-tcp:
+            port: 53
+            targetPort: *dns
+            protocol: TCP
+          dns-udp:
+            port: 53
+            targetPort: *dns
+            protocol: UDP
+    persistence:
+      config:
+        type: configMap
+        name: blocky-config
+        globalMounts:
+          - path: /app/config.yml
+            subPath: config.yml
+            readOnly: true

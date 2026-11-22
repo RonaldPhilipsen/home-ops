@@ -12,3 +12,4 @@ resources:
   - ./external-dns-omada/ks.yaml
   - ./omada-cert-sync/ks.yaml
   - ./external-dns-pihole/ks.yaml
+  - ./blocky/ks.yaml
