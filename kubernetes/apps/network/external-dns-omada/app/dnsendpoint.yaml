@@ -8,3 +8,15 @@ spec:
     - dnsName: "omada.rphilipsen.nl"
       recordType: A
       targets: ["192.168.0.2"]
+---
+# Huawei SUN2000 inverter (LAN interface) on the IOT VLAN; the address is a
+# fixed DHCP reservation in Omada. Home Assistant reads it over Modbus TCP.
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: inverter
+spec:
+  endpoints:
+    - dnsName: "inverter.rphilipsen.nl"
+      recordType: A
+      targets: ["172.16.10.100"]
