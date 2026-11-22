@@ -19,8 +19,18 @@ spec:
   values:
     controllers:
       vernemq:
+        # Clustering needs a StatefulSet: the image's start script joins peers via
+        # <pod>.<subdomain>.<namespace>.svc DNS names, which only StatefulSet pods
+        # with a headless governing service get.
+        type: statefulset
         strategy: RollingUpdate
         replicas: 3
+        statefulset:
+          serviceName:
+            identifier: headless
+        pod:
+          # The start script reads the pod list from the Kubernetes API for discovery
+          automountServiceAccountToken: true
         annotations:
           secret.reloader.stakater.com/reload: vernemq-secret,vernemq-victron-secret
         # pod:
@@ -105,6 +115,8 @@ spec:
 
     service:
       app:
+        # keep the name "vernemq": TCPRoutes and clients use it
+        forceRename: *app
         type: ClusterIP
         ports:
           mqtt:
@@ -118,6 +130,14 @@ spec:
           api:
             port: 8888
         trafficDistribution: PreferSameNode
+      headless:
+        controller: vernemq
+        clusterIP: None
+        # peers must resolve each other while they start, before they are ready
+        publishNotReadyAddresses: true
+        ports:
+          api:
+            port: 8888
 
     serviceMonitor:
       metrics:
