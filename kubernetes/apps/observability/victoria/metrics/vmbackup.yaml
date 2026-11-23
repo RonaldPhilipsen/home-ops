@@ -32,7 +32,7 @@ spec:
           containers:
             - name: vmbackup
               # renovate: image=victoriametrics/vmbackup
-              image: victoriametrics/vmbackup:v1.156.0@sha256:f2b1c03f4ca75392e9e8a67dc88d51f7eb7e950dbe0fa14e8c78b5f34f3c40ea
+              image: victoriametrics/vmbackup:v1.157.0@sha256:49b0967aeb8c9497be3da4b5940c9b2e8e1e20005d097f16a44ccba4fb1dcb40
               imagePullPolicy: IfNotPresent
               securityContext:
                 allowPrivilegeEscalation: false
