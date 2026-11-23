@@ -18,6 +18,7 @@ spec:
   allowedNamespaces:
     list:
       - actions-runner-system
+      - ai
       - default
       - home-automation
       - jellyfin

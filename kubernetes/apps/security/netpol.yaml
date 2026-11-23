@@ -56,6 +56,16 @@ spec:
         - ports:
             - port: "9091"
               protocol: TCP
+    # hermes-webui's oauth2-proxy OIDC calls (discovery, token, JWKS) to
+    # Authelia via the external gateway; Cilium checks them with its own identity
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            k8s:app.kubernetes.io/name: hermes-webui
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
   egress:
     - toEntities:
         - host

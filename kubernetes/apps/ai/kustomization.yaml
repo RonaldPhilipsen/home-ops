@@ -10,6 +10,7 @@ resources:
   - ./netpol.yaml
   - ./ca-bridge-rbac.yaml
   - ./cnpg/ks.yaml
+  - ./hermes-webui/ks.yaml
   - ./rerank/ks.yaml
   - ./memini/ks.yaml
   - ./toolhive/crds/ks.yaml

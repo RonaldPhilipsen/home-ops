@@ -1,0 +1,40 @@
+---
+# hermes-webui on top of the namespace policy (kubernetes/apps/ai/netpol.yaml,
+# which already allows gateway ingress and world:443 egress for the LLM
+# providers and PyPI). The OIDC calls of oauth2-proxy reach
+# auth.rphilipsen.nl (its LB IP resolves in-cluster to the external gateway,
+# which has its own identity) and, behind it, Authelia.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: hermes-webui
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: hermes-webui
+  egress:
+    # Cilium checks gateway traffic with the original identities on both
+    # sides: oauth2-proxy -> Authelia (9091) must be allowed here as well as
+    # in the security namespace policy
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: security
+            k8s:app.kubernetes.io/name: authelia
+      toPorts:
+        - ports:
+            - port: "9091"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s:app.kubernetes.io/name: external
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toFQDNs:
+        - matchName: auth.rphilipsen.nl
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

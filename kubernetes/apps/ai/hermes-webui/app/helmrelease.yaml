@@ -1,0 +1,313 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hermes-webui
+spec:
+  interval: 1h
+  chart:
+    kind: OCIRepository
+    spec:
+      interval: 5m
+      ref:
+        tag: 5.3.0
+      url: oci://ghcr.io/bjw-s-labs/helm/app-template
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 5
+  values:
+    controllers:
+      hermes-webui:
+        # restart when cert-manager renews the oauth2-proxy certificate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        type: deployment
+        # single writer on a RWO volume
+        strategy: Recreate
+        initContainers:
+          # The WebUI runs Hermes Agent in-process and installs it from its
+          # source at startup. Copy that source from the agent image (a
+          # release pair with the WebUI: upgrade both together). tools/ is
+          # both the agent's Python package and its runtimes (Chromium,
+          # ffmpeg, node, ripgrep), so keep it. Leave out the venv and uv
+          # cache (the WebUI builds its own) and the root-only lock file.
+          agent-src:
+            image:
+              repository: docker.io/nousresearch/hermes-agent
+              tag: v0.23.3@sha256:3e9fe4c6ef36490f43aa0d0d80f9df64e9c92a576eee3042f1a97c8813c05355
+            command: ["sh", "-c"]
+            # archive the entries, not ".": as a non-root user, tar cannot
+            # set the mode and times of the root-owned mount point
+            args:
+              - >-
+                set -o pipefail &&
+                cd /opt/hermes &&
+                tar -cf -
+                --exclude=./uv-cache --exclude=./.venv
+                --exclude=./tools/.install.lock
+                $(ls -A | sed 's|^|./|') | tar -C /agent -xf -
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+          # The WebUI init script seeds /app from /apptoo with
+          # `cp -a /apptoo/. /app/`, which fails as a non-root user: it
+          # cannot set the mode of the root-owned emptyDir mount point. Seed
+          # the entries here instead; the script then finds /app/server.py
+          # and skips its own copy.
+          app-seed:
+            image:
+              repository: ghcr.io/nesquena/hermes-webui
+              tag: 0.52.731@sha256:46bde5757d7182cfee6978d1f2340c09b226a781353e14355b136b158de538bb
+            command: ["sh", "-c"]
+            args:
+              - cd /apptoo && cp -a $(ls -A) /app/
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+        containers:
+          app:
+            image:
+              repository: ghcr.io/nesquena/hermes-webui
+              tag: 0.52.731@sha256:46bde5757d7182cfee6978d1f2340c09b226a781353e14355b136b158de538bb
+            env:
+              TZ: Europe/Amsterdam
+              # loopback only: oauth2-proxy in this pod is the only client,
+              # so nobody else can send the trusted identity header
+              HERMES_WEBUI_HOST: 127.0.0.1
+              HERMES_WEBUI_PORT: "8787"
+              HERMES_WEBUI_STATE_DIR: /home/hermeswebui/.hermes/webui
+              HERMES_WEBUI_DEFAULT_WORKSPACE: /home/hermeswebui/.hermes/workspace
+              # rootless start: the init script skips its root phase when it
+              # already runs as the wanted UID/GID
+              WANTED_UID: "1024"
+              WANTED_GID: "1024"
+              # Login through oauth2-proxy (Authelia OIDC). The native OIDC
+              # login cannot work here: it rejects issuers that resolve to
+              # private addresses, and auth.rphilipsen.nl resolves to the
+              # external gateway LB IP in-cluster.
+              HERMES_WEBUI_TRUSTED_AUTH_HEADER: X-Forwarded-Preferred-Username
+              HERMES_WEBUI_TRUSTED_PROXY_CIDRS: 127.0.0.1/32
+              HERMES_WEBUI_TRUSTED_AUTH_LOGOUT_URL: /oauth2/sign_out?rd=https%3A%2F%2Fauth.rphilipsen.nl%2Flogout
+              HERMES_WEBUI_SECURE: "1"
+              HERMES_WEBUI_ALLOWED_ORIGINS: https://hermes.rphilipsen.nl
+              # the agent's runtimes, copied by agent-src to the same path
+              # as in the agent image
+              HERMES_RUNTIME_DIR: /opt/hermes/tools
+              PLAYWRIGHT_BROWSERS_PATH: /opt/hermes/tools
+            # loopback only, so the kubelet (which dials the pod IP) cannot
+            # use httpGet; ask from inside the container
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec: &health
+                    command: ["curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:8787/health"]
+                  # the first start installs the agent dependencies from PyPI
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 120
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec: *health
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec: *health
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            # root filesystem stays writable: agent tools write to it
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.15.6@sha256:c3415e8660af553f5e18f5d90db050614c02493c0ac6260ac59442f6d9b12048
+            args:
+              - --provider=oidc
+              - --provider-display-name=Authelia
+              - --oidc-issuer-url=https://auth.rphilipsen.nl
+              - --client-id=hermes-webui
+              - --code-challenge-method=S256
+              - --scope=openid profile email groups
+              # the agent runs shell commands: admins only
+              - --allowed-group=lldap_admin
+              - --email-domain=*
+              - --redirect-url=https://hermes.rphilipsen.nl/oauth2/callback
+              - --upstream=http://127.0.0.1:8787
+              # native HTTPS on 4443 (tls.yaml)
+              - --https-address=0.0.0.0:4443
+              - --tls-cert-file=/tls/tls.crt
+              - --tls-key-file=/tls/tls.key
+              - --reverse-proxy=true
+              # sets X-Forwarded-Preferred-Username (and strips any value
+              # the client sent)
+              - --pass-user-headers=true
+              # no Authorization: Basic header to the WebUI
+              - --pass-basic-auth=false
+              # agent replies stream over SSE for minutes (default 30s)
+              - --upstream-timeout=1h
+              - --skip-provider-button=true
+              - --cookie-secure=true
+              - --cookie-name=_hermes_oauth2
+              # sign_out may redirect to the Authelia logout page
+              - --whitelist-domain=auth.rphilipsen.nl
+              - --silence-ping-logging=true
+            env:
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-webui-oidc
+                    key: HERMES_WEBUI_OAUTH_CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: hermes-webui-cookie
+                    key: OAUTH2_PROXY_COOKIE_SECRET
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: &ping
+                    scheme: HTTPS
+                    path: /ping
+                    port: &port 4443
+                  periodSeconds: 5
+                  timeoutSeconds: 3
+                  failureThreshold: 30
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: *ping
+                  periodSeconds: 30
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet: *ping
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 128Mi
+    defaultPodOptions:
+      securityContext:
+        # the image's hermeswebui user; the kopiur mover runs as the same
+        # UID/GID (ks.yaml APP_UID/APP_GID) to read the 0600 credential files
+        runAsNonRoot: true
+        runAsUser: 1024
+        runAsGroup: 1024
+        fsGroup: 1024
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      app:
+        ports:
+          https:
+            port: *port
+    route:
+      app:
+        hostnames: ["hermes.rphilipsen.nl"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          # HTTPS backend; BackendTLSPolicy hermes-webui (tls.yaml) verifies it
+          - backendRefs:
+              - name: *app
+                port: *port
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  set:
+                    - name: X-Forwarded-Proto
+                      value: https
+    persistence:
+      data:
+        existingClaim: *app
+        advancedMounts:
+          hermes-webui:
+            app:
+              - path: /home/hermeswebui/.hermes
+      # seeded from /apptoo at each start (init container app-seed); on a
+      # persistent volume the code would stay old after an image upgrade
+      app:
+        type: emptyDir
+        advancedMounts:
+          hermes-webui:
+            app-seed:
+              - path: /app
+            app:
+              - path: /app
+      uv-cache:
+        type: emptyDir
+        advancedMounts:
+          hermes-webui:
+            app:
+              - path: /uv_cache
+      agent-src:
+        type: emptyDir
+        advancedMounts:
+          hermes-webui:
+            agent-src:
+              - path: /agent
+            app:
+              - path: /opt/hermes
+      tls:
+        type: secret
+        name: hermes-webui-tls
+        advancedMounts:
+          hermes-webui:
+            oauth2-proxy:
+              - path: /tls
+                readOnly: true

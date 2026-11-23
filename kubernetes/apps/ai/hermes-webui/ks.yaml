@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app hermes-webui
+  namespace: &namespace ai
+spec:
+  targetNamespace: *namespace
+  components:
+    - ../../../../components/kopiur/hot
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./kubernetes/apps/ai/hermes-webui/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  # the first start copies the agent source and installs its Python
+  # dependencies from PyPI
+  timeout: 15m
+  postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: *namespace
+      KOPIUR_CAPACITY: 10Gi
+      # the kopiur mover runs as the app user: Hermes writes its credential
+      # files with mode 0600 (umask 0077)
+      APP_UID: "1024"
+      APP_GID: "1024"
