@@ -119,6 +119,20 @@ spec:
               # space-separated names from [project.optional-dependencies]
               # in the agent's pyproject.toml
               HERMES_AGENT_EXTRAS: anthropic
+              # memini memory provider. The plugin lives on the PVC at
+              # ~/.hermes/plugins/memini and is selected with
+              # `memory: {provider: memini}` in ~/.hermes/config.yaml; every
+              # field of its config schema is env-driven, so the wiring
+              # belongs here. memini is in this namespace, so the
+              # ExternalSecret-managed secret is readable directly and the
+              # token stays out of git.
+              MEMINI_BASE_URL: http://memini.ai.svc:8080
+              MEMINI_NAMESPACE: hermes
+              MEMINI_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: memini
+                    key: api_key
             # The WebUI installs the agent with [all], which leaves out the
             # provider extras (anthropic, ...). The agent installs those on
             # first use, but refuses to here: /app/venv is the WebUI's own
