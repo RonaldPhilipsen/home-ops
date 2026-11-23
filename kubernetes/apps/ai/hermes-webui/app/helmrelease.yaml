@@ -115,6 +115,37 @@ spec:
               # as in the agent image
               HERMES_RUNTIME_DIR: /opt/hermes/tools
               PLAYWRIGHT_BROWSERS_PATH: /opt/hermes/tools
+              # Agent extras to install into /app/venv (postStart below),
+              # space-separated names from [project.optional-dependencies]
+              # in the agent's pyproject.toml
+              HERMES_AGENT_EXTRAS: anthropic
+            # The WebUI installs the agent with [all], which leaves out the
+            # provider extras (anthropic, ...). The agent installs those on
+            # first use, but refuses to here: /app/venv is the WebUI's own
+            # environment, not the agent's managed one. Install them once the
+            # WebUI is up (its install is then done), with the versions the
+            # agent pins. The probes start only after this hook returns.
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - sh
+                    - -c
+                    - |
+                      set -e
+                      export UV_CACHE_DIR=/uv_cache
+                      i=0
+                      until curl -fsS -o /dev/null http://127.0.0.1:8787/health; do
+                        i=$((i + 1)); [ "$i" -lt 600 ] || exit 1; sleep 2
+                      done
+                      /app/venv/bin/python -c '
+                      import os, tomllib
+                      with open("/app/hermes-agent-src/pyproject.toml", "rb") as f:
+                          deps = tomllib.load(f)["project"]["optional-dependencies"]
+                      for extra in os.environ["HERMES_AGENT_EXTRAS"].split():
+                          print("\n".join(deps[extra]))
+                      ' > /tmp/agent-extras.txt
+                      uv pip install --python /app/venv/bin/python -r /tmp/agent-extras.txt
             # loopback only, so the kubelet (which dials the pod IP) cannot
             # use httpGet; ask from inside the container
             probes:
