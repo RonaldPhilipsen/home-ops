@@ -60,3 +60,10 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    # ha-mcp server inside Home Assistant (hass.rphilipsen.nl), plain HTTP
+    - toCIDR:
+        - 172.16.10.24/32
+      toPorts:
+        - ports:
+            - port: "9584"
+              protocol: TCP

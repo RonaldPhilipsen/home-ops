@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: toolhive-ha-mcp
+  namespace: ai
+spec:
+  targetNamespace: ai
+  dependsOn:
+    - name: toolhive-config
+      namespace: ai
+    - name: toolhive-ha-mcp-secret
+      namespace: ai
+  path: ./kubernetes/apps/ai/toolhive/ha-mcp/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  # The secret URL must stay out of git, so Flux substitutes it at build time.
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: toolhive-ha-mcp
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
