@@ -70,7 +70,7 @@ spec:
           app-seed:
             image:
               repository: ghcr.io/nesquena/hermes-webui
-              tag: 0.52.745@sha256:bd1f172e3afccc144e6a97a32edd4f4c4dca64922cc24fbbd491949d8044cf21
+              tag: 0.52.751@sha256:b2cd9e665ed6df05fdd60b202f8a91f6c984b246df704e89441c992dd3a6375d
             command: ["sh", "-c"]
             args:
               - cd /apptoo && cp -a $(ls -A) /app/
@@ -89,7 +89,7 @@ spec:
           app:
             image:
               repository: ghcr.io/nesquena/hermes-webui
-              tag: 0.52.745@sha256:bd1f172e3afccc144e6a97a32edd4f4c4dca64922cc24fbbd491949d8044cf21
+              tag: 0.52.751@sha256:b2cd9e665ed6df05fdd60b202f8a91f6c984b246df704e89441c992dd3a6375d
             env:
               TZ: Europe/Amsterdam
               # loopback only: oauth2-proxy in this pod is the only client,
