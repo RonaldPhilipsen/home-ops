@@ -12,6 +12,7 @@ spec:
       interval: 15m
       ref:
         tag: 2.4.4
+        digest: sha256:3b81495b4e841771e05a085b66917ee0396facb7df1b340b2999d49b9fece15b
       url: oci://ghcr.io/grafana/helm-charts/pyroscope
   maxHistory: 2
   install:

@@ -12,6 +12,7 @@ spec:
       interval: 15m
       ref:
         tag: 2.2.21
+        digest: sha256:d8daf25bbedcc180fa4bb35297709f9539c0e231f1d7815080541810deadaa98
       url: oci://ghcr.io/stakater/charts/reloader
   install:
     remediation:

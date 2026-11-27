@@ -13,6 +13,7 @@ spec:
       interval: 15m
       ref:
         tag: 0.99.1
+        digest: sha256:19c2c484b6fdec6301a5cbad6e937d7bb5f4970005725d3748f9fde444a36b5b
       url: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
   maxHistory: 2
   install:

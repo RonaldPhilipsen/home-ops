@@ -11,6 +11,7 @@ spec:
       interval: 5m
       ref:
         tag: 0.37.2
+        digest: sha256:21c5b4c31db35952b32d17ea95f4656fb999a7327116185a0ad105252384b37d
       url: oci://ghcr.io/intel/helm-charts/intel-device-plugins-operator
   install:
     crds: CreateReplace

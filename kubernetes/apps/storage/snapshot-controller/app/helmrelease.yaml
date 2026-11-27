@@ -12,6 +12,7 @@ spec:
       interval: 5m
       ref:
         tag: 5.4.1
+        digest: sha256:dae3f46022b42a46a1f6d2489a4ee16d9b55f85e07c36c3d6063bcb0e1b35a69
       url: oci://ghcr.io/piraeusdatastore/helm-charts/snapshot-controller
   values:
     controller:

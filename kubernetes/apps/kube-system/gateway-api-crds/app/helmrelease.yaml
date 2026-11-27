@@ -12,6 +12,7 @@ spec:
       interval: 15m
       ref:
         tag: 1.7.0
+        digest: sha256:76e48adf4ebbe048ec36ea9787d848e65e596d722e0c980de4da25b35181c503
       url: oci://ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds
   install:
     remediation:
