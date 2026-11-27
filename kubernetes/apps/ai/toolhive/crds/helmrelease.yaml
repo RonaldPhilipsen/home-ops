@@ -11,5 +11,6 @@ spec:
       interval: 1h
       ref:
         tag: 0.69.1
+        digest: sha256:8d756a7426fcadc0e9e4f294728e7532cfade2b8f7d56b97b04f74a97513eb42
       url: oci://ghcr.io/stacklok/toolhive/toolhive-operator-crds
   interval: 30m

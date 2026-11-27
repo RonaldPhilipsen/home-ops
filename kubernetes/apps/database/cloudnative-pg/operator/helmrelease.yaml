@@ -12,6 +12,7 @@ spec:
       interval: 1h
       ref:
         tag: 0.29.2
+        digest: sha256:3bfb3670ccb80c7f2e6bef3189c1599ad4b6d6f0a52fb745f986ac5b511d2fc0
       url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
 
   values:

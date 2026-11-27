@@ -11,6 +11,7 @@ spec:
       interval: 1h
       ref:
         tag: 0.69.1
+        digest: sha256:95b13697df3dd033755276fd4b693680f09c1d56bfd3ed496961f10e11c4355a
       url: oci://ghcr.io/stacklok/toolhive/toolhive-operator
   interval: 30m
   values:

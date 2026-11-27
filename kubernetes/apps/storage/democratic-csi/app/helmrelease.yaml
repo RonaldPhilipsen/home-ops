@@ -12,6 +12,7 @@ spec:
       interval: 5m
       ref:
         tag: 0.15.1
+        digest: sha256:71d37a00f607f6c4f3f5e19e44293ad1582450cf0c47205774c23804fef78040
       url: oci://ghcr.io/democratic-csi/charts/democratic-csi
   values:
     csiDriver:

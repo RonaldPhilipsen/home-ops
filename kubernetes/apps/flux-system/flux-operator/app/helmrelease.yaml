@@ -12,6 +12,7 @@ spec:
       interval: 10m
       ref:
         tag: 0.64.0
+        digest: sha256:bfa2e5544943ae2430874f6cb3a25609c83e950207d34987b81b867a31503ca3
       url: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
   install:
     remediation:

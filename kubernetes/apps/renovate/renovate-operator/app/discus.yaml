@@ -19,6 +19,7 @@ spec:
       interval: 5m
       ref:
         tag: 0.8.0
+        digest: sha256:a9f64d5e5e82bf49a96a9400b8dc7c99e531851c4eb27fa711245080e25483a8
       url: oci://ghcr.io/ronaldphilipsen/charts/discus
   install:
     remediation:
