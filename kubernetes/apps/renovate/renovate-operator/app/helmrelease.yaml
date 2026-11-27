@@ -14,7 +14,7 @@ spec:
     spec:
       interval: 15m
       ref:
-        tag: 6.10.0
+        tag: 7.0.0
       url: oci://ghcr.io/mogenius/helm-charts/renovate-operator
   values:
     fullnameOverride: *app
