@@ -1,0 +1,38 @@
+---
+# The API key of the Recyclarr v9 server. The server does not start without
+# one (at least 32 characters). Only the CLI inside the pod uses it
+# (kubectl exec ... recyclarr sync), so it is generated in-cluster and is not
+# in 1Password.
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/generators.external-secrets.io/password_v1alpha1.json
+apiVersion: generators.external-secrets.io/v1alpha1
+kind: Password
+metadata:
+  name: recyclarr-api-key
+spec:
+  length: 48
+  digits: 8
+  symbols: 0
+  noUpper: false
+  allowRepeat: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: recyclarr-api-key
+spec:
+  # Generate the key once. A new key only comes after a change of this file.
+  refreshPolicy: OnChange
+  refreshInterval: "0"
+  target:
+    name: recyclarr-api-key
+    template:
+      engineVersion: v2
+      data:
+        RECYCLARR_API_KEY: "{{ .password }}"
+  dataFrom:
+    - sourceRef:
+        generatorRef:
+          apiVersion: generators.external-secrets.io/v1alpha1
+          kind: Password
+          name: recyclarr-api-key
