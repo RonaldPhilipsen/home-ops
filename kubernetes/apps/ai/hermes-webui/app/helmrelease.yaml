@@ -40,7 +40,7 @@ spec:
           agent-src:
             image:
               repository: docker.io/nousresearch/hermes-agent
-              tag: v0.23.4@sha256:ef0650d523ee1b5ab32c779acabc446d9936869a9932591553688a62bcf0c42f
+              tag: v0.23.5@sha256:bc79a80fc9cb97521f4380c5d5b2ad88e2469e50fc1d5027339bbb42cc206854
             command: ["sh", "-c"]
             # archive the entries, not ".": as a non-root user, tar cannot
             # set the mode and times of the root-owned mount point
